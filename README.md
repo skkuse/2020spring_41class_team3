@@ -1,5 +1,8 @@
-### SKKU 2020 spring 41 class team3
-# newShop
+### SKKU 2020 spring 41 class
+# team3
+
+##### Product price and news information system
+
 ***
 ## Team member
 
