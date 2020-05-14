@@ -1,5 +1,5 @@
-### SKKU 2020 spring 41 class
-# team3
+### SKKU 2020 spring 41 class team3
+# newShop
 ***
 ## Team member
 
