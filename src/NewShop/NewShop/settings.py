@@ -87,10 +87,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'SR97$skkuse3',
-        'USER': 'SR97',
-        'PASSWORD' : 'skkuse333',
-        'HOST' : 'SR97.mysql.pythonanywhere-services.com',
+        'NAME': 'chw9603.cafe24.com:22',
+        'USER': 'chw9603',
+        'PASSWORD' : 'qlraor3500dnjs',
+        'HOST' : 'chw9603.cafe24.com',
+        'PORT' : '3306'
     }
 }
 
