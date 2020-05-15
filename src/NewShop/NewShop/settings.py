@@ -73,6 +73,10 @@ WSGI_APPLICATION = 'NewShop.wsgi.application'
 
 # Database -> MySQL로 바꿔야 함
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+
+'''
+개인 테스트 시 이쪽 코드를 활성화시키고 아래쪽 mysql을 주석처리. 
+db.sqlite3(gitignore에 포함됨)에 저장됨
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -83,14 +87,13 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'chw9603.cafe24.com:22',
-        'USER': 'chw9603',
-        'PASSWORD' : 'qlraor3500dnjs',
-        'HOST' : 'chw9603.cafe24.com',
-        'PORT' : '3306'
+        'NAME': 'SR97$skkuse3',
+        'USER': 'SR97',
+        'PASSWORD' : 'skkuse333',
+        'HOST' : 'SR97.mysql.pythonanywhere-services.com',
     }
 }
-'''
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
