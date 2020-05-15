@@ -10,10 +10,34 @@
         <div class="page-header">
             <table width="100%%">
             <tr>
-                <td align="center"> <a href={%url 'home'%}>Home</a></td>
-                <td align="center"> <a href={%url 'product'%}>Product</a></td>
-                <td align="center"> <a href={%url 'API'%}>API</a></td>
-                <td align="center"> <a href={%url 'mypage'%}>MyPage</a></td>
+                <td align="center">
+                    {%if menu != 'home'%}
+                        <a href={%url 'home'%}>Home</a>
+                    {%else%}
+                        Home
+                    {%endif%}
+                </td>
+                <td align="center">
+                    {%if menu != 'product'%}
+                        <a href={%url 'product'%}>Product</a>
+                    {%else%}
+                        Product
+                    {%endif%}
+                </td>
+                <td align="center">
+                    {%if menu != 'api'%}
+                        <a href={%url 'API'%}>API</a>
+                    {%else%}
+                        API
+                    {%endif%}
+                </td>
+                <td align="center">
+                    {%if menu != 'mypage'%}
+                        <a href={%url 'mypage'%}>MyPage</a>
+                    {%else%}
+                        MyPage
+                    {%endif%}
+                </td>
             </tr>
             </table>
         </div>        

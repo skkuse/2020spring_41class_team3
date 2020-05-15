@@ -25,7 +25,7 @@ SECRET_KEY = 'z!ux@#=k34a(i21^!qxh3tltdd=1^d522l)zki+8yjps*uxcd*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1',]
+ALLOWED_HOSTS = ['127.0.0.1','.pythonanywhere.com']
 
 
 # Application definition
@@ -73,14 +73,24 @@ WSGI_APPLICATION = 'NewShop.wsgi.application'
 
 # Database -> MySQL로 바꿔야 함
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),        
     }
 }
-
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'chw9603.cafe24.com:22',
+        'USER': 'chw9603',
+        'PASSWORD' : 'qlraor3500dnjs',
+        'HOST' : 'chw9603.cafe24.com',
+        'PORT' : '3306'
+    }
+}
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
