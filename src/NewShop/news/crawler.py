@@ -16,6 +16,12 @@ class Crawler(object):
         """
         base_url = 'https://search.naver.com/search.naver?where=news'
         search_word = 'query={}'.format(search_word)
+        start_date = 'ds={}.{}.{}'.format(start_date[:4], start_date[4:6], start_date[6:])
+        end_date = 'de={}.{}.{}'.format(end_date[:4], end_date[4:6], end_date[6:])
+        query_list = [search_word, start_date, end_date]
+        query = '&'.join(query_list)
+        url = base_url + '?' + query
+        return url
 
     def get_html(self):
         """
