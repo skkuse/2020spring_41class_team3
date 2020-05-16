@@ -25,7 +25,7 @@ class History(models.Model):
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
 
 class Favor(models.Model):
-    user = models.ForeignKey("HUser", related_name='history', on_delete=models.CASCADE)
+    user = models.ForeignKey("HUser", related_name='favor', on_delete=models.CASCADE)
     product = models.ForeignKey("Product",on_delete=models.CASCADE)
 
 class Alarm(models.Model):
