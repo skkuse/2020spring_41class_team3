@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import re
 
 def make_url(search_word: str, start_date: str, end_date: str):
     """
@@ -34,20 +34,45 @@ class Crawler(object):
 
         html = req.text
         soup = BeautifulSoup(html, 'html.parser')
-        ret_str = soup.select('ul.type01 > li > dl > dt > a')
+        ret_str = soup.select('ul.type01 > li > dl > dd > a')
         news_list = []
         for get_str in ret_str:
             news_list.append(get_str['href'])
         return news_list
 
 
-    def get_data(self):
+    def get_news_contents(self, url):
         """
         make usable data
+        :param url: news site url
         :return: data
         """
+        req = requests.get(url)
+        if self.verbose:
+            print("Crawling url is ", url)
+
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+        try:
+            ret_str = str(soup.select('#articleBodyContents')[0])
+        except:
+            if self.verbose:
+                print("엔터테인먼트 뉴스입니다. 아직 구현 안됨.")
+
+        cutting = re.compile('<[^(<|>)]*>')
+        cutting_list = cutting.findall(ret_str)
+        for cutting_str in cutting_list:
+            ret_str = ret_str.replace(cutting_str, '', 1)
+        ret_str = ret_str.replace('// flash 오류를 우회하기 위한 함수 추가', '')
+        ret_str = ret_str.replace('function _flash_removeCallback() {}', '')
+        ret_str = ret_str.replace('\n', '', 100)
+        return ret_str
 
 if __name__ == '__main__':
     crawler = Crawler()
     url = make_url('검색', '20200320', '20200511')
     print(crawler.get_news_link(url))
+    news = crawler.get_news_link(url)
+    del news[2]
+    for news_url in news:
+        print(crawler.get_news_contents(news_url))
