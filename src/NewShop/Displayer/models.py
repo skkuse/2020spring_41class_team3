@@ -11,12 +11,17 @@ class HUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='handle')
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=13,null=True)
-    favor_id = models.IntegerField(null=True)
+    favor_id = models.ForeignKey("Field",related_name='huser', on_delete=models.SET_NULL,null=True)
     profile = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None, null=True)
     permit = models.BooleanField(default=False)
+    alarmMethod = models.IntegerField() #비트로 다룸 : ex) 2^0자리 이메일, 2^1자리 문자
 
+    #멤버함수 추가 예정
+    '''
+    DB를 건드리는 기능 : 회원가입, 로그인, 즐겨찾기 저장/삭제, 검색(가격 표시), 마이페이지 이미지/이름/알람 수단 변경, 알람 설정
+    '''
     def __str__(self):
-        return self.name        
+        return self.name
     
 
 class History(models.Model):
@@ -33,11 +38,18 @@ class Alarm(models.Model):
     product = models.ForeignKey("Product", related_name='alarm',on_delete=models.CASCADE)
     lower = models.IntegerField(default=0)
     reuse = models.BooleanField()
-    method = models.IntegerField() #비트로 다룸 : ex) 2^0자리 이메일, 2^1자리 문자
     upper = models.IntegerField()
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
+    field = models.ForeignKey("Field",related_name='product', on_delete=models.SET_NULL,null=True)
+    influence = models.CharField(max_length=100)
+    #brand의 price를 불러와 가장 낮은 것을 뽑아내는 함수
+
+class SpProduct(models.Model):  #상표가 있는 specific product의 가격을 말함.
+    name=models.CharField(max_length=100)
+    product=models.ForeignKey("Product",related_name='brand',on_delete=models.CASCADE)
+    #product의 뉴스 불러오기 함수
 
 class News(models.Model):
     product = models.ForeignKey("Product", related_name='news', on_delete=models.CASCADE)
@@ -45,6 +57,10 @@ class News(models.Model):
     url = models.URLField(max_length=200)
 
 class Price(models.Model):
-    product = models.ForeignKey("Product",related_name='price', on_delete=models.CASCADE)
+    product = models.ForeignKey("SpProduct",related_name='price', on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()
+
+class Field(models.Model):
+    name = models.CharField(max_length=50)
+
