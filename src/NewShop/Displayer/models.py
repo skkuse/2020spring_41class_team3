@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+import abc
 # Create your models here.
 '''
 Django에서 쿼리는 전용 함수로 감싸져 있습니다.
@@ -12,7 +13,7 @@ class HUser(models.Model):
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=13,null=True)
     favor_id = models.ForeignKey("Field",related_name='huser', on_delete=models.SET_NULL,null=True)
-    profile = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None, null=True)
+    # profile = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None, null=True)
     permit = models.BooleanField(default=False)
     alarmMethod = models.IntegerField() #비트로 다룸 : ex) 2^0자리 이메일, 2^1자리 문자
 
@@ -40,19 +41,46 @@ class Alarm(models.Model):
     reuse = models.BooleanField()
     upper = models.IntegerField()
 
-class Product(models.Model):
+class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규약을 위한 추상 클래스
     name = models.CharField(max_length=100)
+    @abc.abstractmethod
+    def getNews(self):
+        pass
+    @abc.abstractmethod
+    def getPrice(self):
+        pass
+    @abc.abstractmethod
+    def getInfluence(self):
+        pass
+    def sendAlarm(self):
+        alarms=self.alarm.all()
+        for a in alarms:    #getPrice로 방금 넣은 것과 비교, 타임으로 내림차순 sort해서 [0] 고르면 됨
+            pass
+        pass
+
+class NspProduct(Product): #상표 무관 product 키워드를 말함
     field = models.ForeignKey("Field",related_name='product', on_delete=models.SET_NULL,null=True)
     influence = models.CharField(max_length=100)
-    #brand의 price를 불러와 가장 낮은 것을 뽑아내는 함수
+    def getNews(self):
+        return self.news.all()
+    def getPrice(self):        
+        return self.brand.getPrice()
+    def getInfluence(self):
+        return self.influence
+        
 
-class SpProduct(models.Model):  #상표가 있는 specific product의 가격을 말함.
-    name=models.CharField(max_length=100)
-    product=models.ForeignKey("Product",related_name='brand',on_delete=models.CASCADE)
-    #product의 뉴스 불러오기 함수
+class SpProduct(Product):  #상표가 있는 specific product 키워드를 말함.
+    product=models.ForeignKey("NspProduct",related_name='brand',on_delete=models.CASCADE)
+    def getNews(self):
+        return self.product.getNews()
+    def getPrice(self):
+        return self.price.all()
+    def getInfluence(self):
+        return self.product.getInfluence()
 
 class News(models.Model):
-    product = models.ForeignKey("Product", related_name='news', on_delete=models.CASCADE)
+    product = models.ForeignKey("NspProduct", related_name='news', on_delete=models.CASCADE)
+    date=models.DateField()
     title = models.CharField(max_length=200)
     url = models.URLField(max_length=200)
 
