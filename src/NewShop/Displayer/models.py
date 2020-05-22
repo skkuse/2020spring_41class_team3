@@ -12,7 +12,7 @@ class HUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='handle')
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=13,null=True)
-    favor_id = models.ForeignKey("Field",related_name='huser', on_delete=models.SET_NULL,null=True)
+    interest = models.CharField(max_length=50,null=True)
     # profile = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None, null=True)
     permit = models.BooleanField(default=False)
     alarmMethod = models.IntegerField() #비트로 다룸 : ex) 2^0자리 이메일, 2^1자리 문자
@@ -59,12 +59,12 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
         pass
 
 class NspProduct(Product): #상표 무관 product 키워드를 말함
-    field = models.ForeignKey("Field",related_name='product', on_delete=models.SET_NULL,null=True)
+    field = models.CharField(max_length=50,null=True)
     influence = models.CharField(max_length=100)
     def getNews(self):
         return self.news.all()
-    def getPrice(self):        
-        return self.brand.getPrice()
+    def getPrice(self):
+        b = self.brand.all()
     def getInfluence(self):
         return self.influence
         
@@ -89,6 +89,4 @@ class Price(models.Model):
     value = models.IntegerField()
     date = models.DateField()
 
-class Field(models.Model):
-    name = models.CharField(max_length=50)
 
