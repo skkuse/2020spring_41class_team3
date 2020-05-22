@@ -60,7 +60,7 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
 
 class NspProduct(Product): #상표 무관 product 키워드를 말함
     field = models.CharField(max_length=50,null=True)
-    influence = models.CharField(max_length=100)
+    influence = models.CharField(max_length=100,null=True)
     def getNews(self):
         return self.news.all()
     def getPrice(self):
