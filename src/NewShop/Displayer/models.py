@@ -39,6 +39,7 @@ class Alarm(models.Model):
     product = models.ForeignKey("Product", related_name='alarm',on_delete=models.CASCADE)
     lower = models.IntegerField(default=0)
     reuse = models.BooleanField()
+    news_alarm = models.BooleanField()
     upper = models.IntegerField()
 
 class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규약을 위한 추상 클래스
@@ -82,6 +83,7 @@ class News(models.Model):
     product = models.ForeignKey("NspProduct", related_name='news', on_delete=models.CASCADE)
     date=models.DateField()
     title = models.CharField(max_length=200)
+    subj = models.IntegerField()
     url = models.URLField(max_length=200)
 
 class Price(models.Model):
