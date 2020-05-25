@@ -20,6 +20,7 @@
          ┣ docs ┐
                 ┣ proposal.pptx
                 ┣ proposal.pdf
+                ┣ Design_specification_spring2020_team3.pdf
                 └ requirement_specification_spring2020_team3.pdf
          └ src
 ***
