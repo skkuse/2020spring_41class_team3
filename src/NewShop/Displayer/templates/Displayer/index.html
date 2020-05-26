@@ -51,6 +51,15 @@
 						<li>
 							<a class="page-scroll" href="{%url 'mypage'%}">MyPage</a>
 						</li>
+						{%if logged%}
+						<li>
+							<a class="page-scroll" href="{%url 'logout'%}">임시 로그아웃 버튼</a>
+						</li>
+						{%else%}
+						<li>
+							<a class="page-scroll" href="{%url 'login'%}">임시 로그인 버튼</a>
+						</li>
+						{%endif%}
 					</ul>
 				</div>
 				<!-- /.navbar-collapse -->
