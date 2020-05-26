@@ -2,12 +2,7 @@ from django.db import models
 from django.conf import settings
 import abc
 # Create your models here.
-'''
-Django에서 쿼리는 전용 함수로 감싸져 있습니다.
-클래스.objects.all().filter(클래스 속성 조건).order_by(속성, 오름/내림차순) 
-이렇게 하면 접근되는 거고(필터 정렬은 비필수)
-객체 생성해서 객체.save()하면 DB에 저장되는 식이에요
-'''
+
 class HUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='handle')
     name = models.CharField(max_length=50)
@@ -15,7 +10,7 @@ class HUser(models.Model):
     interest = models.CharField(max_length=50,null=True)
     # profile = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None, null=True)
     permit = models.BooleanField(default=False)
-    alarmMethod = models.IntegerField() #비트로 다룸 : ex) 2^0자리 이메일, 2^1자리 문자
+    alarmMethod = models.IntegerField(default=0) #비트로 다룸 : ex) 2^0자리 이메일, 2^1자리 문자
 
     #멤버함수 추가 예정
     '''

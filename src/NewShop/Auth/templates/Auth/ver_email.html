@@ -1,0 +1,7 @@
+{% autoescape off %}
+
+    아래 링크를 클릭하면 newShop 회원가입이 완료됩니다.
+
+    회원가입 링크 : http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+{% endautoescape %}

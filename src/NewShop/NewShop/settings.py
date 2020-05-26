@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+from . import local_settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -138,3 +138,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'/static')  
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+
+EMAIL_HOST_USER = local_settings.mail
+# 이메일 주소
+EMAIL_HOST_PASSWORD = local_settings.pw
+# 발신할 메일의 비밀번호
+
+# local_settings.py는 공개하지 않습니다. 테스트에서는 직접 입력해 주세요.
+# 단, gmail 설정에 들어가서 보안 수준이 낮은 앱 액세스 허용에 체크를 해 주어야 합니다. https://support.google.com/accounts/answer/6010255
+EMAIL_USE_TLS = True
+# TLS 보안 방법
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# 사이트와 관련한 자동응답을 받을 이메일 주소,'webmaster@localhost'
