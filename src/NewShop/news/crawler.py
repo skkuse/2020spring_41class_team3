@@ -1,8 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+import copy
+from NewShop.news.MarketPrice import markets
+from urllib import parse
 
-def make_url(search_word: str, start_date: str, end_date: str):
+def make_news_url(search_word: str, start_date: str, end_date: str):
     """
     make self.url using search word, start_date, end_date
     :param search_word: the word that user want to search
@@ -40,7 +43,6 @@ class Crawler(object):
             news_list.append(get_str['href'])
         return news_list
 
-
     def get_news_contents(self, url):
         """
         make usable data
@@ -68,11 +70,17 @@ class Crawler(object):
         ret_str = ret_str.replace('\n', '', 100)
         return ret_str
 
+    def get_market_price(self, word):
+        for market in markets:
+            print(market.get_data(word))
+        return
+
 if __name__ == '__main__':
     crawler = Crawler()
-    url = make_url('검색', '20200320', '20200511')
-    print(crawler.get_news_link(url))
-    news = crawler.get_news_link(url)
-    del news[2]
-    for news_url in news:
-        print(crawler.get_news_contents(news_url))
+    crawler.get_market_price('삼성전자 DDR4 8G PC4-21300')
+    # url = make_news_url('검색', '20200320', '20200511')
+    # print(crawler.get_news_link(url))
+    # news = crawler.get_news_link(url)
+    # del news[2]
+    # for news_url in news:
+    #     print(crawler.get_news_contents(news_url))
