@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from Displayer.models import News, Price
 
 def make_url(search_word: str, start_date: str, end_date: str):
     """
