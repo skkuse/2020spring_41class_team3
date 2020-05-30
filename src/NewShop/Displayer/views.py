@@ -14,7 +14,7 @@ def home(request):
 
 def product(request):
     logged=request.user.is_authenticated
-    return render(request, 'Displayer/product.html',{'logged':logged})    
+    return render(request, 'Displayer/product.html',{'logged':logged})
 
 def api(request):
     logged=request.user.is_authenticated
@@ -22,5 +22,5 @@ def api(request):
 
 @login_required(login_url='login/')
 def myPage(request):
-    logged=request.user.is_authenticated    
+    logged=request.user.is_authenticated
     return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user})

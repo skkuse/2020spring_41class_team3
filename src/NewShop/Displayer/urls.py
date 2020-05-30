@@ -1,8 +1,6 @@
 from django.urls import include, path, re_path
 from django.contrib.auth import views as auth_views
 from . import views
-from Auth import views as a_views
-from DataCollector import views as c_views
 
 
 urlpatterns = [ 

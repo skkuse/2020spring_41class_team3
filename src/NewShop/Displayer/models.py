@@ -1,6 +1,10 @@
 from django.db import models
 from django.conf import settings
+from NewShop import local_settings
+import requests
 import abc
+import time
+import sys, os, hashlib, hmac, base64
 # Create your models here.
 
 class HUser(models.Model):
@@ -9,13 +13,40 @@ class HUser(models.Model):
     phone = models.CharField(max_length=13,null=True)
     interest = models.CharField(max_length=50,null=True)
     # profile = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None, null=True)
-    permit = models.BooleanField(default=False)
+    permit = models.BooleanField(default=False) #역할 변경 : 핸드폰 인증 여부
     alarmMethod = models.IntegerField(default=0) #비트로 다룸 : ex) 2^0자리 이메일, 2^1자리 문자
 
     #멤버함수 추가 예정
     '''
     DB를 건드리는 기능 : 회원가입, 로그인, 즐겨찾기 저장/삭제, 검색(가격 표시), 마이페이지 이미지/이름/알람 수단 변경, 알람 설정
     '''
+    def sendSMS(self, content):
+        url='https://sens.apigw.ntruss.com'
+        uri='/sms/v2/services/'+local_settings.svc_id+'/messages'
+        data = {
+            "type": "SMS",
+            "from": local_settings.hp,  
+            # 이 부분은 저의 전화번호가 넷상에 남게 되는 실수가 있을 수 있기 때문에 sendSMS()는 로컬 테스트 금지입니다. 
+            # 만약 다른 기능 테스트 중 이 함수에서 인터프리터 오류가 발생한다면, local_settings에서 끌어온 것들은 빈 문자열로 수정하여 테스트해주시기 바랍니다.
+            "messages":[{"to": self.phone}],
+            "content": content
+        }
+        access_key=local_settings.access_key
+        secret_key=bytes(local_settings.secret_key,'UTF-8')
+        stamp=str(int(time.time()*1000))
+        msg = "POST "+uri+"\n"+stamp+"\n"+access_key
+        msg=bytes(msg,'UTF-8')
+        sv2=base64.b64encode(hmac.new(secret_key,msg,digestmod=hashlib.sha256).digest())
+        headers={
+            "Content-Type": "application/json; charset=utf-8",
+            "x-ncp-iam-access-key": access_key,
+            "x-ncp-apigw-signature-v2":sv2,
+            "x-ncp-apigw-timestamp": stamp
+        }
+        res=requests.post(url+uri, json=data, headers=headers)
+        res.raise_for_status()
+        
+
     def __str__(self):
         return self.name
     
@@ -85,5 +116,4 @@ class Price(models.Model):
     product = models.ForeignKey("SpProduct",related_name='price', on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()
-
 
