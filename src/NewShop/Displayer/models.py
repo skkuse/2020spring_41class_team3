@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from NewShop import local_settings
+from django.core.mail import EmailMessage
 import requests
 import abc
 import time
@@ -20,6 +21,14 @@ class HUser(models.Model):
     '''
     DB를 건드리는 기능 : 회원가입, 로그인, 즐겨찾기 저장/삭제, 검색(가격 표시), 마이페이지 이미지/이름/알람 수단 변경, 알람 설정
     '''
+    def sendEmail(self, title, content):
+        email = EmailMessage(
+            subject=title, 
+            body=content, 
+            to=[self.user.email],
+            )
+        email.send()
+
     def sendSMS(self, content):
         url='https://sens.apigw.ntruss.com'
         uri='/sms/v2/services/'+local_settings.svc_id+'/messages'

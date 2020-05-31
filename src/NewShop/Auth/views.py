@@ -55,13 +55,8 @@ def sign_up(request):
             })            
 
             mail_subject = "[newShop] 회원가입 인증 메일."
-            email = EmailMessage(
-                subject=mail_subject, 
-                body=message, 
-                to=[user.email],
-                )
-            email.send()
-            return redirect(reverse("verification"))
+            hd.sendEmail(mail_subject, message)
+            return redirect('verification')
 
         return render(request, "Auth/signup.html", {"form": form})
 
