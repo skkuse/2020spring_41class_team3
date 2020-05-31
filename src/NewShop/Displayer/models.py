@@ -88,11 +88,47 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
     @abc.abstractmethod
     def getInfluence(self):
         pass
-    def sendAlarm(self):
+    def sendPriceAlarm(self):  # 가격에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 가격이 저장된 상태여야 함
         alarms=self.alarm.all()
-        for a in alarms:    #getPrice로 방금 넣은 것과 비교, 타임으로 내림차순 sort해서 [0] 고르면 됨
-            pass
-        pass
+        pr=getPrice()[0]
+        for a in alarms:
+            if a.lower>pr and a.reuse:
+                a.reuse=False
+                a.save()
+                if int(a.user.alarmMethod/2)==1:
+                    msg = '[NewShop]\n'
+                    msg += (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    a.user.sendSMS(msg)
+                if a.user.alarmMethod%2==1:
+                    title='[NewShop]가격 변동 알림 ('+self.name+')'
+                    msg = (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    a.user.sendEmail(title, msg)
+            elif a.upper<pr and not a.reuse:
+                a.reuse=True
+                a.save()
+                if int(a.user.alarmMethod/2)==1:
+                    msg = '[NewShop]\n'
+                    msg += (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    a.user.sendSMS(msg)
+                if a.user.alarmMethod%2==1:
+                    title='[NewShop]가격 변동 알림 ('+self.name+')'
+                    msg = (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    a.user.sendEmail(title, msg)
+                
+
+
+    def sendNewsAlarm(self):  # 뉴스에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 뉴스가 저장된 상태여야 함
+        alarms=self.alarm.all()
+        for a in alarms:
+            if a.news_alarm:
+                if int(a.user.alarmMethod/2)==1:
+                    msg = '[NewShop]\n'
+                    msg += (a.user.name+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
+                    a.user.sendSMS(msg)
+                if a.user.alarmMethod%2==1:
+                    title='[NewShop]뉴스 알림 ('+self.name+')'
+                    msg = (a.user.name+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
+                    a.user.sendEmail(title, msg)                  
 
 class NspProduct(Product): #상표 무관 product 키워드를 말함
     field = models.CharField(max_length=50,null=True)
@@ -110,7 +146,7 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
     def getNews(self):
         return self.product.getNews()
     def getPrice(self):
-        return self.price.all()
+        return self.price.all().order_by('-date')
     def getInfluence(self):
         return self.product.getInfluence()
 
