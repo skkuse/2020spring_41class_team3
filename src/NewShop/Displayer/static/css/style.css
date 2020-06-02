@@ -143,6 +143,7 @@ section ul li:before {
 	color: #fff;
 	font-family: "Open Sans",sans-serif;
 	padding: 0px;
+	height: 30px;
 	margin-top: 10px;
 	margin-left: 20px;
 }
@@ -163,7 +164,7 @@ section ul li:before {
 	background-color: #fed136
 }
 .navbar-default .nav li a {
-	margin-left : 20px;
+	margin-left : 0px;
 	font-family: "Open Sans",sans-serif;
 	text-transform: uppercase;
 	font-size: 12px;
@@ -185,12 +186,23 @@ section ul li:before {
 	color: #fff;
 	background-color: #fec503
 }
-
+.menu{
+	background-color: #fec503	
+}
+.profile {
+	margin-top: 10px;
+	border-radius: 100%;
+    object-fit: cover;
+    border: 1px solid black;
+}
+.profile-box{
+	display:none;
+}
 @media (min-width:768px) {
 	.navbar-default
 	{
 		background-color: rgba(255, 255, 255, 0.65);
-		padding: 5px 0;
+		padding: 0px 0 0 0;
 		-webkit-transition:padding .3s;
 		-moz-transition:padding .3s;
 		transition:padding .3s;
@@ -201,11 +213,11 @@ section ul li:before {
 		-webkit-transition:all .3s;
 		-moz-transition:all .3s;
 		transition:all .3s;
-		margin-top: 10px;
-	    margin-left: 30px;
+		margin-top: 0px;
+	    margin-left: 0px;
 	}
 	.navbar-default .navbar-nav>.active>a {
-		border-radius: 3px
+		border-radius: 0px
 	}
 	.navbar-default.navbar-shrink {
 		background-color: #FFFFFF;
@@ -214,7 +226,10 @@ section ul li:before {
 	}
 	.navbar-default.navbar-shrink .navbar-brand {
 		font-size: 1.5em;
-		margin-top: 10px;
+		margin-top: 0px;
+	}
+	.profile-box{
+		display:block;
 	}
 }
 
@@ -223,7 +238,7 @@ section ul li:before {
 --------------------*/
 
 header {
-    margin-top: 80px;
+    margin-top: 100px;
     height:40%;
 }
 
@@ -236,7 +251,6 @@ header {
 }
 .owl-slider .owl-controls {
 	display:none;
-	visibility:none;
 }
 
 @media (min-width: 768px) {
@@ -326,7 +340,14 @@ header {
 		margin-bottom: 10px;
 	}
 }
-
+.search-box{
+	position: relative;
+	z-index: 1;
+	top:-30px;
+	margin-top:-30px;
+	margin-left:25%;
+	width:50%;
+}
 /*--------------------
 4. Sections
 --------------------*/
@@ -417,7 +438,7 @@ header {
 
 .mz-module-about {
     border: 1px solid #E6E6EA;
-    min-height: 280px;
+    height: 280px;
     padding: 20px;
     background-color: #EFEFF1;
 }
@@ -430,7 +451,11 @@ header {
 	/* letter-spacing: 2px; */
 	margin-bottom: 20px;
 }
-
+.mz-image{
+	width: 80%;
+	height:60%;
+	float:center;
+}
 .dark-bg .mz-module-about h3 {
 	color: #FFFFFF;
 }

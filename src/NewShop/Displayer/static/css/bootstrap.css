@@ -4289,7 +4289,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-static-top {
-  z-index: 1000;
+  z-index: 100;
   border-width: 0 0 1px;
 }
 @media (min-width: 768px) {
@@ -4321,10 +4321,10 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-brand {
   float: left;
-  height: 50px;
-  padding: 15px 15px;
+  height: 20px;
+  padding: 0px 0px;
   font-size: 18px;
-  line-height: 20px;
+  line-height: 10px;
 }
 .navbar-brand:hover,
 .navbar-brand:focus {
