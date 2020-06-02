@@ -1,60 +1,14 @@
-{% load static %}
-
+{%load static%}
 <!DOCTYPE html>
-<!--여기부터-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <style>
-        .registration {
-            width: 360px;
-            margin: 0 auto;
-        }
-        p {
-            text-align: center;
-            font-size: 1rem;
-        }
-        label {
-            width: 50%;
-            text-align: left;
-        }
-        .control-label {
-            font-size:1rem;
-            width: 100%;
-        }
-        #btn_group{
-            width:100%;
-            text-align: center;
-        }
-
-        #btn_group button:hover{
-            text-align: center;
-            color:white;
-            background-color:black;
-        }
-        .panel.panel-default.registration{
-            position: relative;
-            top:130px;
-        }
-        #head{
-            position: relative;
-            top:80px;
-            font-size:10rem;
-            font-weight:700;
-            text-align:center;
-        }
-        #etc{
-            text-align:left;
-            font-size:1rem;
-        }
-    </style>
-    <!--여기까지 스타일-->
 <html>
 <head>
-
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="{%static 'css/style_auth.css'%}" rel="stylesheet">
     <title>newShop</title>
 </head>
 <body>
-    <div id="head">newShop</div>
+    <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:30%"></div>
     <div class="panel panel-default registration">
             <div class="panel-heading">
                 로그인
@@ -70,7 +24,8 @@
                             id="{{ field.id_for_lable }}" 
                             class="form-control" 
                             type="{{ field.field.widget.input_type }}" 
-                            value="{{ field.value|default_if_none:'' }}">
+                            value="{{ field.value|default_if_none:'' }}"
+                            >
                             <p>{{field.help_text|linebreaksbr}}</p>
                             {% for error in field.errors %}
                                 <label class="control-label" for="{{ field.id_for_label }}" style="color:red" align="center">{{ error }}</label>
