@@ -22,8 +22,13 @@
 	<body id="page-top">
 		<!-- Navigation -->
 		<nav class="navbar navbar-default navbar-fixed-top">
+			<nav class="navbar navbar-default navbar-fixed-top" >
 			<div class="container">
-				<!-- Brand and toggle get grouped for better mobile display -->
+				<a class="navbar-brand page-scroll" href="#page-top" ><img src="{%static 'images/logo.png'%}" width="20%" ></a>
+				<a class="navbar-brand page-scroll profile-box" href="#page-top" style="float:right;"><img class="profile" src="{%static 'images/appeach.png'%}" width="40px"></a>
+			</div>
+			
+			<div class="container">
 				<div class="navbar-header page-scroll">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
@@ -31,9 +36,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand page-scroll" href="#page-top"><img src="{%static 'images/logo.png'%}"></a>
 				</div>
-				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left"  >
 						<li class="hidden">
@@ -53,11 +56,11 @@
 						</li>
 						{%if logged%}
 						<li>
-							<a class="page-scroll" href="{%url 'logout'%}">임시 로그아웃 버튼</a>
+							<a class="page-scroll" href="#portfolio">Login</a>
 						</li>
 						{%else%}
 						<li>
-							<a class="page-scroll" href="{%url 'login'%}">임시 로그인 버튼</a>
+							<a class="page-scroll" href="#portfolio">Logout</a>
 						</li>
 						{%endif%}
 					</ul>
