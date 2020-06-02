@@ -11,8 +11,13 @@ from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
 # Create your views here.
 
+# qu: 로그인 next 쿼리.
+qu=''
+
 def sign_in(request):
+    global qu
     if request.method == "GET":
+        qu=request.GET.get('next')
         return render(request, 'Auth/signin.html', {'form':SigninForm()} )
 
     elif request.method == "POST":
@@ -22,8 +27,10 @@ def sign_in(request):
         if form.is_valid():
             user = auth.authenticate(request, username=username, password=password)
             auth.login(request, user)
-
-            return redirect('home') #홈페이지로 이동
+            if qu:      
+                return redirect(qu) #홈페이지로 이동
+            else:
+                return redirect('home')
 
         return render(request, "Auth/signin.html", {"form": form})
     else:

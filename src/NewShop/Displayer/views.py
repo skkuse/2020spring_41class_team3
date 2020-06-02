@@ -20,7 +20,7 @@ def api(request):
     logged=request.user.is_authenticated
     return render(request, 'Displayer/api.html',{'logged':logged})
 
-@login_required(login_url='login/')
+@login_required
 def myPage(request):
     logged=request.user.is_authenticated
     return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user})
