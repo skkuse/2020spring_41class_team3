@@ -56,11 +56,11 @@
 						</li>
 						{%if logged%}
 						<li>
-							<a class="page-scroll" href="#portfolio">Login</a>
+							<a class="page-scroll" href="{%url 'login'%}">Login</a>
 						</li>
 						{%else%}
 						<li>
-							<a class="page-scroll" href="#portfolio">Logout</a>
+							<a class="page-scroll" href="{%url 'logout'%}">Logout</a>
 						</li>
 						{%endif%}
 					</ul>
