@@ -3,6 +3,7 @@ from django.conf import settings
 from NewShop import local_settings
 from django.core.mail import EmailMessage
 import requests
+import pandas as pd
 import abc
 import time
 import sys, os, hashlib, hmac, base64
@@ -23,8 +24,8 @@ class HUser(models.Model):
     '''
     def sendEmail(self, title, content):
         email = EmailMessage(
-            subject=title, 
-            body=content, 
+            subject=title,
+            body=content,
             to=[self.user.email],
             )
         email.send()
@@ -34,8 +35,8 @@ class HUser(models.Model):
         uri='/sms/v2/services/'+local_settings.svc_id+'/messages'
         data = {
             "type": "SMS",
-            "from": local_settings.hp,  
-            # 이 부분은 저의 전화번호가 넷상에 남게 되는 실수가 있을 수 있기 때문에 sendSMS()는 로컬 테스트 금지입니다. 
+            "from": local_settings.hp,
+            # 이 부분은 저의 전화번호가 넷상에 남게 되는 실수가 있을 수 있기 때문에 sendSMS()는 로컬 테스트 금지입니다.
             # 만약 다른 기능 테스트 중 이 함수에서 인터프리터 오류가 발생한다면, local_settings에서 끌어온 것들은 빈 문자열로 수정하여 테스트해주시기 바랍니다.
             "messages":[{"to": self.phone}],
             "content": content
@@ -54,11 +55,11 @@ class HUser(models.Model):
         }
         res=requests.post(url+uri, json=data, headers=headers)
         res.raise_for_status()
-        
+
 
     def __str__(self):
         return self.name
-    
+
 
 class History(models.Model):
     #pk는 전체를 기준으로, 생성 순으로 부여되니 정렬 id는 따로 부여하지 않겠음
@@ -114,7 +115,7 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
                     title='[NewShop]가격 변동 알림 ('+self.name+')'
                     msg = (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendEmail(title, msg)
-                
+
 
 
     def sendNewsAlarm(self):  # 뉴스에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 뉴스가 저장된 상태여야 함
@@ -128,15 +129,20 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
                 if a.user.alarmMethod%2==1:
                     title='[NewShop]뉴스 알림 ('+self.name+')'
                     msg = (a.user.name+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
-                    a.user.sendEmail(title, msg)                  
+                    a.user.sendEmail(title, msg)
 
 class NspProduct(Product): #상표 무관 product 키워드를 말함
     field = models.CharField(max_length=50,null=True)
     influence = models.CharField(max_length=100,null=True)
     def getNews(self):
         return self.news.all()
+    # return list of {product_name: price query_set}
     def getPrice(self):
-        b = self.brand.all()
+        spproduct = self.brand.all()
+        price_list = []
+        for sp in spproduct:
+            price_list.append({sp.name: sp.getPrice()})
+        return price_list
     def getInfluence(self):
         return self.influence
         
@@ -149,6 +155,18 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
         return self.price.all().order_by('-date')
     def getInfluence(self):
         return self.product.getInfluence()
+    # return pandas dataframe
+    def getPriceByTable(self):
+        data = self.getPrice()
+        data_list = []
+        keys = data[0].values().keys()
+        for row in data:
+            row_list = []
+            for key in keys:
+                row_list.append(row[key])
+            data_list.append(row_list)
+        data_frame = pd.DataFrame(data=data_list, column=keys)
+        return data_frame
 
 class News(models.Model):
     product = models.ForeignKey("NspProduct", related_name='news', on_delete=models.CASCADE)
