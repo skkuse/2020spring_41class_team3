@@ -136,8 +136,13 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
     influence = models.CharField(max_length=100,null=True)
     def getNews(self):
         return self.news.all()
+    # return list of {product_name: price query_set}
     def getPrice(self):
-        b = self.brand.all()
+        spproduct = self.brand.all()
+        price_list = []
+        for sp in spproduct:
+            price_list.append({sp.name: sp.getPrice()})
+        return price_list
     def getInfluence(self):
         return self.influence
         
@@ -150,6 +155,7 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
         return self.price.all().order_by('-date')
     def getInfluence(self):
         return self.product.getInfluence()
+    # return pandas dataframe
     def getPriceByTable(self):
         data = self.getPrice()
         data_list = []
