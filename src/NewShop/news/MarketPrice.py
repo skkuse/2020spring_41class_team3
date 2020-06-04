@@ -59,7 +59,7 @@ class Gmarket(MarketPrice):
         list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
         for idx in range(10):
             price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
-            name = str(re.sub('<[^(<|>)]*>', '', str(list_name[idx])))
+            name = str(list_name[idx]['title'])
             link = str(list_url[2 * idx]['href'])
             ret.append({'price': price, 'name': name, 'link': link})
         return ret
