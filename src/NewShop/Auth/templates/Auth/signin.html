@@ -10,7 +10,7 @@
 <body>
     <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:30%"></div>
     <div class="panel panel-default registration">
-            <div class="panel-heading">
+            <div class="panel-heading" style="background-color:#FFB808">
                 로그인
             </div>
             <div class="panel-body">
@@ -21,8 +21,8 @@
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                             <input 
                             name="{{ field.html_name }}" 
-                            id="{{ field.id_for_lable }}" 
-                            class="form-control" 
+                            id="{{ field.id_for_label }}" 
+                            class="form-control id_pwd_inputbox" 
                             type="{{ field.field.widget.input_type }}" 
                             value="{{ field.value|default_if_none:'' }}"
                             >
@@ -32,21 +32,23 @@
                             {% endfor %}
                         </div>
                     {% endfor %}
-                    <div id="btn_group">
-
+                    <div class="button_group">
                         <button id='login'
                         class="btn btn-dark" 
-                        type="submit">로그인</button>
+                        type="submit">로그인
+                        </button>
 
                         <button id='home'
                         class="btn btn-dark" 
                         type="button" 
-                        onclick="location.href='{%url 'home'%}'">홈으로</button>
+                        onclick="location.href='{%url 'home'%}'">홈으로
+                        </button>
 
                         <button id='registration' 
                         class="btn btn-dark" 
                         type="button" 
-                        onclick="location.href='{%url 'signup'%}'">회원가입</button>
+                        onclick="location.href='{%url 'signup'%}'">회원가입
+                        </button>
 
                         <p id="etc"><a href="">사용자 이름 및 비밀번호 찾기</a></p>
                     </div>
