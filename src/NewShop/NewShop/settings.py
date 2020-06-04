@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+from . import local_settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +25,7 @@ SECRET_KEY = 'z!ux@#=k34a(i21^!qxh3tltdd=1^d522l)zki+8yjps*uxcd*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1',]
+ALLOWED_HOSTS = ['127.0.0.1','.pythonanywhere.com']
 
 
 # Application definition
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Displayer'
+    'Displayer',
+    'Auth'
 ]
 
 MIDDLEWARE = [
@@ -74,13 +75,29 @@ WSGI_APPLICATION = 'NewShop.wsgi.application'
 # Database -> MySQL로 바꿔야 함
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+'''
+개인 테스트 시 이쪽 코드를 활성화시키고 아래쪽 mysql을 주석처리. 
+db.sqlite3(gitignore에 포함됨)에 저장됨
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),        
     }
 }
 
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'SR97$skkuse3',
+        'USER': 'SR97',
+        'PASSWORD' : 'skkuse333',
+        'HOST' : 'SR97.mysql.pythonanywhere-services.com',
+        'OPTIONS' : {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'" }
+    }
+}
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -120,3 +137,21 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'/static')  
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+
+EMAIL_HOST_USER = local_settings.mail
+# 이메일 주소
+EMAIL_HOST_PASSWORD = local_settings.pw
+# 발신할 메일의 비밀번호
+
+# local_settings.py는 공개하지 않습니다. 테스트에서는 직접 입력해 주세요.
+# 단, gmail 설정에 들어가서 보안 수준이 낮은 앱 액세스 허용에 체크를 해 주어야 합니다. https://support.google.com/accounts/answer/6010255
+EMAIL_USE_TLS = True
+# TLS 보안 방법
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# 사이트와 관련한 자동응답을 받을 이메일 주소,'webmaster@localhost'
+
+LOGIN_URL = 'login/'

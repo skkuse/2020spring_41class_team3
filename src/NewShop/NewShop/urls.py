@@ -19,5 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('Displayer.urls')), 
+    path('',include('Auth.urls')),
     # admin 페이지를 제외하면 모든 페이지는 include를 통해 이어짐. Displayer/urls.py로.
 ]

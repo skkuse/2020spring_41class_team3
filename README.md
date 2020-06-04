@@ -20,7 +20,11 @@
          ┣ docs ┐
                 ┣ proposal.pptx
                 ┣ proposal.pdf
+                ┣ Design_specification_spring2020_team3.pdf
                 └ requirement_specification_spring2020_team3.pdf
          └ src
 ***
+#### 테스트 사이트 : http://sr97.pythonanywhere.com/
+##### 테스트 사이트는 즉시 반영이 아니라 수동 반영이므로, 여기에 푸시를 한 이후에는 조장에게 말하고 기다려 주세요.
+##### 테스트 사이트는 개발 중 테스트에만 사용되며, 시연에는 사용되지 않습니다. 시연은 로컬로 진행됩니다.
 
