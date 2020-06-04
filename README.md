@@ -22,13 +22,18 @@
                 ┣ proposal.pdf
                 ┣ Design_specification_spring2020_team3.pdf
                 └ requirement_specification_spring2020_team3.pdf
-         └ src
+         └ src  - newShop   ┐
+                            ┣ Auth (로그인 관련)
+                            ┣ Display (홈페이지 관련)
+                            ┣ NewShop
+                            └ manage.py
 ***
 ## module dependency (how to run)
 
     pip install django
     pip install pandas
     
+    python manage.py runserver
 ***
 #### 테스트 사이트 : http://sr97.pythonanywhere.com/
 ##### 테스트 사이트는 즉시 반영이 아니라 수동 반영이므로, 여기에 푸시를 한 이후에는 조장에게 말하고 기다려 주세요.
