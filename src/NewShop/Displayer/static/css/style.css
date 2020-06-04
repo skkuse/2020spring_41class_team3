@@ -10,6 +10,8 @@ Primary use:	One page
 @import url(http://fonts.googleapis.com/css?family=Raleway:100,300,400,500,700,900);
 /* font for headings, text, tags */
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800);
+@import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
 
 /*--------------------
 Color customizations
@@ -35,7 +37,7 @@ change these colors to change overlays
 
 body {
 	margin: 0px;
-	font-family: "Open Sans", Sans-serif;
+	font-family: "Jeju Gothic","Open Sans", Sans-serif;
 }
 
 h1,
@@ -46,12 +48,12 @@ h5,
 h6 {
 	font-weight: 300;
 	letter-spacing: 0.4px;
-	font-family: "Raleway", Sans-serif;
+	font-family: "Jeju Gothic","Raleway", Sans-serif;
 	color: #232323;
 }
 
 p {
-	font-family: 'Open Sans', sans-serif;
+	font-family: "Jeju Gothic",'Open Sans', sans-serif;
 	font-size: 15px;
 	font-weight: 300;
 	line-height: 23px;
@@ -80,15 +82,17 @@ a, a:hover, a:focus, a:active, a.active {
 	background: #fed136;
 }
 
+section {
+	padding: 60px 0px 40px 0px;
+}
+
 @media (min-width: 768px) {
 	section {
-		padding: 150px 0;
+		padding: 40px 0px 40px 0px;
 	}
 }
 
-section {
-	padding: 70px 0;
-}
+
 
 ul {
 	padding-left: 0;
@@ -98,7 +102,7 @@ ul {
 ul li {
     list-style: none;
     padding-bottom: 10px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Jeju Gothic",'Open Sans', sans-serif;
     font-size: 14px;
     font-weight: 500;
     line-height: 23px;
@@ -141,7 +145,7 @@ section ul li:before {
 }
 .navbar-default .navbar-brand {
 	color: #fff;
-	font-family: "Open Sans",sans-serif;
+	font-family: "Jeju Gothic","Open Sans",sans-serif;
 	padding: 0px;
 	height: 30px;
 	margin-top: 10px;
@@ -242,12 +246,15 @@ header {
     height:40%;
 }
 
-.owl-slider-item {
-	position: relative;
-	background-color: #000;
+
+.mypage-profile-background {
+	position:relative;
+	background-color:#999999;
 }
+
+
 .owl-slider-item img {
-	opacity: 0.5;
+	opacity: 0.8;
 }
 .owl-slider .owl-controls {
 	display:none;
@@ -271,7 +278,6 @@ header {
 	font-size: 10px;
 	z-index: 1000;
 }
-
 .owl-slider .owl-controls .owl-nav [class*=owl-]:hover {
     background: #000;
     color: #fff;
@@ -466,6 +472,18 @@ header {
 	line-height: 22px;
 	color: #848484;
 }
+.mypage-bookmarks-delete{
+	position:relative;
+	float:right;
+	bottom:20px;
+	left:20px;
+	background-color: #BBBBBB;
+	border-width:0;
+}
+.mypage-bookmarks-delete:hover{
+	background-color: #FFB808;
+	color: #FFF;
+}
 .mz-module-button {
 	background-color: #B6B6C3;
 	padding: 15px;
@@ -490,7 +508,9 @@ header {
 .mz-module-button:hover {
 	background-color: #1a1a1a;
 	color: #fff;
+	background-color:#FFB808;
 	text-decoration: none;
+	cursor:Pointer;
 }
 
 .mz-module-button {
@@ -517,8 +537,8 @@ header {
 --------------------*/
 
 .featured-item {
-	margin-bottom: 30px;
-	height: 110px;
+	margin-bottom: 40px;
+	height: 60px;
 }
 
 .featured-icon {
@@ -535,17 +555,14 @@ header {
 	text-align: left;
 	margin-left: 85px;
 }
+.featured-text:hover {
+	text-decoration:underline;
+	cursor:Pointer;
+}
 .featured-text h4 {
 	color: #47474C;
 	font-size: 17px;
 	font-weight: 700;
-}
-.featured-text p {
-	color: #747377;
-	margin-top: 7px;
-	font-size: 13px;
-	line-height: 21px;
-	font-weight: 500;
 }
 
 /*--------------------
@@ -1049,4 +1066,105 @@ and (max-width : 480px) {
 	margin-top: 7px;
 	font-size: 20px;
 }
+}
+
+
+/*---------
+ my page
+----------*/
+
+.mypage-profile-background{
+	position:relative;
+	background-color:#DDDDDD;
+	height:220px;
+}
+
+.mypage-profile-box{
+	position: relative;
+	z-index: 1;
+	margin-top:4rem;
+	margin-left:45%;
+	width:10rem;
+}
+
+.mypage-name-box{
+	position: relative;
+	z-index: 1;
+	margin-top:3rem;
+	margin-left:42%;
+	width:16rem;
+	height:2rem;
+	background-color: #ffffff;
+	box-shadow: 5px 5px gray;
+	border-radius : 10px;
+	text-align:center;
+}
+
+.checkbox-group{
+	margin-left:10%;	
+}
+.subscription-method{
+	margin-top:2rem;
+	text-align:center;
+}
+.mypage-button{
+	background-color:#FFB808;
+	border-radius:4px;
+	border-width:0;
+	height:4rem;
+	min-width:12rem;
+	margin-left:5%;
+}
+.mypage-button:hover {
+	background-color:#FFDA2A;
+	cursor:Pointer;
+}
+.mypage-checkbox, .mypage-checkbox-label:hover{
+	cursor:Pointer;
+}
+
+/*---------
+ Product
+ --------*/
+.product-image{
+	width:100%;
+}
+.product-image-box{
+	width:15%;
+	float:left;
+}
+.product-info-box{
+	width:80%;
+	float:right;
+}
+.product-price-box{
+	width:80%;
+	float:left;
+}
+.product-subscription-box{
+	width:20%;
+	float:right;
+}
+.subscription_button{
+	background-color:#FFFFFF;
+	width:20%;
+	border-width:0;
+}
+.section-product-news, .section-market{
+	background-color:#EEEEEE;
+}
+
+/*---------
+ my page
+----------*/
+.section-api{
+	background-color:#EEEEEE;
+}
+.api-input-box{
+	background-color:#EEEEEE;
+	border-left-width:0;
+	border-right-width:0;
+	border-top-width:0;
+	border-bottom-width:1;
+	width:6rem;
 }

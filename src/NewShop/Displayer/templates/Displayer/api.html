@@ -1,5 +1,38 @@
 {% extends 'Displayer/index.html' %}
 {% load static %}
 {% block content %}
-    페이지3-API
+    <header>
+ 		<div class="container">
+			<div class="product-image-box">
+				<img class="product-image" src="{%static 'images/apple.png'%}" >
+			</div>
+			<div class="product-info-box">
+				<canvas id="myChart" height="60%" ></canvas> 
+			</div>
+		</div>
+		<div class="container">
+			<h1> 사과</h1>
+		</div>
+	</header>
+	
+	<section class="section-api">
+		<div class="container">
+		<ul>
+			<li>XLS 파일 내려받기</li>
+			<li>Json data 요청하기</li>
+			최근 <input class="api-input-box" type="number">개월,&nbsp;&nbsp;&nbsp; <input class="api-input-box" type="number">시간 간격
+		</ul>
+		</div>
+	</section>
+
+
+
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> 
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> 
+  	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> <!-- 차트 --><script> var ctx = document.getElementById('myChart').getContext('2d'); var chart = new Chart(ctx, { // 챠트 종류를 선택 
+type: 'line', 
+// 챠트를 그릴 데이타
+ data: { labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'], datasets: [{ label: 'My First dataset', backgroundColor: 'transparent', borderColor: 'red', data: [0, 10, 5, 2, 20, 30, 45] }] }, // 옵션 
+options: {} }); </script>
 {% endblock %}
