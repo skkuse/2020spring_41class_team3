@@ -1,22 +1,11 @@
 
-<<<<<<< HEAD
 @import url(http://fonts.googleapis.com/css?family=Raleway:100,300,400,500,700,900);
-=======
-/* main font for menu. */
-@import url(http://fonts.googleapis.com/css?family=Raleway:100,300,400,500,700,900);
-/* font for headings, text, tags */
->>>>>>> news
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800);
 @import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
 
 div {
     margin: 0px;
-<<<<<<< HEAD
     font-family: "Jeju Gothic","Open Sans", Sans-serif;
-=======
-    font-family: "Open Sans", Sans-serif;
-    font-family: 'Jeju Gothic', sans-serif;
->>>>>>> news
 }
 
 h1,
@@ -41,16 +30,9 @@ p {
     text-align: center;
 }
 
-<<<<<<< HEAD
 /*------------------
     Login
 ------------------*/
-=======
-.registration {
-    width: 360px;
-    margin: 0 auto;
-}
->>>>>>> news
 label {
     width: 50%;
     text-align: left;
@@ -59,48 +41,24 @@ label {
     font-size:1rem;
     width: 100%;
 }
-<<<<<<< HEAD
 .button_group{
-=======
-#btn_group{
->>>>>>> news
     width:100%;
     text-align: center;
 }
 
-<<<<<<< HEAD
 .button_group button:hover{
     text-align: center;
     color:white;
     background-color:#FFB808;
-=======
-#btn_group button:hover{
-    text-align: center;
-    color:white;
-    background-color:black;
->>>>>>> news
 }
 .panel.panel-default.registration{
     position: relative;
     top:50px;
 }
-<<<<<<< HEAD
 #etc{
     text-align:left;
     font-size:1rem;
     margin-top:10px;
-=======
-#head{
-    position: relative;
-    top:80px;
-    font-size:10rem;
-    font-weight:700;
-    text-align:center;
-}
-#etc{
-    text-align:left;
-    font-size:1rem;
->>>>>>> news
 }
 .logo{
     margin-top:1%;
@@ -109,7 +67,6 @@ label {
 }
 .panel-heading{
     text-align:center;
-<<<<<<< HEAD
     vertical-align:middle;
     font-weight:700;
     background-color:#FFB808;
@@ -152,6 +109,4 @@ label {
 }
 .btn{
     margin-bottom:5px;
-=======
->>>>>>> news
 }
