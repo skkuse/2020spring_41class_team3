@@ -5,7 +5,6 @@ import copy
 import time
 from Displayer.news.MarketPrice import markets
 from Displayer.models import News, Price, SpProduct
-from urllib import parse
 
 def make_news_url(search_word: str, start_date: str, end_date: str):
     """
@@ -49,7 +48,7 @@ class Crawler(object):
         """
         make usable data
         :param url: news site url
-        :return: data
+        :return: news contents split by sentence
         """
         req = requests.get(url)
         if self.verbose:
@@ -60,8 +59,7 @@ class Crawler(object):
         try:
             ret_str = str(soup.select('#articleBodyContents')[0])
         except:
-            if self.verbose:
-                print("엔터테인먼트 뉴스입니다. 아직 구현 안됨.")
+            return ''
 
         cutting = re.compile('<[^(<|>)]*>')
         cutting_list = cutting.findall(ret_str)
@@ -70,7 +68,17 @@ class Crawler(object):
         ret_str = ret_str.replace('// flash 오류를 우회하기 위한 함수 추가', '')
         ret_str = ret_str.replace('function _flash_removeCallback() {}', '')
         ret_str = ret_str.replace('\n', '', 100)
-        return ret_str
+        ret_str = ret_str.split('.')
+        ret = []
+        for sentence in ret_str:
+            if '[' in sentence or ']' in sentence or '▶' in sentence or 'Copyright' in sentence or '@' in sentence:
+                continue
+            if sentence == 'co' or sentence =='kr' or sentence =='com':
+                continue
+            if len(sentence) == 0:
+                continue
+            ret.append(sentence)
+        return ret
 
     def get_market_price(self, key_word):
         ret = []
@@ -93,11 +101,9 @@ class Crawler(object):
 
 if __name__ == '__main__':
     crawler = Crawler()
-    print(crawler.get_market_price('삼성전자 DDR4 8G PC4-21300'))
 
-    # url = make_news_url('검색', '20200320', '20200511')
-    # print(crawler.get_news_link(url))
-    # news = crawler.get_news_link(url)
-    # del news[2]
-    # for news_url in news:
-    #     print(crawler.get_news_contents(news_url))
+    url = make_news_url('검색', '20200320', '20200511')
+    print(crawler.get_news_link(url))
+    news = crawler.get_news_link(url)
+    for news_url in news:
+        print(crawler.get_news_contents(news_url))
