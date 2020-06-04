@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import copy
-from NewShop.news.MarketPrice import markets
-from Displayer.models import News, Price
+import time
+from Displayer.news.MarketPrice import markets
+from Displayer.models import News, Price, SpProduct
 from urllib import parse
 
 def make_news_url(search_word: str, start_date: str, end_date: str):
@@ -85,6 +86,10 @@ class Crawler(object):
                 if check == 1:
                     ret.append(element)
         return ret
+
+    def save_price(self, product_name, price):
+        product = SpProduct.objects.filter(name=product_name)
+        Price.objects.create(product=product, value=price, date=time.time())
 
 if __name__ == '__main__':
     crawler = Crawler()
