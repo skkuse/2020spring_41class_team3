@@ -5,15 +5,50 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<<<<<<< HEAD
     <link href="{%static 'css/style_auth.css'%}" rel="stylesheet">
 
+=======
+    <style>
+        .registration {
+            width: 360px;
+            margin: 0 auto;
+        }
+        p {
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        label {
+            width: 50%;
+            text-align: left;
+            font-size: 1.2rem;
+        }
+        .control-label {
+            font-size:1rem;
+            width: 100%;
+        }
+        .registration .form-actions > button {
+            width: 100%;
+        }
+        .registration .form-actions > button:hover {
+            text-align: center;
+            color:white;
+            background-color:black;
+        }
+    </style>
+>>>>>>> news
     <meta charset="UTF-8">
     <title>회원가입</title>
 </head>
 <body> 
+<<<<<<< HEAD
     <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:20%"></div>
     <div class="panel panel-default registration">
             <div class="panel-heading" style="background-color:#FFB808">
+=======
+    <div class="panel panel-default registration">
+            <div class="panel-heading">
+>>>>>>> news
                 가입하기
             </div>
             <div class="panel-body">
@@ -22,7 +57,11 @@
                     {% for field in form %}
                         <div class="form-group {% if field.errors|length > 0 %}has-error{%endif %}">
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+<<<<<<< HEAD
                             <input name="{{ field.html_name }}" id="{{ field.id_for_lable }}" class="form-control id_pwd_inputbox" type="{{ field.field.widget.input_type }}" value="{{ field.value|default_if_none:'' }}">
+=======
+                            <input name="{{ field.html_name }}" id="{{ field.id_for_lable }}" class="form-control" type="{{ field.field.widget.input_type }}" value="{{ field.value|default_if_none:'' }}">
+>>>>>>> news
                             <p>{{field.help_text|linebreaksbr}}</p>
                             {% for error in field.errors %}
                                 <label class="control-label" for="{{ field.id_for_label }}" style="color:red" align="center">{{ error }}</label>
@@ -30,8 +69,13 @@
                         </div>
                     {% endfor %}
                     <div class="form-actions">
+<<<<<<< HEAD
                             <button class="btn" type="submit">가입하기</button>
                             <button class="btn" type="button" onclick="location.href='/'">홈으로 돌아가기</button>
+=======
+                            <button class="btn btn-dark" type="submit">가입하기</button>
+                            <button class="btn btn-dark" type="button" onclick="location.href='/'">홈으로 돌아가기</button>
+>>>>>>> news
                     </div>
                 </form>
             </div>
