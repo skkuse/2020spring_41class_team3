@@ -15,6 +15,9 @@ from torchtext.data import TabularDataset, BucketIterator
 
 from konlpy.tag import Komoran
 
+from NewShop.Displayer.news.crawler import make_news_url, Crawler
+from NewShop.Displayer.news.TextRank import keyword_extractor, keysentence_summarizer
+
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # TODO: 1. Save model 2. Adopt crawling 3. Experiments documents 4. Update database system
@@ -122,13 +125,6 @@ if __name__=="__main__":
     
     random.seed(10)
 
-    # ML settings
-    epochs = 10
-    batch_size = 2
-    n_classes = 4
-    lr = 0.1
-    tokenizer = Komoran()
-
     # Data loading (example) TODO: Change to crawling application
     # columns: 'raw', 'key_word', 'key_sentences', 'classification'
     """ Save the example data
@@ -148,6 +144,13 @@ if __name__=="__main__":
 
     train_loader = BucketIterator(dataset=train_data, batch_size=batch_size, shuffle=True, repeat=False)
     test_loader = BucketIterator(dataset=test_data, batch_size=batch_size, shuffle=False)
+
+    # ML settings
+    epochs = 10
+    batch_size = 2
+    n_classes = 4
+    lr = 0.1
+    tokenizer = Komoran()
 
     print("### Model ###")
     #model = torch.nn.LSTM()
