@@ -119,8 +119,6 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
                     msg = (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendEmail(title, msg)
 
-
-
     def sendNewsAlarm(self):  # 뉴스에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 뉴스가 저장된 상태여야 함
         alarms=self.alarm.all()
         for a in alarms:
@@ -138,7 +136,7 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
     field = models.CharField(max_length=50,null=True)
     influence = models.CharField(max_length=100,null=True)
     def getNews(self):
-        return self.news.all()
+        return self.news.all().order_by('-date')
     # 날짜별 가장 낮은 가격 쿼리셋 리턴. 함수는 Product(부모)에서만 부를 거기 때문에 반드시 양식이 동일해야 함
     def getPrice(self):
         spproduct = self.brand.all()        
@@ -149,7 +147,7 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
 
         date = ''
         same = ''
-
+        
         for pr in price_list:
             date=pr.date
             if date != same:
