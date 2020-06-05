@@ -42,8 +42,17 @@
 						</div>
 					</div>
 				</div>
-				<input type="text" class="form-control search-box" placeholder="Search a product" id="product" required="" data-validation-required-message="Please enter what you want to search">
-			
+				<div class="dropdown dropdown-class " onclick="search_box_focused();">
+					<input type="text" class="dropdown-class form-control search-box dropdown-toggle" placeholder="Search a product" id="search-box-id" required="" data-validation-required-message="Please enter what you want to search" >
+					<!-- History -->
+					<div id="home-dropdown" class="dropdown-class  dropdown-menu home-dropdown" onclick="home_dropdown_clicked();">
+						<a class="dropdown-item drop-item-style" href="#">Apple</a> <a class="dropdown-delete" href="#">x</a><br>
+						<a class="dropdown-item drop-item-style" href="#">Dram</a> <a class="dropdown-delete" href="#">x</a><br>
+						<a class="dropdown-item drop-item-style" href="#">SSD</a> <a class="dropdown-delete" href="#">x</a><br>
+						<a class="dropdown-item drop-item-style" href="#">Mushroom</a> <a class="dropdown-delete" href="#">x</a><br>
+						<a class="dropdown-item drop-item-style" href="#">Banana</a> <a class="dropdown-delete" href="#">x</a><br>
+					</div>
+				</div>
 			</div>
 
 		</header>
@@ -63,6 +72,7 @@
 					<div class="col-md-3 text-center">
 						<div class="mz-module">
 							<div class="mz-module-about">
+								<button class="mypage-bookmarks-delete" name="DRAM" onclick="mypage_bookmarks_delete(this.name);">X</button>
 								<img class="mz-image" src="{%static 'images/dram.png'%}" width="100%">
 								<h3>DRAM</h3>
 							</div>
@@ -74,6 +84,7 @@
 					<div class="col-md-3 text-center">
 						<div class="mz-module">
 							<div class="mz-module-about">
+								<button class="mypage-bookmarks-delete" name="apple" onclick="mypage_bookmarks_delete(this.name);">X</button>
 								<img class="mz-image" src="{%static 'images/apple.png'%}" width="100%" height="50%">
 								<h3>Apple</h3>
 							</div>
@@ -85,6 +96,7 @@
 					<div class="col-md-3 text-center">
 						<div class="mz-module">
 							<div class="mz-module-about">
+								<button class="mypage-bookmarks-delete" name="ipad6th" onclick="mypage_bookmarks_delete(this.name);">X</button>
 								<img class="mz-image" src="{%static 'images/ipad6th.png'%}" width="100%">
 								<h3>Ipad</h3>
 								<p>6th generation</p>

@@ -41,3 +41,21 @@ function news_click(){
 function product_subscription(){
 	alert("sub");
 }
+
+
+
+function search_box_focused(){
+	//var check = document.getElementById("test");
+	var el = document.getElementById("home-dropdown");
+	el.style.display = "inline";
+}
+function home_dropdown_clicked(){
+	document.getElementById("search-box-id").focus();
+}
+
+$('html').click(function(e) {
+ if(!$(e.target).hasClass("dropdown-class")) {
+  
+	var el = document.getElementById("home-dropdown");
+	el.style.display = "none";
+} });

@@ -71,11 +71,42 @@
 			{% endfor %}
 	</section>
 
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> 
- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> 
-  	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> <!-- 차트 --><script> var ctx = document.getElementById('myChart').getContext('2d'); var chart = new Chart(ctx, { // 챠트 종류를 선택 
+	 <!-- 차트 -->
+
+	 <script src="{%static 'js/Chart.bundle.js'%}"></script>
+  	<script> var ctx = document.getElementById('myChart').getContext('2d'); 
+
+  	var chart = new Chart(ctx, { // 챠트 종류를 선택 
 type: 'line', 
 // 챠트를 그릴 데이타
- data: { labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'], datasets: [{ label: 'My First dataset', backgroundColor: 'transparent', borderColor: 'red', data: [0, 10, 5, 2, 20, 30, 45] }] }, // 옵션 
-options: {} }); </script>
+ data: {
+  labels: ["2018-12-07 12:45:17", "2018-12-09 12:45:17", "2018-12-31 12:45:17", "2019-02-07 12:45:17", "2019-04-07 12:45:17", "2019-06-25 12:45:17", "2019-08-30 12:45:17"], 
+  datasets: [
+  { label: '사과', 
+  backgroundColor: ['rgba(255,0,0,0.2)'], 
+  borderColor: 'red', data: [0, 10, 5, 2, 20, 30, 45] }] }, // 옵션 
+options: {
+	scales: {
+        xAxes: [{
+            type: 'time',
+            time: {
+            	unit : 'day',
+                displayFormats: {
+                    day: 'YYHHMM'
+                }
+            },
+            ticks: {
+                source: 'data'
+            }
+
+        }]                    
+    },
+	tooltips: {
+       callbacks: {
+           label: function(tooltipItem) {
+               return tooltipItem.xLabel+ Number(tooltipItem.yLabel) + " 사과는 맛있어..";
+           }
+       }
+	}
+} }); </script>
 {% endblock %}

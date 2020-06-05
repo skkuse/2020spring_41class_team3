@@ -354,6 +354,26 @@ header {
 	margin-left:25%;
 	width:50%;
 }
+.home-dropdown{
+	position: inline;
+	margin-left:25%;
+	top:2px;
+	width:50%;
+	display:none;
+}
+.drop-item-style{
+	float:left;
+	margin-left:1rem;
+}
+.dropdown-delete{
+	float:right;
+	margin-right:1rem;
+}
+
+.col-md-3{
+	max-width:40%;
+	float:left;
+}
 /*--------------------
 4. Sections
 --------------------*/
@@ -477,7 +497,7 @@ header {
 	float:right;
 	bottom:20px;
 	left:20px;
-	background-color: #BBBBBB;
+	background-color: #EFEFF1;
 	border-width:0;
 }
 .mypage-bookmarks-delete:hover{
@@ -1159,6 +1179,7 @@ and (max-width : 480px) {
 ----------*/
 .section-api{
 	background-color:#EEEEEE;
+	
 }
 .api-input-box{
 	background-color:#EEEEEE;
