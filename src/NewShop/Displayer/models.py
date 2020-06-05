@@ -89,6 +89,9 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
     @abc.abstractmethod
     def getInfluence(self):
         pass
+    @abc.abstractmethod
+    def getPriceByTable(self):
+        pass
     def sendPriceAlarm(self):  # 가격에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 가격이 저장된 상태여야 함
         alarms=self.alarm.all()
         pr=getPrice()[0]
@@ -136,13 +139,35 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
     influence = models.CharField(max_length=100,null=True)
     def getNews(self):
         return self.news.all()
-    # return list of {product_name: price query_set}
+    # 날짜별 가장 낮은 가격 쿼리셋 리턴. 함수는 Product(부모)에서만 부를 거기 때문에 반드시 양식이 동일해야 함
     def getPrice(self):
+        spproduct = self.brand.all()        
+        price_list = Price.objects.none()
+        for sp in spproduct:
+            price_list |= sp.getPrice()
+        price_list.order_by('-date','value')
+
+        date = ''
+        same = ''
+
+        for pr in price_list:
+            date=pr.date
+            if date != same:
+                price_list=price_list.exclude(value__gt=pr.value,date=pr.date)
+            else:
+                price_list=price_list.exclude(pk=pr.pk)
+            same=date            
+        return price_list
+
+    # 이거 만들어야 함. 모든 상표의 가격을 포함할 것.
+    # 1행 1열 '날짜', 1행 2~N열 상표이름, 그 아래로 값들로 맞춰주세요.
+    def getPriceByTable(self):
         spproduct = self.brand.all()
         price_list = []
         for sp in spproduct:
             price_list.append({sp.name: sp.getPrice()})
-        return price_list
+        pass
+
     def getInfluence(self):
         return self.influence
         
@@ -156,6 +181,7 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
     def getInfluence(self):
         return self.product.getInfluence()
     # return pandas dataframe
+    # 1행 1열 '날짜', 1행 2열 상표이름, 그 아래로 값들로 맞춰주세요.
     def getPriceByTable(self):
         data = self.getPrice()
         data_list = []
@@ -165,7 +191,7 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
             for key in keys:
                 row_list.append(row[key])
             data_list.append(row_list)
-        data_frame = pd.DataFrame(data=data_list, column=keys)
+        data_frame = pd.DataFrame(data=data_list, columns=keys)
         return data_frame
 
 class News(models.Model):
