@@ -32,6 +32,7 @@
 
     pip install django
     pip install pandas
+    pip install bs4
     
     python manage.py runserver
 ***
