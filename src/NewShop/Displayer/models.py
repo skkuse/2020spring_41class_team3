@@ -94,7 +94,7 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
         pass
     def sendPriceAlarm(self):  # 가격에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 가격이 저장된 상태여야 함
         alarms=self.alarm.all()
-        pr=getPrice()[0]
+        pr=self.getPrice()[0].value
         for a in alarms:
             if a.lower>pr and a.reuse:
                 a.reuse=False
