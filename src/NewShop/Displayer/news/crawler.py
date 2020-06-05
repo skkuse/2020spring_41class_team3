@@ -5,28 +5,21 @@ from datetime import datetime
 from Displayer.news.MarketPrice import markets
 from Displayer.models import Price, SpProduct
 
-def make_news_url(search_word: str, start_date: str, end_date: str, length: int):
+def make_news_url(search_word: str, start_date: str, end_date: str):
     """
     make self.url using search word, start_date, end_date
     :param search_word: the word that user want to search
     :param start_date: search condition. start date
     :param end_date: search condition. end date
-    :param length: search condition. for pagination
     :return: None
     """
     base_url = 'https://search.naver.com/search.naver?where=news'
     search_word = 'query={}'.format(search_word)
     start_date = 'ds={}.{}.{}'.format(start_date[:4], start_date[4:6], start_date[6:])
     end_date = 'de={}.{}.{}'.format(end_date[:4], end_date[4:6], end_date[6:])
-    start = ['start=1']
-    for i in range(length//10):
-        start.append(f'start={i+1}1')
-    url_all = []
-    for i in range(len(start)):
-        query_list = [base_url, search_word, start_date, end_date, start[i]]
-        url = '&'.join(query_list)
-        url_all.append(url)
-    return url_all
+    query_list = [base_url, search_word, start_date, end_date]
+    url = '&'.join(query_list)
+    return url
 
 class Crawler(object):
     def __init__(self, verbose=0):
