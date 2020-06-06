@@ -49,7 +49,7 @@ def sign_up(request):
             user.is_active = False
             user.save()
             
-            hd = HUser(name=user.username, user=user)
+            hd = HUser(user=user)
             hd.save()
             current_site = get_current_site(request)
             # localhost:8000

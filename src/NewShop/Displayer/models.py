@@ -11,7 +11,6 @@ import sys, os, hashlib, hmac, base64
 
 class HUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='handle')
-    name = models.CharField(max_length=50)
     phone = models.CharField(max_length=13,null=True)
     interest = models.CharField(max_length=50,null=True)
     # profile = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None, null=True)
@@ -80,6 +79,7 @@ class Alarm(models.Model):
 
 class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규약을 위한 추상 클래스
     name = models.CharField(max_length=100)
+    imgUrl = models.CharField(max_length=200, null=True)
     @abc.abstractmethod
     def getNews(self):
         pass
@@ -101,22 +101,22 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
                 a.save()
                 if int(a.user.alarmMethod/2)==1:
                     msg = '[NewShop]\n'
-                    msg += (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg += (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendSMS(msg)
                 if a.user.alarmMethod%2==1:
                     title='[NewShop]가격 변동 알림 ('+self.name+')'
-                    msg = (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg = (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendEmail(title, msg)
             elif a.upper<pr and not a.reuse:
                 a.reuse=True
                 a.save()
                 if int(a.user.alarmMethod/2)==1:
                     msg = '[NewShop]\n'
-                    msg += (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg += (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendSMS(msg)
                 if a.user.alarmMethod%2==1:
                     title='[NewShop]가격 변동 알림 ('+self.name+')'
-                    msg = (a.user.name+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg = (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendEmail(title, msg)
 
     def sendNewsAlarm(self):  # 뉴스에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 뉴스가 저장된 상태여야 함
@@ -125,11 +125,11 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
             if a.news_alarm:
                 if int(a.user.alarmMethod/2)==1:
                     msg = '[NewShop]\n'
-                    msg += (a.user.name+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
+                    msg += (a.user.user.username+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendSMS(msg)
                 if a.user.alarmMethod%2==1:
                     title='[NewShop]뉴스 알림 ('+self.name+')'
-                    msg = (a.user.name+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
+                    msg = (a.user.user.username+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendEmail(title, msg)
 
 class NspProduct(Product): #상표 무관 product 키워드를 말함
@@ -203,4 +203,3 @@ class Price(models.Model):
     product = models.ForeignKey("SpProduct",related_name='price', on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()
-
