@@ -102,7 +102,50 @@
 					</div>
 				</div>
 
-				<div class="fb-share-button" data-href="https://127.0.0.1:8000/home" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=127.0.0.1/home" class="fb-xfbml-parse-ignore"></a></div>
+				<div class="SNSshare" style="margin-left:40%;width:20%;">
+					<div class="fb-share-button" data-href="https://127.0.0.1:8000/home" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=127.0.0.1/home" class="fb-xfbml-parse-ignore"></a></div>
+					<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+					<a href="javascript:;" id="kakao-link-btn">
+					<img src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" width="21px" />
+					</a>
+
+					<script type="text/javascript" src="https://ssl.pstatic.net/share/js/naver_sharebutton.js"></script>
+					<script type="text/javascript">
+					new ShareNaver.makeButton({"type": "b"});
+					</script>
+
+					<script type="text/javascript">
+					    // // 사용할 앱의 JavaScript 키를 설정해 주세요.
+					    Kakao.init('22b3eb09f5aea81e1a95d1012bb65452');
+					    // // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+					    Kakao.Link.createDefaultButton({
+					      container: '#kakao-link-btn',
+					      objectType: 'feed',
+					      content: {
+					        title: document.title,
+					        description: '사과가 20000원!',
+					        imageUrl: document.images[0].src,
+					        link: {
+					          webUrl: document.location.href,
+					          mobileWebUrl: document.location.href
+					        }
+					      },
+					      social: {
+					      },
+					      buttons: [
+					        {
+					          title: 'Open!',
+					          link: {
+					            mobileWebUrl: document.location.href,
+					            webUrl: document.location.href
+					          }
+					        }  
+					      ]
+					    });
+					  //]]>
+					</script>
+				</div>
 			</div>
 		</section>
 
