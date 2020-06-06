@@ -14,6 +14,7 @@
 		<meta property="og:type" content="website" /> 
 		<meta property="og:title" content="newShop" /> 
 		<meta property="og:description" content="모든 품목 최저가, 뉴스 검색사이트" /> 
+		<meta property="og:image" content="{%static 'images/logo-favicon.png'%}" />
 		
 
 		<link rel="icon" href="{%static 'images/favicon.ico'%}">
@@ -42,7 +43,7 @@
 		<!-- Navigation -->
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
-				<a class="navbar-brand page-scroll" href="#page-top" ><img src="{%static 'images/logo.png'%}" width="20%" ></a>
+				<a class="navbar-brand page-scroll" href="#page-top" ><img src="{%static 'images/logo.png'%}" width="20%" href="{%url 'home'%}"></a>
 				<a class="navbar-brand page-scroll profile-box" href="#page-top" style="float:right;"><img class="profile" src="{%static 'images/apeach.png'%}" width="40px"></a>
 			</div>
 			
@@ -103,7 +104,7 @@
 				</div>
 
 				<div class="SNSshare" style="margin-left:40%;width:20%;">
-					<div class="fb-share-button" data-href="https://127.0.0.1:8000/home" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=127.0.0.1/home" class="fb-xfbml-parse-ignore"></a></div>
+					<div class="fb-share-button" data-href="http://sr97.pythonanywhere.com/home" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://sr97.pythonanywhere.com/home" class="fb-xfbml-parse-ignore"></a></div>
 					<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
 					<a href="javascript:;" id="kakao-link-btn">
@@ -117,8 +118,7 @@
 
 					<script type="text/javascript">
 					    // // 사용할 앱의 JavaScript 키를 설정해 주세요.
-					    Kakao.init('22b3eb09f5aea81e1a95d1012bb65452');
-					    // // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+					    Kakao.init("22b3eb09f5aea81e1a95d1012bb65452");
 					    Kakao.Link.createDefaultButton({
 					      container: '#kakao-link-btn',
 					      objectType: 'feed',
