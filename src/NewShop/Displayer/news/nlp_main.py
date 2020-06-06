@@ -1,6 +1,7 @@
 #-*- coding:utf-8 -*-
 
 import os
+import sys
 import collections
 import json
 import random
@@ -15,9 +16,40 @@ from torchtext.data import TabularDataset, BucketIterator
 
 from konlpy.tag import Komoran
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from models import News, NspProduct, SpProduct
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # TODO: 1. Save model 2. Adopt crawling 3. Experiments documents 4. Update database system
+
+def get_recommend_query(query):
+    all_products = SpProduct.objects.values('name')
+    results = []
+    # Query word exist (should be perfect form)
+    for i in range(len(all_products)):
+        if query in all_products[i]['name']:
+            results.append(all_products[i]['name'])
+    # Tokenizer
+    komoran = Komoran()
+    query_tokens = komoran.pos(query)
+    all_products_tokens = []
+    for i in range(len(all_products)):
+        all_products_tokens.append(komoran.pos(all_products[i]['name']))
+    # Query word exist (can not be perfect form)
+    for i in range(len(all_products_tokens)):
+        if query_tokens[0] in all_products_tokens[i]:
+            results.append(all_products[i]['name'])
+    # Relative Query and target (same NspProduct class)
+    all_products_big = NspProduct.objects.values('name')
+    all_products_big_tokens = []
+    for i in range(len(all_products_big)):
+        all_products_big_tokens.append(komoran.pos(all_products_big[i]['name']))
+    for i in range(len(all_products_big_tokens)):
+        if query_tokens[0] in all_products_big_tokens[i]:
+            results.append(all_products_big[i]['name'])
+    results = list(set(results))
+    return results
 
 
 # From torch tutorial
