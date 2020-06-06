@@ -25,6 +25,12 @@
 
 	</head>
 	<body id="page-top">
+		{%if messages%}
+			{%for m in messages%}
+			{{m.message}}
+			<br>
+			{%endfor%}			
+		{%endif%}		
 		<!-- Navigation -->
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">

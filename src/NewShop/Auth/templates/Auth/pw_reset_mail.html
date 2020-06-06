@@ -1,0 +1,8 @@
+{% autoescape off %}
+
+    아래 링크를 클릭하여 비밀번호를 다시 설정해주세요.
+    자신이 요청해서 온 메일이 아니라면, 무시하셔도 됩니다.
+
+    http://{{ domain }}{% url 'pw_reset' uidb64=uid token=token %}
+
+{% endautoescape %}
