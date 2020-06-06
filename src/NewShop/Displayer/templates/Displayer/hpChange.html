@@ -1,0 +1,40 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="{%static 'css/style_auth.css'%}" rel="stylesheet">
+    <title>newShop</title>
+</head>
+<body>
+    <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:30%"></div>
+    <div class="panel panel-default registration">
+            <div class="panel-heading" style="background-color:#FFB808">
+                휴대폰 번호
+            </div>
+            <div class="panel-body" >
+                <form method="post">
+                    {% csrf_token %}
+                        <label for="np">새 번호</label>
+                        <input 
+                            name="np" 
+                            id="np" 
+                            class="form-control id_pwd_inputbox" 
+                            pattern="(01)[0-9]{8,9}"
+                            required
+                            placeholder="- 없이 입력하세요."
+                        >                
+                        <br>
+                    <div class="button_group">
+                        <button id="send"
+                        class="btn btn-dark" 
+                        type="submit"
+                        >인증
+                        </button>
+                    </div>
+                </form>
+            </div>
+    </div>
+</body>
+</html>

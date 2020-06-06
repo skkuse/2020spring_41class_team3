@@ -30,6 +30,8 @@ class HUser(models.Model):
         email.send()
 
     def sendSMS(self, content):
+        if not self.permit:
+            return
         url='https://sens.apigw.ntruss.com'
         uri='/sms/v2/services/'+local_settings.svc_id+'/messages'
         data = {
@@ -55,9 +57,18 @@ class HUser(models.Model):
         res=requests.post(url+uri, json=data, headers=headers)
         res.raise_for_status()
 
+    def phoneAuth(self, input):        
+        if self.phonekey.all()[0].value==int(input):
+            self.phone=self.phonekey.all()[0].new_p
+            self.permit=True
+            self.save()
+            self.phonekey.all()[0].delete()
+            return True
+        else:
+            return False
 
     def __str__(self):
-        return self.name
+        return self.user.username
 
 
 class History(models.Model):
@@ -199,7 +210,16 @@ class News(models.Model):
     subj = models.IntegerField()
     url = models.URLField(max_length=200)
 
+    def __str__(self):
+        return self.title
+    
+
 class Price(models.Model):
     product = models.ForeignKey("SpProduct",related_name='price', on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()
+
+class PhoneKey(models.Model):
+    value = models.IntegerField()
+    user = models.ForeignKey("HUser", related_name='phonekey',on_delete=models.CASCADE)
+    new_p = models.CharField(max_length=13)
