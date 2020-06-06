@@ -9,4 +9,6 @@ urlpatterns = [
     path('signup/verification/',views.verify,name='verification'),
     path('logout',views.sign_out,name='logout'),
     re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.activate, name='activate'),
+    path('find-user/',views.id_finder,name='idfind'),
+    path('find-pw/',views.pw_finder,name='pwfind'),
 ]

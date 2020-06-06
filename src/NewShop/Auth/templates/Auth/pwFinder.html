@@ -11,13 +11,13 @@
     <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:30%"></div>
     <div class="panel panel-default registration">
             <div class="panel-heading" style="background-color:#FFB808">
-                로그인
+                비밀번호 찾기
             </div>
-            <div class="panel-body">
+            <div class="panel-body" >
                 <form action="." method="post">
                     {% csrf_token %}
                     {% for field in form %}
-                        <div class="form-group {% if field.errors|length > 0 %}has-error{%endif %}">
+                        <div class="form-group {% if field.errors|length > 0 %}has-error{%endif %}" style="float:left;width:70%">
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                             <input 
                             name="{{ field.html_name }}" 
@@ -32,25 +32,32 @@
                             {% endfor %}
                         </div>
                     {% endfor %}
-                    <div class="button_group">
-                        <button id='login'
+                    <div class="button_group" style="float:right;width:25%">
+                        <br>
+                        <button id='find'
                         class="btn btn-dark" 
-                        type="submit">로그인
+                        type="submit" >찾아보기
+                        </button>
+                    </div>
+                    <div class="button_group" style="float:left;width:100%">
+                        <button id='home'
+                        class="btn btn-dark" 
+                        type="button"  style="float:left;width:30%;margin:5px"
+                        onclick="location.href='{%url 'home'%}'">홈으로
                         </button>
 
                         <button id='home'
                         class="btn btn-dark" 
-                        type="button" 
-                        onclick="location.href='{%url 'home'%}'">홈으로
+                        type="button"  style="float:left;width:30%;margin:5px"
+                        onclick="location.href='{%url 'idfind'%}'">사용자 이름 찾기
                         </button>
 
-                        <button id='registration' 
+                        <button id='log' 
                         class="btn btn-dark" 
-                        type="button" 
-                        onclick="location.href='{%url 'signup'%}'">회원가입
+                        type="button" style="float:left;width:30%;margin:5px"
+                        onclick="location.href='{%url 'login'%}'">로그인
                         </button>
 
-                        <p id="etc"><a href="{%url 'idfind'%}">사용자 이름 및 비밀번호 찾기</a></p>
                     </div>
                 </form>
             </div>

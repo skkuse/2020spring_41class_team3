@@ -69,3 +69,22 @@ class SignupForm(forms.Form):
             self.add_error('password2', '비밀번호가 서로 일치하지 않습니다.')
         
         return self.cleaned_data
+
+class IDFindForm(forms.Form):
+    email = forms.EmailField(required=True, label='e-mail', help_text="가입할 때 인증에 사용한 이메일을 입력해 주세요.")
+    
+    def clean(self):
+        clean_data=super().clean()
+        email = clean_data.get('email')
+        User = get_user_model()
+        if User.objects.filter(email=email).exists():            
+            you = User.objects.get(email=email)
+            if you.is_active:
+                self.add_error('email','이름은 '+you.username[0]+'으로 시작합니다. 기억이 잘 나지 않으신다면 이메일을 보냈으니 확인해 주세요.')
+                you.handle.sendEmail("[newShop]이름 찾기","안녕하세요. 회원님이 newShop 로그인에 사용하시는 이름은 "+you.username+"입니다. 감사합니다.")
+            else:
+                self.add_error('email','이메일 인증을 하지 않은 계정입니다. 원하는 경우 로그인 페이지에서 이 계정을 지우고 다시 만들 수 있습니다.')
+        else:
+            self.add_error('email','해당하는 정보가 없습니다.')            
+
+        return self.cleaned_data

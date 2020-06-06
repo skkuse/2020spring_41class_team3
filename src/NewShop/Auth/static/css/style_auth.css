@@ -46,6 +46,12 @@ label {
     text-align: center;
 }
 
+.button_group::after{
+    content: ''; 
+    display: table; 
+    clear: both;    
+}
+
 .button_group button:hover{
     text-align: center;
     color:white;
