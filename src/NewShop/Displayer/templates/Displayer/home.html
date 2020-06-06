@@ -17,9 +17,6 @@
 										</div>
 									</div>
 								</div>
-
-									
-
 							</div>
 						</div>
 						<div class="item">
@@ -42,6 +39,8 @@
 						</div>
 					</div>
 				</div>
+
+				<!-------------------------------------------------------------------------Search------------------------------------------------------------------------->
 				<div class="dropdown dropdown-class " onclick="search_box_focused();">
 					<input type="text" class="dropdown-class form-control search-box dropdown-toggle" placeholder="Search a product" id="search-box-id" required="" data-validation-required-message="Please enter what you want to search" >
 					<!-- History -->
@@ -148,4 +147,20 @@
 				</div>
 			</div>
 		</section>
+		<script type="text/javascript">
+		$(function(){
+			$('html').click(function(e) {
+			 if(!$(e.target).hasClass("dropdown-class")) {
+				var el = document.getElementById("home-dropdown");
+				el.style.display = "none";
+			} });
+
+			$("#index-search-box").click(function(e){
+				var el = document.getElementById("home-dropdown");
+				el.style.display = "inline";
+				document.getElementById("search-box-id").focus();
+			})
+		});
+
+		</script>
 {% endblock %}
