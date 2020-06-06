@@ -74,6 +74,7 @@ class Crawler(object):
         ret_str = ret_str.replace('// flash 오류를 우회하기 위한 함수 추가', '')
         ret_str = ret_str.replace('function _flash_removeCallback() {}', '')
         ret_str = ret_str.replace('\n', '', 100)
+        ret_str = ret_str.replace('\t', '', 100)
         ret_str = ret_str.split('.')
         ret = []
         for sentence in ret_str:
