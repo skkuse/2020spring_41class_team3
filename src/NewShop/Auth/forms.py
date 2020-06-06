@@ -5,7 +5,7 @@ from django import forms
 from Displayer.models import HUser
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
-from .tokens import account_activation_token
+from django.contrib.auth.tokens import default_token_generator
 from django.template.loader import render_to_string
 
 class SigninForm(forms.Form): #로그인을 제공하는 class이다.
@@ -115,7 +115,7 @@ class PWFindForm(forms.Form):
                     'user': you,
                     'domain': clean_data.get('domain'),
                     'uid': urlsafe_base64_encode(force_bytes(you.pk)).encode().decode(),
-                    'token': account_activation_token.make_token(you),
+                    'token': default_token_generator.make_token(you),
                 })
                 you.handle.sendEmail("[newShop]비밀번호 재설정 메일",message)
             else:

@@ -11,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
+from django.contrib.auth.tokens import default_token_generator
 # Create your views here.
 
 # qu: 로그인 next 쿼리.
@@ -109,7 +110,7 @@ def pw_reset_by_mail(request, uidb64, token):
     uid = force_text(urlsafe_base64_decode(uidb64))
     User = auth.get_user_model()
     user = User.objects.get(pk=uid)
-    if user is not None:
+    if user is not None and default_token_generator.check_token(user,token):
         auth.login(request, user)
         return redirect('pw_reset2',usr=user.pk)
     else:
