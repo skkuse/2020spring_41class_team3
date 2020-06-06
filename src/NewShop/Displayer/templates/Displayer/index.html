@@ -10,6 +10,12 @@
 
 		<meta name="description" content="">
 		<meta name="author" content="">
+		<meta property="og:url" content="https://sr97.pythonanywhere.com" /> 
+		<meta property="og:type" content="website" /> 
+		<meta property="og:title" content="newShop" /> 
+		<meta property="og:description" content="모든 품목 최저가, 뉴스 검색사이트" /> 
+		
+
 		<link rel="icon" href="{%static 'images/favicon.ico'%}">
 		<title>newShop</title>
 		<!-- Bootstrap core CSS -->
@@ -23,6 +29,8 @@
 		<link href="{%static 'css/Chart.css'%}" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 
+		<div id="fb-root"></div>
+		<script async defer crossorigin="anonymous" src="https://connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v7.0"></script>
 	</head>
 	<body id="page-top">
 		{%if messages%}
@@ -93,6 +101,8 @@
 						<a href="#" class="button-cta">제보하기</a>
 					</div>
 				</div>
+
+				<div class="fb-share-button" data-href="https://127.0.0.1:8000/home" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=127.0.0.1/home" class="fb-xfbml-parse-ignore"></a></div>
 			</div>
 		</section>
 
