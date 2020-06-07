@@ -69,52 +69,14 @@
 						<div class="col-md-3 text-center">
 							<div class="mz-module">
 								<div class="mz-module-about">
-									<button class="mypage-bookmarks-delete" name="{{pr.product}}" onclick="mypage_bookmarks_delete(this.name);">X</button>
+									<button class="mypage-bookmarks-delete" name="{{pr.product}}" onclick="location.href='{%url 'delbook' keyword=pr.product next='home'%}'">X</button>
 									<img class="mz-image" src="{{pr.product.imgUrl}}" width="100%">
 									<h3>{{pr.product}}</h3>
 								</div>
-								<a class="mz-module-button" name="{{pr.product}}" onclick="product_search(this.name);">search</a>
+								<a class="mz-module-button" name="{{pr.product}}" onclick="location.href='{%url 'search' keyword=pr.product%}'">search</a>
 							</div>
 						</div>
 					{%endfor%}
-					<!-- about module -->
-					<div class="col-md-3 text-center">
-						<div class="mz-module">
-							<div class="mz-module-about">
-								<button class="mypage-bookmarks-delete" name="DRAM" onclick="mypage_bookmarks_delete(this.name);">X</button>
-								<img class="mz-image" src="{%static 'images/dram.png'%}" width="100%">
-								<h3>DRAM</h3>
-							</div>
-							<a class="mz-module-button" name="DRAM" onclick="product_search(this.name);">search</a>
-						</div>
-					</div>
-					<!-- end about module -->
-					<!-- about module -->
-					<div class="col-md-3 text-center">
-						<div class="mz-module">
-							<div class="mz-module-about">
-								<button class="mypage-bookmarks-delete" name="apple" onclick="mypage_bookmarks_delete(this.name);">X</button>
-								<img class="mz-image" src="{%static 'images/apple.png'%}" width="100%" height="50%">
-								<h3>Apple</h3>
-							</div>
-							<a class="mz-module-button" name="Apple" onclick="product_search(this.name);">search</a>
-						</div>
-					</div>
-					<!-- end about module -->
-					<!-- about module -->
-					<div class="col-md-3 text-center">
-						<div class="mz-module">
-							<div class="mz-module-about">
-								<button class="mypage-bookmarks-delete" name="ipad6th" onclick="mypage_bookmarks_delete(this.name);">X</button>
-								<img class="mz-image" src="{%static 'images/ipad6th.png'%}" width="100%">
-								<h3>Ipad</h3>
-								<p>6th generation</p>
-							</div>
-							<a class="mz-module-button" name="Ipad" onclick="product_search(this.name);">search</a>
-						</div>
-					</div>
-
-					<!-- end about module -->
 				</div>
 			</div>
 			<!-- /.container -->

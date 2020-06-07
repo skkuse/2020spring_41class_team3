@@ -14,4 +14,7 @@ urlpatterns = [
     path('mypage', views.myPage, name='mypage'),
     path('change_pw', views.change_pw, name='change_pw'),
     path('hpchange',views.hpChange,name='hp_change'),
+    path('alarm/<str:keyword>',views.alarmSet,name='alarmset'),
+    path('tb:<str:keyword>',views.toggleBook,name='togglebook'),
+    path('temp/<str:keyword>/next=<str:next>',views.delBook,name='delbook'),
 ]

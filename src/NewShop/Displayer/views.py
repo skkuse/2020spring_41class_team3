@@ -53,18 +53,23 @@ def search(request, keyword):
     logged=request.user.is_authenticated
     market_list = crawler.get_market_real_time(keyword)
     prod=Product.objects.get(name=keyword)
-    History.objects.filter(user=request.user.handle,product=prod).delete()
-    History(user=request.user.handle, product=prod).save()
     price=prod.getPrice()
     pr_dates=[]
     pr_values=[]
-    for dv in price.values('date','value'):
-        pr_dates.append(dv['date'])
-        pr_values.append(dv['value'])    
-    nnewz=prod.getNews()
     avg=0
     count=0
     low=99999999999
+    nnewz=prod.getNews()
+    booked=False
+    if logged:
+        History.objects.filter(user=request.user.handle,product=prod).delete()
+        History(user=request.user.handle, product=prod).save()
+        if Favor.objects.filter(user=request.user.handle, product=prod).count()>0:
+            booked=True
+    for dv in price.values('date','value'):
+        pr_dates.append(dv['date'])
+        pr_values.append(dv['value'])
+        
     for market in market_list:
         avg+=market['price']
         if low>market['price']:
@@ -72,16 +77,6 @@ def search(request, keyword):
         count+=1
     if avg!=0:
         avg/=count
-    if Favor.objects.filter(user=request.user.handle, product=prod).count()>0:
-        booked=True
-    else:
-        booked=False
-    if request.method=='POST':
-        if request.POST.get('bookmark') is not None:
-            if request.POST.get('bookmark'):
-                Favor(user=request.user.handle,product=prod).save()
-            else:
-                Favor.objects.get(user=request.user.handle,product=prod).delete()
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
     return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low})
     # 현재의 html을 사용할 것
@@ -102,9 +97,34 @@ def api_search(request, keyword):
     # 현재의 html을 사용할 것
 
 @login_required
+def toggleBook(request, keyword):
+    prod=Product.objects.get(name=keyword)
+    if Favor.objects.filter(user=request.user.handle,product=prod).count()>0:
+        Favor.objects.get(user=request.user.handle,product=prod).delete()
+    else:
+        Favor(user=request.user.handle,product=prod).save()
+    return redirect('search',keyword=keyword)
+
+@login_required
+def delBook(request, keyword, next):
+    prod=Product.objects.get(name=keyword)
+    Favor.objects.get(user=request.user.handle,product=prod).delete()
+    return redirect(next)
+
+@login_required
+def alarmSet(request, keyword):
+    return render(request, 'Displayer/api.html',{})
+
+@login_required
 def myPage(request):
-    logged=request.user.is_authenticated
-    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user})
+    usr=request.user
+    logged=usr.is_authenticated
+    hist=None
+    bookmarks=None
+    prod = None
+    if logged:
+        bookmarks=usr.handle.favor.all()
+    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks})
 
 @login_required
 def change_pw(request):

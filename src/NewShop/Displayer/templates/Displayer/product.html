@@ -13,18 +13,18 @@
 				<h4> 현재 최저: {{low}} 원 </h4>
 				<h4> 평균 : {{average}} 원</h4>
 				</div>
-				<div class="product-subscription-box">
-						{%if booked%}
-							<button class="subscription_button" onclick="product_subscription();">
-								<img src="{%static 'images/subscription_on.png'%}" style="width:100%">
-							</button>
-						{%else%}
-							<button class="subscription_button" onclick="product_subscription();">
-								<img src="{%static 'images/subscription_off.png'%}" style="width:100%">
-							</button>
-						{%endif%}
 
-					<button class="subscription_button" onclick="product_subscription();"><img src="{%static 'images/alarm.png'%}" style="width:150%"></button>
+				<div class="product-subscription-box">
+					<button class="subscription_button" onclick="location.href='{%url 'togglebook' keyword=product%}'">
+						{%if booked%}
+							<img src="{%static 'images/subscription_on.png'%}" style="width:100%">
+						{%else%}
+							<img src="{%static 'images/subscription_off.png'%}" style="width:100%">
+						{%endif%}
+					</button>
+
+					<button class="subscription_button" onclick="location.href='{%url 'alarmset' keyword=product%}'"><img src="{%static 'images/alarm.png'%}" style="width:150%"></button>
+
 				</div>
 			</div>
 		</div>
