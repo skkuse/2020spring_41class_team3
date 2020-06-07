@@ -1,7 +1,6 @@
 from django.urls import include, path, re_path
 from django.contrib.auth import views as auth_views
 from . import views
-from django.conf.urls import url
 
 
 urlpatterns = [ 

@@ -90,9 +90,6 @@ def api_search(request, keyword):
     logged=request.user.is_authenticated
     prod=Product.objects.get(name=keyword)
     price=prod.getPrice()
-    if request.method=='POST':
-        # 
-        pass
     return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price})
     # 현재의 html을 사용할 것
 
@@ -119,9 +116,7 @@ def alarmSet(request, keyword):
 def myPage(request):
     usr=request.user
     logged=usr.is_authenticated
-    hist=None
     bookmarks=None
-    prod = None
     if logged:
         bookmarks=usr.handle.favor.all()
     return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks})
