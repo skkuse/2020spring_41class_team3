@@ -45,6 +45,8 @@ def q2key(request):
     if request.method=='POST':        
         related = get_recommend_query(request.POST.get('query'))
         return render(request, 'Displayer/related.html',{'logged':logged, 'related': related})
+    else:
+        return HttpResponse('Not Found')
 
 def search(request, keyword):
     logged=request.user.is_authenticated

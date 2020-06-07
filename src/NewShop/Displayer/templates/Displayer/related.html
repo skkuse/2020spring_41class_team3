@@ -12,7 +12,7 @@
 						{%for p in related%}
 							<div class="featured-item">
 								<div class="featured-icon"><i class="fa fa-television"></i></div>
-								<div class="featured-text" onclick="{%url 'search' keyword=p%}">
+								<div class="featured-text" onclick="location.href='{%url 'search' keyword=p%}'">
 									<h4>{{p}} </h4>
 								</div>
 							</div>
