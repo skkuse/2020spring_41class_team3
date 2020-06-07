@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from datetime import datetime
 from Displayer.news.MarketPrice import markets
-from Displayer.models import Price, SpProduct
+# from Displayer.models import Price, SpProduct
 
 def make_news_url(search_word: str, start_date: str, end_date: str, length: int):
     """
@@ -97,24 +97,24 @@ class Crawler(object):
                 link: market link
         """
         ret = []
-        key = key_word.split()
+        key = key_word.lower().split()
         for market in markets:
             get_data = market.get_data(key_word)
             for element in get_data:
                 check = 1
                 for keyword in key:
-                    if keyword not in element['name']:
+                    if keyword not in element['name'].lower():
                         check = 0
                         break
                 if check == 1:
                     ret.append(element)
         return ret
 
-    def update_market_price(self, product_name):
-        data = self.get_market_price(product_name)
-        product = SpProduct.objects.filter(name='삼성 메모리')[0]
-        for data_row in data:
-            Price.objects.create(product=product, value=data_row['price'], date=datetime.now())
+    # def update_market_price(self, product_name):
+    #     data = self.get_market_price(product_name)
+    #     product = SpProduct.objects.filter(name='삼성 메모리')[0]
+    #     for data_row in data:
+    #         Price.objects.create(product=product, value=data_row['price'], date=datetime.now())
 
     def get_market_real_time(self, product_name):
         data = self.get_market_price(product_name)
@@ -123,4 +123,4 @@ class Crawler(object):
 crawler = Crawler()
 
 if __name__ == '__main__':
-    print(crawler.get_market_price('삼성'))
+    print(crawler.get_market_price('삼성 8gb'))
