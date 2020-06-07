@@ -53,7 +53,14 @@ def search(request, keyword):
     logged=request.user.is_authenticated
     market_list = crawler.get_market_real_time(keyword)
     prod=Product.objects.get(name=keyword)
+    History.objects.filter(user=request.user.handle,product=prod).delete()
+    History(user=request.user.handle, product=prod).save()
     price=prod.getPrice()
+    pr_dates=[]
+    pr_values=[]
+    for dv in price.values('date','value'):
+        pr_dates.append(dv['date'])
+        pr_values.append(dv['value'])    
     nnewz=prod.getNews()
     avg=0
     count=0
@@ -76,7 +83,7 @@ def search(request, keyword):
             else:
                 Favor.objects.get(user=request.user.handle,product=prod).delete()
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'price':price, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low})
     # 현재의 html을 사용할 것
 
 
@@ -86,12 +93,12 @@ def api(request):
 
 def api_search(request, keyword):
     logged=request.user.is_authenticated
-    if request.method=='GET':
+    prod=Product.objects.get(name=keyword)
+    price=prod.getPrice()
+    if request.method=='POST':
+        # 
         pass
-    elif request.method=='POST':
-        # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-        pass
-    return render(request, 'Displayer/api.html',{'logged':logged})
+    return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price})
     # 현재의 html을 사용할 것
 
 @login_required

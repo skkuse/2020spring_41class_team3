@@ -4,14 +4,14 @@
     <header>
  		<div class="container">
 			<div class="product-image-box">
-				<img class="product-image" src="{%static 'images/apple.png'%}" >
+				<img class="product-image" src="{{product.imgUrl}}" >
 			</div>
 			<div class="product-info-box">
 				<canvas id="myChart" height="60%" ></canvas> 
 			</div>
 		</div>
 		<div class="container">
-			<h1> 사과</h1>
+			<h1> {{product}}</h1>
 		</div>
 	</header>
 	
@@ -37,7 +37,7 @@ type: 'line',
  data: {
   labels: ["2018-12-07 12:45:17", "2018-12-09 12:45:17", "2018-12-31 12:45:17", "2019-02-07 12:45:17", "2019-04-07 12:45:17", "2019-06-25 12:45:17", "2019-08-30 12:45:17"], 
   datasets: [
-  { label: '사과', 
+  { label: '{{product}}', 
   backgroundColor: ['rgba(255,0,0,0.2)'], 
   borderColor: 'red', data: [0, 10, 5, 2, 20, 30, 45] }] }, // 옵션 
 options: {
