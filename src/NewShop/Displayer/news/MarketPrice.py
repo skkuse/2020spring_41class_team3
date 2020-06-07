@@ -79,7 +79,7 @@ class Gmarket(MarketPrice):
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
                 name = str(re.sub('<[^(<|>)]*>', '', str(list_name[idx])))
-                link = 'https://www.coupang.com' + str(list_url[idx]['href'])
+                link = str(list_url[idx]['href'])
                 ret.append({'price': price, 'name': name, 'link': link, 'market': market})
             except:
                 pass
