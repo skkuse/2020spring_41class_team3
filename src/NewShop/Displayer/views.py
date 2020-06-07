@@ -32,9 +32,15 @@ def home(request):
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
 def product(request):
-    #아마 검색창만 띄우게 될 듯?
     if request.method=='POST':
-        return redirect('search', keyword=request.POST.get('keyword'))        
+        # product 페이지 내에서 검색어를 입력하여 키워드를 선택함
+        if request.POST.get('keyword') is not None:
+            key = request.POST.get('keyword')
+            prod = Product.objects.get(name=key)
+            History.objects.filter(user=request.user.handle,product=prod).delete()
+            History(user=request.user.handle, product=prod).save()
+            return redirect('search', keyword=key)
+
     logged=request.user.is_authenticated    
     market_list = crawler.get_market_real_time('삼성 메모리 DDR4 8G PC4-21300')
     return render(request, 'Displayer/product.html',{'logged':logged, 'market_list': market_list})
@@ -45,8 +51,29 @@ def search(request, keyword):
     market_list = crawler.get_market_real_time(keyword)
     prod=Product.objects.get(name=keyword)
     price=prod.getPrice()
-    # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중    
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'price':price})
+    nnewz=prod.getNews()
+    avg=0
+    count=0
+    low=99999999999
+    for market in market_list:
+        avg+=market['price']
+        if low>market['price']:
+            low=market['price']
+        count+=1
+    if avg!=0:
+        avg/=count
+    if Favor.objects.filter(user=request.user.handle, product=prod).count()>0:
+        booked=True
+    else:
+        booked=False
+    if request.method=='POST':
+        if request.POST.get('bookmark') is not None:
+            if request.POST.get('bookmark'):
+                Favor(user=request.user.handle,product=prod).save()
+            else:
+                Favor.objects.get(user=request.user.handle,product=prod).delete()
+    # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'price':price, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low})
     # 현재의 html을 사용할 것
 
 
@@ -69,15 +96,13 @@ def myPage(request):
     logged=request.user.is_authenticated
     return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user})
 
-
+@login_required
 def change_pw(request):
     logged=request.user.is_authenticated
     context= {}
     if request.method == "POST":
         current_password = request.POST.get("origin_password")
         user = request.user
-        if user.is_anonymous:
-            return render(request, "Displayer/home.html",{'logged':logged})
         if check_password(current_password,user.password):
             new_password = request.POST.get("password1")
             password_confirm = request.POST.get("password2")

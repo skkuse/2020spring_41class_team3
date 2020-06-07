@@ -109,9 +109,9 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
     def getNews(self):
         n = NspProduct.objects.all().filter(name=self.name)
         s = SpProduct.objects.all().filter(name=self.name)
-        if n is not None:
+        if n.count()>0:
             return n.get(name=self.name).getNews() 
-        elif s is not None:
+        elif s.count()>0:
             return s.get(name=self.name).getNews()
         else:
             return []
@@ -120,9 +120,9 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
     def getPrice(self):
         n = NspProduct.objects.all().filter(name=self.name)
         s = SpProduct.objects.all().filter(name=self.name)
-        if n is not None:
+        if n.count()>0:
             return n.get(name=self.name).getPrice() 
-        elif s is not None:
+        elif s.count()>0:
             return s.get(name=self.name).getPrice()
         else:
             return []
@@ -131,9 +131,9 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
     def getInfluence(self):
         n = NspProduct.objects.all().filter(name=self.name)
         s = SpProduct.objects.all().filter(name=self.name)
-        if n is not None:
+        if n.count()>0:
             return n.get(name=self.name).getInfluence()
-        elif s is not None:
+        elif s.count()>0:
             return s.get(name=self.name).getInfluence()
         else:
             return []
@@ -142,9 +142,9 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
     def getPriceByTable(self):    
         n = NspProduct.objects.all().filter(name=self.name)
         s = SpProduct.objects.all().filter(name=self.name)
-        if n is not None:
+        if n.count()>0:
             return n.get(name=self.name).getPricebyTable()
-        elif s is not None:
+        elif s.count()>0:
             return s.get(name=self.name).getPricebyTable()
         else:
             return []
