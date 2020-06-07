@@ -58,7 +58,6 @@ def change_pw(request):
     if request.method == "POST":
         current_password = request.POST.get("origin_password")
         user = request.user
-        print("testset", user)
         if user.is_anonymous:
             return render(request, "Displayer/home.html",{'logged':logged})
         if check_password(current_password,user.password):
