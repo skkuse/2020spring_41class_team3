@@ -30,19 +30,20 @@ def home(request):
 
 def product(request):
     #아마 검색창만 띄우게 될 듯?
-    logged=request.user.is_authenticated
+    if request.method=='POST':
+        return redirect('search', keyword=request.POST.get('keyword'))        
+    logged=request.user.is_authenticated    
     market_list = crawler.get_market_real_time('삼성 메모리 DDR4 8G PC4-21300')
     return render(request, 'Displayer/product.html',{'logged':logged, 'market_list': market_list})
     # 현재와 다른 html을 사용할 것
 
 def search(request, keyword):
     logged=request.user.is_authenticated
-    if request.method=='GET':
-        pass
-    elif request.method=='POST':
-        # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-        pass
-    return render(request, 'Displayer/product.html',{'logged':logged})
+    market_list = crawler.get_market_real_time(keyword)
+    prod=Product.objects.get(name=keyword)
+    price=prod.getPrice()
+    # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중    
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'price':price})
     # 현재의 html을 사용할 것
 
 
