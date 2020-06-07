@@ -31,6 +31,7 @@
 ## module dependency (how to run)
 
     pip install django
+    pip install django-extensions
     pip install pandas
     pip install bs4
     
