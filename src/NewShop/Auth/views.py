@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse
 from django.contrib import auth
 from Displayer.models import HUser
-from .forms import SigninForm, SignupForm, IDFindForm
+from .forms import SigninForm, SignupForm
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -49,7 +49,7 @@ def sign_up(request):
             user.is_active = False
             user.save()
             
-            hd = HUser(user=user)
+            hd = HUser(name=user.username, user=user)
             hd.save()
             current_site = get_current_site(request)
             # localhost:8000
@@ -86,17 +86,3 @@ def activate(request, uidb64, token):
         return render(request, 'Auth/signupend.html')
     else:
         return HttpResponse('비정상적인 접근입니다.')
-
-def id_finder(request):
-    if request.method == "GET":
-        return render(request, 'Auth/idFinder.html',{'form':IDFindForm()})
-    elif request.method == "POST":
-        form=IDFindForm(request.POST)
-        return render(request, "Auth/idFinder.html", {"form": form})
-
-def pw_finder(request):
-    if request.method == "GET":
-        return render(request, 'Auth/idFinder.html',{'form':IDFindForm()})
-    elif request.method == "POST":
-        form=IDFindForm(request.POST)
-        return render(request, "Auth/idFinder.html", {"form": form})

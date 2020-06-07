@@ -1,0 +1,49 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="{%static 'css/style_auth.css'%}" rel="stylesheet">
+    <title>newShop</title>
+</head>
+
+<body>
+    <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:30%"></div>
+    <div class="panel panel-default registration">
+        <div class="error_message">
+            {{error}}
+        </div>
+        <div class="panel-heading" style="background-color:#FFB808">
+            비밀번호 변경
+        </div>
+        <div class="panel-body" >
+        <form method="POST" action="{% url 'change_pw' %}" style="margin-left: 10px;">
+            {% csrf_token %}
+
+            <div class="login_input_container">
+                <div class="username_form_text"style="margin-bottom: 4px;">이전 비밀번호</div>
+                <div class="input_container" style="margin-bottom: 8px;">
+                    <input class="login_input" name="origin_password" type="password">
+                </div>
+
+                <div class="password_form_text"style="margin-bottom: 4px;">새 비밀번호</div>
+                <div class="input_container" style="margin-bottom: 8px;">
+                    <input class="login_input" name="password1" type="password">
+                </div>
+                <div class="confirm_password_form_text"style="margin-bottom:4px;">새 비밀번호 확인</div>
+                <div class="input_container"> <div class="input_container" style="margin-bottom: 10px;">
+                        <input class="login_input" name="password2" type="password">
+                </div>
+            </div>
+            <div class="button_group" style="float:left;width:25%">
+                <input type="submit" class="btn btn-dark"  value="변경하기">
+            </div>
+
+        </form>
+    </div>
+    </div>
+</body>
+
+</html>
