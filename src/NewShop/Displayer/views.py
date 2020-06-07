@@ -21,8 +21,6 @@ def product(request):
     #아마 검색창만 띄우게 될 듯?
     logged=request.user.is_authenticated
     market_list = crawler.get_market_real_time('삼성 메모리 DDR4 8G PC4-21300')
-    filepath = SpProduct.objects.filter(name='삼성 메모리')[0].getPriceByTable()
-    print(filepath)
     return render(request, 'Displayer/product.html',{'logged':logged, 'market_list': market_list})
     # 현재와 다른 html을 사용할 것
 
@@ -43,7 +41,7 @@ def api(request):
 def download_file(request):
     filename = request.GET.get('filepath')
     filename = urllib.parse.unquote(filename)
-    file_url = './xlsx/' + filename + '.xlsx'
+    file_url = SpProduct.objects.filter(name=filename)[0].getPriceByTable()
     if os.path.exists(file_url):
         with open(file_url, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
