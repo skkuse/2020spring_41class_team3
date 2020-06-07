@@ -251,7 +251,8 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
 
 class News(models.Model):
     product = models.ForeignKey("NspProduct", related_name='news', on_delete=models.CASCADE)
-    date=models.DateField()
+    date = models.DateField()
+    piece = models.CharField(default="", max_length=200)
     title = models.CharField(max_length=200)
     subj = models.IntegerField()
     url = models.URLField(max_length=200)

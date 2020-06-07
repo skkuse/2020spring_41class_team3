@@ -65,10 +65,25 @@
 							<a class="page-scroll" href="{%url 'home'%}">Home</a>
 						</li>
 						<li>
-							<a class="page-scroll" href="{%url 'product'%}">Product</a>
+							<a class="page-scroll" 
+							href=
+							{%if product%}
+								"{%url 'search' keyword=product%}"
+							{%else%}
+								"{%url 'product'%}"
+							{%endif%}
+							>
+							Product</a>
 						</li>
 						<li>
-							<a class="page-scroll" href="{%url 'API'%}">API</a>
+							<a class="page-scroll" 
+							href=
+							{%if product%}
+								"{%url 'api_get' keyword=product%}"
+							{%else%}
+								"{%url 'API'%}"
+							{%endif%}
+							>API</a>
 						</li>
 						<li>
 							<a class="page-scroll" href="{%url 'mypage'%}">MyPage</a>

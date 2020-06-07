@@ -15,11 +15,14 @@ def home(request):
     usr=request.user
     logged=usr.is_authenticated
     nnewz=[]
-    hist=[]
-    bookmarks=[]
+    hist=None
+    bookmarks=None
+    prod = None
     if logged:
         bookmarks=usr.handle.favor.all()
-        hist=usr.handle.history.all()
+        hist = usr.handle.history.order_by('-pk')
+        if hist.count()>0:
+            prod=hist[0].product
         newz=News.objects.none()
         for mark in bookmarks:
             newz |= mark.product.getNews()
@@ -28,7 +31,7 @@ def home(request):
             for i in range(0,3):
                 if newz.count()>i:
                     nnewz.append(newz[i])
-    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':nnewz, 'user':usr, 'history':hist})
+    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':nnewz, 'user':usr, 'history':hist,'product':prod})
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
 def product(request):
