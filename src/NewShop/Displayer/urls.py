@@ -12,6 +12,6 @@ urlpatterns = [
     path('API', views.api, name='API'),
     path('API/<str:keyword>',views.api_search,name='api_get'),
     path('mypage', views.myPage, name='mypage'),
-    
     path('change_pw', views.change_pw, name='change_pw'),
+    path('hpchange',views.hpChange,name='hp_change'),
 ]

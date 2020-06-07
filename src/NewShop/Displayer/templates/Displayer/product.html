@@ -66,8 +66,7 @@
 		<div class="container">
 			<h2>가격</h2>
 			{% for market in market_list %}
-				<h3> {{market.market}}</h3>
-			<h3><a href="{{market.link}}"> {{market.price}}원 </a></h3>
+				<h5> {{market.market}} <a href="{{market.link}}"> {{market.price}}원 </a></h5>
 			{% endfor %}
 	</section>
 

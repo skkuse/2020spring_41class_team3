@@ -30,6 +30,8 @@ class HUser(models.Model):
         email.send()
 
     def sendSMS(self, content):
+        if not self.permit:
+            return
         url='https://sens.apigw.ntruss.com'
         uri='/sms/v2/services/'+local_settings.svc_id+'/messages'
         data = {
@@ -55,9 +57,18 @@ class HUser(models.Model):
         res=requests.post(url+uri, json=data, headers=headers)
         res.raise_for_status()
 
+    def phoneAuth(self, input):        
+        if self.phonekey.all()[0].value==int(input):
+            self.phone=self.phonekey.all()[0].new_p
+            self.permit=True
+            self.save()
+            self.phonekey.all()[0].delete()
+            return True
+        else:
+            return False
 
     def __str__(self):
-        return self.name
+        return self.user.username
 
 
 class History(models.Model):
@@ -65,9 +76,17 @@ class History(models.Model):
     user = models.ForeignKey("HUser", related_name='history', on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.user)+' - '+str(self.product)
+    
+
 class Favor(models.Model):
     user = models.ForeignKey("HUser", related_name='favor', on_delete=models.CASCADE)
     product = models.ForeignKey("Product",on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user)+' - '+str(self.product)
+    
 
 class Alarm(models.Model):
     user = models.ForeignKey("HUser", related_name='alarm', on_delete=models.CASCADE)
@@ -77,21 +96,59 @@ class Alarm(models.Model):
     news_alarm = models.BooleanField()
     upper = models.IntegerField()
 
+    def __str__(self):
+        return str(self.user)+' - '+str(self.product)
+
 class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규약을 위한 추상 클래스
     name = models.CharField(max_length=100)
     imgUrl = models.CharField(max_length=200, null=True)
+    def __str__(self):
+        return self.name
+    
     @abc.abstractmethod
     def getNews(self):
-        pass
+        n = NspProduct.objects.all().filter(name=self.name)
+        s = SpProduct.objects.all().filter(name=self.name)
+        if n is not None:
+            return n.get(name=self.name).getNews() 
+        elif s is not None:
+            return s.get(name=self.name).getNews()
+        else:
+            return []
+
     @abc.abstractmethod
     def getPrice(self):
-        pass
+        n = NspProduct.objects.all().filter(name=self.name)
+        s = SpProduct.objects.all().filter(name=self.name)
+        if n is not None:
+            return n.get(name=self.name).getPrice() 
+        elif s is not None:
+            return s.get(name=self.name).getPrice()
+        else:
+            return []
+
     @abc.abstractmethod
     def getInfluence(self):
-        pass
+        n = NspProduct.objects.all().filter(name=self.name)
+        s = SpProduct.objects.all().filter(name=self.name)
+        if n is not None:
+            return n.get(name=self.name).getInfluence()
+        elif s is not None:
+            return s.get(name=self.name).getInfluence()
+        else:
+            return []
+
     @abc.abstractmethod
-    def getPriceByTable(self):
-        pass
+    def getPriceByTable(self):    
+        n = NspProduct.objects.all().filter(name=self.name)
+        s = SpProduct.objects.all().filter(name=self.name)
+        if n is not None:
+            return n.get(name=self.name).getPricebyTable()
+        elif s is not None:
+            return s.get(name=self.name).getPricebyTable()
+        else:
+            return []
+
     def sendPriceAlarm(self):  # 가격에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 가격이 저장된 상태여야 함
         alarms=self.alarm.all()
         pr=self.getPrice()[0].value
@@ -199,7 +256,19 @@ class News(models.Model):
     subj = models.IntegerField()
     url = models.URLField(max_length=200)
 
+    def __str__(self):
+        return self.title
+    
+
 class Price(models.Model):
     product = models.ForeignKey("SpProduct",related_name='price', on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()
+
+    def __str__(self):
+        return str(self.product)+' '+str(self.date)
+
+class PhoneKey(models.Model):
+    value = models.IntegerField()
+    user = models.ForeignKey("HUser", related_name='phonekey',on_delete=models.CASCADE)
+    new_p = models.CharField(max_length=13)

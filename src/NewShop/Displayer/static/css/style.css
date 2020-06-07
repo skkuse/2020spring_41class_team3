@@ -202,6 +202,15 @@ section ul li:before {
 .profile-box{
 	display:none;
 }
+.index-search-box{
+	float:right;
+	position: relative;
+	margin-top:30px;
+	border-radius:5px;
+	border-width:1px;
+	width:20%;
+	z-index: 1;
+}
 @media (min-width:768px) {
 	.navbar-default
 	{
@@ -1189,3 +1198,33 @@ and (max-width : 480px) {
 	border-bottom-width:1;
 	width:6rem;
 }
+<<<<<<< HEAD
+=======
+
+/*--------
+edit info
+--------*/
+.editinfo-form-group, .form-actions{
+	width:30%;
+	margin-left:35%;
+}
+.registration {
+    width: 360px;
+    margin: 0 auto;
+}
+.control-label {
+    font-size:1rem;
+    width: 100%;
+}
+.registration .form-actions > button {
+    width: 100%;
+}
+.registration .form-actions > button:hover {
+    text-align: center;
+    color:white;
+    background-color:#FFB808;
+}
+.btn{
+    margin-bottom:5px;
+}
+>>>>>>> d3713d0b7a76893929b0155ae11e8863ef7c8c53

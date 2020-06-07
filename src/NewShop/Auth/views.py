@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse
 from django.contrib import auth
 from Displayer.models import HUser
-from .forms import SigninForm, SignupForm, IDFindForm
+from .forms import SigninForm, SignupForm, IDFindForm, PWFindForm, ResetForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -9,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
+from django.contrib.auth.tokens import default_token_generator
 # Create your views here.
 
 # qu: 로그인 next 쿼리.
@@ -95,8 +98,56 @@ def id_finder(request):
         return render(request, "Auth/idFinder.html", {"form": form})
 
 def pw_finder(request):
-    if request.method == "GET":
-        return render(request, 'Auth/idFinder.html',{'form':IDFindForm()})
+    if request.method == "GET":        
+        return render(request, 'Auth/pwFinder.html',{'form':PWFindForm(initial={'domain':get_current_site(request).domain})})
     elif request.method == "POST":
-        form=IDFindForm(request.POST)
-        return render(request, "Auth/idFinder.html", {"form": form})
+        form=PWFindForm(request.POST)
+        return render(request, "Auth/pwFinder.html", {"form": form})
+    else:
+        return render(request, "Auth/pwFinder.html", {"form": form})
+
+def pw_reset_by_mail(request, uidb64, token):
+    uid = force_text(urlsafe_base64_decode(uidb64))
+    User = auth.get_user_model()
+    user = User.objects.get(pk=uid)
+    if user is not None and default_token_generator.check_token(user,token):
+        auth.login(request, user)
+        return redirect('pw_reset2',usr=user.pk)
+    else:
+        return HttpResponse('비정상적인 접근입니다.')
+
+def pw_reset(request, usr):
+    if request.user.pk == usr:
+        if request.method=='GET':
+            return render(request, "Auth/pwset.html",{'form':ResetForm(),'usr':usr})
+        elif request.method=='POST':
+            form=ResetForm(request.POST)
+            if form.is_valid():
+                newpw=form.cleaned_data['password1']
+                user = auth.get_user_model().objects.get(pk=usr)
+                user.set_password(newpw)
+                user.save()
+                return redirect('home',{})
+            else:
+                return render(request, "Auth/pwset.html",{'form':form})
+        else:
+            return render(request, "Auth/pwset.html",{'form':ResetForm()})
+    else:
+        return HttpResponse('비정상적인 접근입니다.')
+
+def pw_reset2(request):
+    if request.method=='POST':
+        pid=request.user.pk
+        form=ResetForm(request.POST)
+        if form.is_valid():
+            newpw=form.cleaned_data['password1']
+            user = auth.get_user_model().objects.get(pk=pid)
+            user.set_password(newpw)
+            user.save()
+            auth.logout(request)
+            messages.info(request,'비밀번호가 변경되었습니다. 새로운 비밀번호로 다시 로그인해주세요.')
+            return redirect('home')
+        else:
+            return render(request,"Auth/pwset.html",{'form':form})
+    else:
+        return HttpResponse('비정상적인 접근입니다.')

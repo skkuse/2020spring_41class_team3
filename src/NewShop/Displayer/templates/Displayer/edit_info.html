@@ -1,0 +1,72 @@
+{% extends 'Displayer/index.html' %}
+{%load static%}
+{% block content %}
+	<script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+	<script type="text/javascript">
+	    document.addEventListener("DOMContentLoaded", function() {
+	        Kakao.init( "22b3eb09f5aea81e1a95d1012bb65452" );
+	        Kakao.Auth.createLoginButton({
+	              container : "#kakao-login-btn"
+	            , success : function( authObj ) {
+	                console.log( authObj );
+	                var kakao_id =0;
+	                Kakao.API.request({
+	                      url : '/v2/user/me'
+	                    , success : function( res ) {
+	                        console.log( res );
+	                        document.getElementById( "kakaoIdentity" ).innerHTML = res.id;
+	                        kakao_id = res.id;
+	                        document.getElementById( "kakaoNickName" ).innerHTML = res.properties.nickname;
+	                        //document.getElementById( "kakaoProfileImg" ).src = res.properties.profile_image;
+	                        document.getElementById( "kakaoThumbnailImg" ).src = res.properties.thumbnail_image;
+	                    }, fail : function( error ) {
+	                        alert( JSON.stringify( error ) );
+	                    }
+	                });
+	                Kakao.API.request({
+					url:'/v2/api/talk/memo/send',
+					data: {
+						template_id: 29755,
+						args: '{"${msg}": "테스트입니다 테스트입니다 테스트입니다 "}'
+						},
+						success: function(res) {
+							alert('success!');
+							console.log(res);
+						},
+						fail: function(error) {
+							alert('error! \n' + JSON.stringify(error));
+							console.log(error);
+						}
+						})
+					}
+	            , fail : function( error ) {
+	                alert( JSON.stringify( error ));
+	            }
+	        });
+	    });
+	</script>
+	</head>
+	<body>
+		<header>
+	    <div>카카오 아이디 : <span id="kakaoIdentity"></span></div>
+	    <div>닉네임 : <span id="kakaoNickName"></span></div>
+	    <div>썸네일 이미지 : <img id="kakaoThumbnailImg" src=""/></div>
+	    <br/>
+	    <a id="kakao-login-btn"></a>
+		</header>
+
+		<section style="background-color:#EEEEEE">
+			<form action="." method="post">
+                <div class="editinfo-form-group">
+                    <label for="password">비밀번호 변경하기</label>
+                    <input name="password" id="password" class="form-control id_pwd_inputbox" type="password"><br>
+                    <label for="password">비밀번호 확인</label>
+                    <input name="password" id="password" class="form-control id_pwd_inputbox" type="password">
+                </div>
+                <div class="form-actions" style="margin-top:20px">
+                        <button class="btn" type="submit">저장하기</button>
+                </div>
+            </form>
+		</section>
+	</body>
+{% endblock %}

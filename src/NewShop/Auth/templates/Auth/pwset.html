@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="{%static 'css/style_auth.css'%}" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body> 
+    <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:20%"></div>
+    <div class="panel panel-default registration">
+            <div class="panel-heading" style="background-color:#FFB808">
+                비밀번호 재설정
+            </div>
+            <div class="panel-body">
+                <form action="." method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group {% if field.errors|length > 0 %}has-error{%endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <input name="{{ field.html_name }}" id="{{ field.id_for_lable }}" class="form-control id_pwd_inputbox" type="{{ field.field.widget.input_type }}" value="{{ field.value|default_if_none:'' }}">
+                            <p>{{field.help_text|linebreaksbr}}</p>
+                            {% for error in field.errors %}
+                                <label class="control-label" for="{{ field.id_for_label }}" style="color:red" align="center">{{ error }}</label>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <div class="form-actions">
+                            <button class="btn" type="submit">변경하기</button>
+                            <button class="btn" type="button" onclick="window.close()">취소</button>
+                    </div>
+                </form>
+            </div>
+    </div>
+</body>
+</html>
