@@ -138,16 +138,15 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
         else:
             return []
 
-    @abc.abstractmethod
-    def getPriceByTable(self):    
-        n = NspProduct.objects.all().filter(name=self.name)
-        s = SpProduct.objects.all().filter(name=self.name)
-        if n.count()>0:
-            return n.get(name=self.name).getPricebyTable()
-        elif s.count()>0:
-            return s.get(name=self.name).getPricebyTable()
-        else:
-            return []
+    def getPriceByTable(self):
+        filepath = "./xlsx/"+self.name+'.xlsx'
+        data = self.getPrice()
+        data_list = []        
+        for row in data:
+            data_list.append([row.date, row.value])
+        data_frame = pd.DataFrame(data=data_list, columns=['일자', '가격'])
+        data_frame.to_excel(filepath)
+        return filepath
 
     def sendPriceAlarm(self):  # 가격에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 가격이 저장된 상태여야 함
         alarms=self.alarm.all()
@@ -214,15 +213,6 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
             same=date            
         return price_list
 
-    # 이거 만들어야 함. 모든 상표의 가격을 포함할 것.
-    # 1행 1열 '날짜', 1행 2~N열 상표이름, 그 아래로 값들로 맞춰주세요.
-    def getPriceByTable(self):
-        spproduct = self.brand.all()
-        price_list = []
-        for sp in spproduct:
-            price_list.append({sp.name: sp.getPrice()})
-        pass
-
     def getInfluence(self):
         return self.influence
         
@@ -236,18 +226,6 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
     def getInfluence(self):
         return self.product.getInfluence()
     # return pandas dataframe
-    # 1행 1열 '날짜', 1행 2열 상표이름, 그 아래로 값들로 맞춰주세요.
-    def getPriceByTable(self):
-        data = self.getPrice()
-        data_list = []
-        keys = data[0].values().keys()
-        for row in data:
-            row_list = []
-            for key in keys:
-                row_list.append(row[key])
-            data_list.append(row_list)
-        data_frame = pd.DataFrame(data=data_list, columns=keys)
-        return data_frame
 
 class News(models.Model):
     product = models.ForeignKey("NspProduct", related_name='news', on_delete=models.CASCADE)
