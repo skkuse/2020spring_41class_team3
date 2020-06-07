@@ -46,7 +46,7 @@
 					<!-- History -->
 					<div id="home-dropdown" class="dropdown-class  dropdown-menu home-dropdown" onclick="home_dropdown_clicked();">
 						{%for rec in history%}
-							<a class="dropdown-item drop-item-style" href="{%url 'search' keyword=rec.product.name%}">{{rec.product.name}}</a><a class="dropdown-delete" href="#">x</a><br>
+							<a class="dropdown-item drop-item-style" href="{%url 'search' keyword=rec.product%}">{{rec.product}}</a><a class="dropdown-delete" href="{%url 'delhist' keyword=rec.product%}">x</a><br>
 						{%endfor%}
 					</div>
 				</div>
@@ -99,7 +99,7 @@
 								<div class="featured-icon"><i class="fa fa-television"></i></div>
 								<div class="featured-text" onclick="news_click();">
 									<h4>{{new.title}}</h4>
-									<h6>근래 반도체 시장이 불황을 겪으면서 가격이 폭등하고 있습니다. 해외 증시와 맞물려....</h6>
+									<h6>{{new.piece}}</h6>
 								</div>
 							</div>
 						{%endfor%}						

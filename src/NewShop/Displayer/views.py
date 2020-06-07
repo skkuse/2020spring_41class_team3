@@ -11,6 +11,10 @@ import random
 def redir(request):
     return redirect('home',)
 
+def toHome(request):
+    messages.info(request, '검색창에 검색어를 입력하여 시작합니다.')
+    return redirect('home',)
+
 def home(request):
     usr=request.user
     logged=usr.is_authenticated
@@ -35,15 +39,7 @@ def home(request):
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
 def product(request):
-    if request.method=='POST':
-        # product 페이지 내에서 검색어를 입력하여 키워드를 선택함
-        if request.POST.get('keyword') is not None:
-            key = request.POST.get('keyword')
-            prod = Product.objects.get(name=key)
-            History.objects.filter(user=request.user.handle,product=prod).delete()
-            History(user=request.user.handle, product=prod).save()
-            return redirect('search', keyword=key)
-
+    # 검색 기록이 없는 상태에서 검색어 입력 시 반드시 이곳으로 옴.
     logged=request.user.is_authenticated    
     market_list = crawler.get_market_real_time('삼성 메모리 DDR4 8G PC4-21300')
     return render(request, 'Displayer/product.html',{'logged':logged, 'market_list': market_list})
@@ -109,6 +105,12 @@ def delBook(request, keyword, next):
     return redirect(next)
 
 @login_required
+def delHist(request, keyword):
+    prod=Product.objects.get(name=keyword)
+    History.objects.get(user=request.user.handle,product=prod).delete()
+    return redirect('home')
+
+@login_required
 def alarmSet(request, keyword):
     return render(request, 'Displayer/api.html',{})
 
@@ -116,10 +118,14 @@ def alarmSet(request, keyword):
 def myPage(request):
     usr=request.user
     logged=usr.is_authenticated
+    prod=None
+    hs = usr.handle.history.order_by('-pk')
+    if hs.count()>0:
+        prod=hs[0].product
     bookmarks=None
     if logged:
         bookmarks=usr.handle.favor.all()
-    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks})
+    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks, 'product':prod})
 
 @login_required
 def change_pw(request):

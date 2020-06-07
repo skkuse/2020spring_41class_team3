@@ -16,4 +16,6 @@ urlpatterns = [
     path('alarm/<str:keyword>',views.alarmSet,name='alarmset'),
     path('tb:<str:keyword>',views.toggleBook,name='togglebook'),
     path('temp/<str:keyword>/next=<str:next>',views.delBook,name='delbook'),
+    path('temp/<str:keyword>/',views.delHist,name='delhist'),
+    path('please-search-a-keyword',views.toHome,name='home2'),
 ]
