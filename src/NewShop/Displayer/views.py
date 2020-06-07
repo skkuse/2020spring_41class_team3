@@ -9,8 +9,23 @@ def redir(request):
     return redirect('home',)
 
 def home(request):
-    logged=request.user.is_authenticated
-    return render(request, 'Displayer/home.html',{'logged':logged})
+    usr=request.user
+    logged=usr.is_authenticated
+    nnewz=[]
+    hist=[]
+    bookmarks=[]
+    if logged:
+        bookmarks=usr.handle.favor.all()
+        hist=usr.handle.history.all()
+        newz=News.objects.none()
+        for mark in bookmarks:
+            newz |= mark.product.getNews()
+        if newz.count()>0:
+            newz.order_by('-date')
+            for i in range(0,3):
+                if newz.count()>i:
+                    nnewz.append(newz[i])
+    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':nnewz, 'user':usr, 'history':hist})
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
 def product(request):
