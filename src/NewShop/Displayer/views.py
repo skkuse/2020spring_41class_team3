@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, HttpResponse
 from .models import *
 from django.contrib.auth.decorators import login_required
 from .news.crawler import crawler
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 import random
 
 # Create your views here.
@@ -65,6 +68,29 @@ def api_search(request, keyword):
 def myPage(request):
     logged=request.user.is_authenticated
     return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user})
+
+
+def change_pw(request):
+    logged=request.user.is_authenticated
+    context= {}
+    if request.method == "POST":
+        current_password = request.POST.get("origin_password")
+        user = request.user
+        if user.is_anonymous:
+            return render(request, "Displayer/home.html",{'logged':logged})
+        if check_password(current_password,user.password):
+            new_password = request.POST.get("password1")
+            password_confirm = request.POST.get("password2")
+            if new_password == password_confirm:
+                user.set_password(new_password)
+                user.save()
+                return render(request, 'Displayer/home.html',{'logged':logged})
+            else:
+                context.update({'error':"새로운 비밀번호를 다시 확인해주세요."})
+    else:
+        context.update({'error':"현재 비밀번호가 일치하지 않습니다."})
+
+    return render(request, "Displayer/change_pw.html",{'logged':logged, 'user':request.user})
 
 @login_required
 def hpChange(request):

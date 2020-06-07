@@ -1198,6 +1198,8 @@ and (max-width : 480px) {
 	border-bottom-width:1;
 	width:6rem;
 }
+<<<<<<< HEAD
+=======
 
 /*--------
 edit info
@@ -1225,3 +1227,4 @@ edit info
 .btn{
     margin-bottom:5px;
 }
+>>>>>>> d3713d0b7a76893929b0155ae11e8863ef7c8c53
