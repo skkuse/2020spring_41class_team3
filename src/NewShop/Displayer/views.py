@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .models import *
+from Displayer.news.nlp_main import get_recommend_query
 from django.contrib.auth.decorators import login_required
 from .news.crawler import crawler
 from django.contrib import messages
@@ -38,12 +39,12 @@ def home(request):
     return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':nnewz, 'user':usr, 'history':hist,'product':prod})
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
-def product(request):
+def q2key(request):
     # 검색 기록이 없는 상태에서 검색어 입력 시 반드시 이곳으로 옴.
-    logged=request.user.is_authenticated    
-    market_list = crawler.get_market_real_time('삼성 메모리 DDR4 8G PC4-21300')
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list': market_list})
-    # 현재와 다른 html을 사용할 것
+    logged=request.user.is_authenticated
+    if request.method=='POST':        
+        related = get_recommend_query(request.POST.get('query'))
+        return render(request, 'Displayer/related.html',{'logged':logged, 'related': related})
 
 def search(request, keyword):
     logged=request.user.is_authenticated
@@ -112,7 +113,7 @@ def delHist(request, keyword):
 
 @login_required
 def alarmSet(request, keyword):
-    return render(request, 'Displayer/api.html',{})
+    return HttpResponse('?')
 
 @login_required
 def myPage(request):

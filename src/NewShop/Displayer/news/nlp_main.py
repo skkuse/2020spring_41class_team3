@@ -18,7 +18,7 @@ from konlpy.tag import Komoran
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from models import News, NspProduct, SpProduct
+from Displayer.models import News, NspProduct, SpProduct
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # TODO: 1. Save model 2. Adopt crawling 3. Experiments documents 4. Update database system

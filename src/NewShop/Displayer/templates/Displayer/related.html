@@ -1,0 +1,24 @@
+{% extends 'Displayer/index.html' %}
+{% load static %}
+{% block content %}
+	<hr>
+	<section class="section-product-news">
+		<div class="container">
+				<div class="row row-gutter">
+					<div class="col-gutter">
+                        {%if not related%}
+                            연관 검색어가 없습니다. 다시 시도해주세요.
+                        {%endif%}
+						{%for p in related%}
+							<div class="featured-item">
+								<div class="featured-icon"><i class="fa fa-television"></i></div>
+								<div class="featured-text" onclick="{%url 'search' keyword=p%}">
+									<h4>{{p}} </h4>
+								</div>
+							</div>
+						{%endfor%}
+					</div>
+					
+				</div>
+	</section>
+{% endblock %}
