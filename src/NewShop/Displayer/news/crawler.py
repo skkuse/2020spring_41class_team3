@@ -122,6 +122,5 @@ class Crawler(object):
 
 crawler = Crawler()
 
-# if __name__ == '__main__':
-#     crawler = Crawler()
-#     print(crawler.get_market_price("사과"))
+if __name__ == '__main__':
+    print(crawler.get_market_price('삼성'))
