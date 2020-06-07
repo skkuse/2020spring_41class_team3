@@ -76,17 +76,9 @@ class History(models.Model):
     user = models.ForeignKey("HUser", related_name='history', on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
 
-    def __str__(self):
-        return str(self.user)+' - '+str(self.product)
-    
-
 class Favor(models.Model):
     user = models.ForeignKey("HUser", related_name='favor', on_delete=models.CASCADE)
     product = models.ForeignKey("Product",on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.user)+' - '+str(self.product)
-    
 
 class Alarm(models.Model):
     user = models.ForeignKey("HUser", related_name='alarm', on_delete=models.CASCADE)
@@ -96,59 +88,21 @@ class Alarm(models.Model):
     news_alarm = models.BooleanField()
     upper = models.IntegerField()
 
-    def __str__(self):
-        return str(self.user)+' - '+str(self.product)
-
 class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규약을 위한 추상 클래스
     name = models.CharField(max_length=100)
     imgUrl = models.CharField(max_length=200, null=True)
-    def __str__(self):
-        return self.name
-    
     @abc.abstractmethod
     def getNews(self):
-        n = NspProduct.objects.all().filter(name=self.name)
-        s = SpProduct.objects.all().filter(name=self.name)
-        if n.count()>0:
-            return n.get(name=self.name).getNews() 
-        elif s.count()>0:
-            return s.get(name=self.name).getNews()
-        else:
-            return []
-
+        pass
     @abc.abstractmethod
     def getPrice(self):
-        n = NspProduct.objects.all().filter(name=self.name)
-        s = SpProduct.objects.all().filter(name=self.name)
-        if n.count()>0:
-            return n.get(name=self.name).getPrice() 
-        elif s.count()>0:
-            return s.get(name=self.name).getPrice()
-        else:
-            return []
-
+        pass
     @abc.abstractmethod
     def getInfluence(self):
-        n = NspProduct.objects.all().filter(name=self.name)
-        s = SpProduct.objects.all().filter(name=self.name)
-        if n.count()>0:
-            return n.get(name=self.name).getInfluence()
-        elif s.count()>0:
-            return s.get(name=self.name).getInfluence()
-        else:
-            return []
-
+        pass
     @abc.abstractmethod
-    def getPriceByTable(self):    
-        n = NspProduct.objects.all().filter(name=self.name)
-        s = SpProduct.objects.all().filter(name=self.name)
-        if n.count()>0:
-            return n.get(name=self.name).getPricebyTable()
-        elif s.count()>0:
-            return s.get(name=self.name).getPricebyTable()
-        else:
-            return []
-
+    def getPriceByTable(self):
+        pass
     def sendPriceAlarm(self):  # 가격에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 가격이 저장된 상태여야 함
         alarms=self.alarm.all()
         pr=self.getPrice()[0].value
@@ -221,6 +175,7 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
         price_list = []
         for sp in spproduct:
             price_list.append({sp.name: sp.getPrice()})
+
         pass
 
     def getInfluence(self):
@@ -238,21 +193,21 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
     # return pandas dataframe
     # 1행 1열 '날짜', 1행 2열 상표이름, 그 아래로 값들로 맞춰주세요.
     def getPriceByTable(self):
+        filepath = "./xlsx/"+str(self.name)+'.xlsx'
         data = self.getPrice()
         data_list = []
-        keys = data[0].values().keys()
         for row in data:
             row_list = []
-            for key in keys:
-                row_list.append(row[key])
+            row_list.append(row.date)
+            row_list.append(row.value)
             data_list.append(row_list)
-        data_frame = pd.DataFrame(data=data_list, columns=keys)
-        return data_frame
+        data_frame = pd.DataFrame(data=data_list, columns=['date', 'price'])
+        data_frame.to_excel(filepath)
+        return filepath
 
 class News(models.Model):
     product = models.ForeignKey("NspProduct", related_name='news', on_delete=models.CASCADE)
-    date = models.DateField()
-    piece = models.CharField(default="", max_length=200)
+    date=models.DateField()
     title = models.CharField(max_length=200)
     subj = models.IntegerField()
     url = models.URLField(max_length=200)
@@ -265,9 +220,6 @@ class Price(models.Model):
     product = models.ForeignKey("SpProduct",related_name='price', on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()
-
-    def __str__(self):
-        return str(self.product)+' '+str(self.date)
 
 class PhoneKey(models.Model):
     value = models.IntegerField()
