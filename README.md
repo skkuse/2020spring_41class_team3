@@ -33,6 +33,7 @@
     pip install django
     pip install django-extensions
     pip install pandas
+    pip install requests
     pip install bs4
     
     python manage.py runserver
