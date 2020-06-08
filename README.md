@@ -32,7 +32,6 @@
 
     pip install django
     pip install django-extensions
-    pip install requests
     pip install pandas
     pip install bs4
     
