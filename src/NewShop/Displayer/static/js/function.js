@@ -44,6 +44,16 @@ function product_subscription(){
 
 
 
+function not_searched_yet(){
+	alert("원하는 상품을 먼저 검색해주세요!");
+	if(document.getElementById("search-box-id")){
+		document.getElementById("search-box-id").focus();
+	}else{
+		document.getElementById("index-search-box").focus();
+	}
+	//document.getElementById("search-box-id").focus();
+}
+
 function search_box_focused(){
 	//var check = document.getElementById("test");
 	var el = document.getElementById("home-dropdown");
@@ -52,4 +62,5 @@ function search_box_focused(){
 function home_dropdown_clicked(){
 	document.getElementById("search-box-id").focus();
 }
+
 
