@@ -6,22 +6,25 @@ import collections
 import json
 import random
 import pandas as pd
+from datetime import datetime
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchtext
 from torchtext import data
-from torchtext.data import TabularDataset, BucketIterator
+from torchtext.data import TabularDataset, Iterator
 
 from konlpy.tag import Komoran
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from models import News, NspProduct, SpProduct
+from Displayer.models import News, NspProduct, SpProduct
+from Displayer.news.crawler import make_news_url, Crawler
+from Displayer.news.TextRank import keysentence_summarizer
+
+
+komoran = Komoran()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-# TODO: 1. Save model 2. Adopt crawling 3. Experiments documents 4. Update database system
 
 def get_recommend_query(query):
     all_products = SpProduct.objects.values('name')
@@ -143,49 +146,43 @@ def test(model, criterion, test_loader, epoch):
     return log
 
 
-if __name__=="__main__":
+def train_model():
     # Log settings
     exp_logs = []
     exp_log = collections.OrderedDict({'model': 'LSTM'})
     exp_logs.append(exp_log.copy())
-    file_name = 'GRU'
-    path = "Your path"
+    path = os.path.dirname(os.path.abspath(__file__))
     save_json_file(f'{path}', exp_logs)
     
     random.seed(10)
 
     # ML settings
-    epochs = 10
-    batch_size = 2
+    epochs = 100
+    batch_size = 10
     n_classes = 4
     lr = 0.1
-    tokenizer = Komoran()
+    tokenizer = komoran
 
-    # Data loading (example) TODO: Change to crawling application
-    # columns: 'raw', 'key_word', 'key_sentences', 'classification'
-    """ Save the example data
-    df = pd.read_csv('example_dataset.csv')
-    train_df = df.loc[[0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]][['key_sentences', 'classification']]
-    test_df = df.loc[[3, 7, 11, 15]][['key_sentences', 'classification']]
-    train_df.to_csv('train_data.csv', index=False, index_label=False)
-    test_df.to_csv('test_data.csv', index=False, index_label=False)
-    """
+    best_acc = 0.0
+
+    # Data loading
     print("### Data preprocessing ###")
     TEXT = data.Field(sequential=True, use_vocab=True, tokenize=tokenizer.morphs, batch_first=True, tokenizer_language='ko', fix_length=20)
     LABEL = data.Field(sequential=False, use_vocab=False, batch_first=False, is_target=True)
-    train_data, test_data = TabularDataset.splits(path='.', train='train_data.csv', test='test_data.csv', format='csv', fields=[('text', TEXT), ('label', LABEL)], skip_header=True)
+    train_data, test_data = TabularDataset.splits(path='.', train='train_data.csv', test='test_data.csv', format='csv', fields=[('text', TEXT), ('label', LABEL)], skip_header=True)    
     
-    TEXT.build_vocab(train_data, min_freq=1, max_size=100000)
+    TEXT.build_vocab(train_data, min_freq=2, max_size=100000)
     vocab_size = len(TEXT.vocab.stoi)
+    vocab = TEXT.vocab
 
-    train_loader = BucketIterator(dataset=train_data, batch_size=batch_size, shuffle=True, repeat=False)
-    test_loader = BucketIterator(dataset=test_data, batch_size=batch_size, shuffle=False)
+    train_loader = Iterator(dataset=train_data, batch_size=batch_size, shuffle=True, device=device, repeat=False)
+    test_loader = Iterator(dataset=test_data, batch_size=batch_size, shuffle=False, device=device, repeat=False)
 
     print("### Model ###")
-    #model = torch.nn.LSTM()
-    model = TextSentiment(vocab_size, 256, n_classes)
+    embed_dim = 256
+    model = TextSentiment(vocab_size, embed_dim, n_classes).to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(reduction='sum').to(device)
 
     print("### Epoch starts ###")
     for epoch in range(epochs):
@@ -195,4 +192,65 @@ if __name__=="__main__":
         exp_log.update(test_log)
         exp_logs.append(exp_log)
         save_json_file(f'{path}', exp_logs)
+
+        if best_acc < test_log['test']['accuracy']:
+            torch.save({
+                'model_state_dict': model.state_dict(),
+                'vocab_size': vocab_size,
+                'embed_dim': embed_dim,
+                'n_classes': n_classes,
+                'vocab': vocab,
+                }, f'{path}/best_model.pth')
+            best_acc = test_log['test']['accuracy']
+    print(f"### Best accuracy: {best_acc} ###")
+
+
+def test_model(query, date_range, length, m_path):
+    checkpoint = torch.load(m_path, map_location=device)
+    model = TextSentiment(checkpoint['vocab_size'], checkpoint['embed_dim'], checkpoint['n_classes']).to(device)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.to(device)
+    model.eval()
+    # Crawling & NLP start & Update database
+    crawler = Crawler()
+    for i, q in enumerate(query):
+        url = make_news_url(q, date_range[0], date_range[1], length)
+        for url_ in url:
+            news = crawler.get_news_link(url_)
+            for n_url in news:
+                news_contents_ = crawler.get_news_contents(n_url)
+                if not news_contents_ == '':
+                    print("### News summary")
+                    key_sentences_ = keysentence_summarizer(news_contents_, d_f=0.85, epochs=30, threshold=0.001, T=5)
+                    print(key_sentences_)
+                    tokens = [komoran.morphs(sent) for sent in key_sentences_]
+                    vocab = checkpoint['vocab']
+                    text = torch.tensor([vocab[token] for token in tokens[0]]).to(device)
+                    offsets = torch.tensor([0]).to(device)
+                    outputs = model(text, offsets)
+                    _, predicted = outputs.max(1)
+                    print(f"### Predict: {predicted.item()} \t(0: price, 1: new product, 2: promotion, 3: industry)")
+
+                    # Shold be updated
+                    date_ = datetime.now()
+                    title_ = 'ex'
+                    url_ = 'https://www.naver.com'
+
+                    #News.objects.create(date=date_, title=title_, subj=predicted, url=url_, product=q, piece=key_sentences_)
+                    #product_ = NspProduct.objects.filter(name=q)[0]
+                    #News.objects.create(date=date_, title=title_, subj=predicted, url=url_, product=product_, piece=key_sentences_)
+
+                    #break
+
+
+""" Usage
+    # Arguments:
+    #     1) list (Query sentence) (*** Should be product name ***)
+    #     2) list (Range of searching news)
+    #     3) int (Maximum length of searching news)
+    #     4) string (Path to TextSentiment model) (*** Do not touch ***)
+(Example)
+test_model(['ssd'], ['20200601', '20200608'], 9, 'Displayer/news/best_model.pth'))
+"""
+
     
