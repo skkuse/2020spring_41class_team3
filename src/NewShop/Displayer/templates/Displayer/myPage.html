@@ -8,24 +8,23 @@
 		</div>
 	</header>
 		<div class="container">
-			휴대폰 번호를 등록하면 SMS로 알림을 받을 수 있습니다. 번호 : {{user.handle.phone}}
+			<br>
 			<button class="mypage-button" onclick="window.open('{%url 'hp_change'%}', 'mywin','left=20,top=20,width=500,height=400,toolbar=1,resizable=no')">
-			변경하기
+			휴대폰 번호 변경하기
 			</button>
+			휴대폰 번호를 등록하면 SMS로 알림을 받을 수 있습니다. 번호 : {{user.handle.phone}}
+		</div>
+		<br>
+		<div class="container">
+			<button class="mypage-button" onclick="location.href='/change_pw'">비밀번호 변경</button>
 		</div>
 	<section id="subscription">
 		<div class="container">
-		<div class="checkbox-group">
-			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" name="최저가 갱신 알림 받기" value="check1" onclick="mypage_subscription_condition1();"> 최저가 갱신 알림 받기</label>
-			<br>
-			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" name="최저가 갱신 알림 받기" value="check1" onclick="mypage_subscription_condition2();"> 가격 변동 소식 알림 받기</label>
+		<div class="checkbox-group" style="float:center;">
+			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" value="check1" onclick="mypage_subscription_condition1();"> &nbsp; 이메일 수신받기</label>
+			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox"  value="check2" onclick="mypage_subscription_condition2();"> &nbsp; 핸드폰 SMS 수신받기 </label>
+			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox"  value="check3" onclick="mypage_subscription_condition2();"> &nbsp; 핸드폰 푸시알림 </label>
 		</div>
-		<div class="form-actions subscription-method">
-            <button class="mypage-button" onclick="mypage_subscription_method1();">카카오</button>
-            <button class="mypage-button" onclick="mypage_subscription_method2();">이메일</button>
-			<button class="mypage-button" onclick="mypage_subscription_method3();">휴대폰 푸시 알림</button>
-			<button class="mypage-button" onclick="location.href='/change_pw'">비밀번호 변경</button>
-    	</div>
     </div>
 	</section>
 	<section id="about" class="light-bg">
@@ -39,6 +38,32 @@
 				</div>
 			</div>
 			<div class="row">
+				{%for pr in bookmarks%}
+						<div class="col-md-3 text-center">
+							<div class="mz-module">
+								<div class="mz-module-about">
+									<button class="mypage-bookmarks-delete" name="{{pr.product}}" onclick="location.href='{%url 'delbook' keyword=pr.product next='mypage'%}'">X</button>
+									<img class="mz-image" src="{{pr.product.imgUrl}}" width="100%">
+									<h3>{{pr.product}}</h3>
+								</div>
+								<a class="mz-module-button" name="{{pr.product}}" onclick="location.href='{%url 'search' keyword=pr.product%}'">search</a>
+							</div>
+						</div>
+					{%endfor%}
+			</div>
+		</div>
+		<section id="about" style="background-color:#FFFFFF">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="section-title">
+						<h3>Subscription Products Management</h3>
+						<p></p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<!-------------------------------- must modified ---------------------> 
 				{%for pr in bookmarks%}
 						<div class="col-md-3 text-center">
 							<div class="mz-module">
