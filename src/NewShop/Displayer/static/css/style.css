@@ -1227,7 +1227,32 @@ and (max-width : 480px) {
 .section-product-news, .section-market{
 	background-color:#EEEEEE;
 }
-
+.product-news-date{
+	width:10%;
+	height:20%;
+	float:left;
+	cursor:Pointer;
+}
+.product-news-contents{
+	margin-left:10%;
+	cursor:Pointer;
+}
+.chart-range-form{
+	text-align:center;
+	margin-top:5%;
+}
+.product-date-box{
+	width:20%;
+	border-width:0;
+	
+}
+#chart-range{
+	margin-left:5%;
+	background-color:#EEEEEE;	
+}
+#chart-range:hover{
+	background-color:#FFB808;	
+}
 /*---------
  my page
 ----------*/

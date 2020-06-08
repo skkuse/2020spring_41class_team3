@@ -31,23 +31,23 @@
  <script src="{%static 'js/Chart.bundle.js'%}"></script>
   	<script> var ctx = document.getElementById('myChart').getContext('2d'); 
 
-  	var chart = new Chart(ctx, { // 챠트 종류를 선택 
+  	 var chart = new Chart(ctx, { // 챠트 종류를 선택 
 type: 'line', 
 // 챠트를 그릴 데이타
  data: {
-  labels: ["2018-12-07 12:45:17", "2018-12-09 12:45:17", "2018-12-31 12:45:17", "2019-02-07 12:45:17", "2019-04-07 12:45:17", "2019-06-25 12:45:17", "2019-08-30 12:45:17"], 
+  labels: {{pr_dt|safe}}, 
   datasets: [
-  { label: '{{product}}', 
+  { label: '사과', 
   backgroundColor: ['rgba(255,0,0,0.2)'], 
-  borderColor: 'red', data: [0, 10, 5, 2, 20, 30, 45] }] }, // 옵션 
+  borderColor: 'red', data: {{pr_vl}} }] }, // 옵션 
 options: {
-	scales: {
+  scales: {
         xAxes: [{
             type: 'time',
             time: {
-            	unit : 'day',
+              unit : 'day',
                 displayFormats: {
-                    day: 'YYHHMM'
+                    day: 'YY/HH/MM'
                 }
             },
             ticks: {
@@ -56,12 +56,12 @@ options: {
 
         }]                    
     },
-	tooltips: {
+  tooltips: {
        callbacks: {
            label: function(tooltipItem) {
                return tooltipItem.xLabel+ Number(tooltipItem.yLabel) + " 사과는 맛있어..";
            }
        }
-	}
-} }); </script>
+  }
+} });  </script>
 {% endblock %}
