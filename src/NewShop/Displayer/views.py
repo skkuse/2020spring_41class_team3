@@ -4,9 +4,12 @@ from Displayer.news.nlp_main import get_recommend_query
 from django.contrib.auth.decorators import login_required
 from .news.crawler import crawler
 from django.contrib import messages
+from django.core import serializers
+from django.http import Http404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 import random
+import urllib.parse
 
 # Create your views here.
 def redir(request):
@@ -42,7 +45,7 @@ def home(request):
 def q2key(request):
     # 검색 기록이 없는 상태에서 검색어 입력 시 반드시 이곳으로 옴.
     logged=request.user.is_authenticated
-    if request.method=='POST':        
+    if request.method=='POST':
         related = get_recommend_query(request.POST.get('query'))
         return render(request, 'Displayer/related.html',{'logged':logged, 'related': related})
     else:
@@ -91,6 +94,28 @@ def api_search(request, keyword):
     price=prod.getPrice()
     return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price})
     # 현재의 html을 사용할 것
+
+def api_xlsx(request):
+    filename = request.GET.get('name')
+    try:
+        filename = urllib.parse.unquote(filename)
+        file_url = SpProduct.objects.filter(name=filename)[0].getPriceByTable()
+        if os.path.exists(file_url):
+            with open(file_url, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
+                return response
+    except:
+        raise Http404
+
+def api_json(request):
+    filename = request.GET.get('name')
+    try:
+        filename = urllib.parse.unquote(filename)
+        query = SpProduct.objects.filter(name=filename)[0].getPrice()
+        query_list = serializers.serialize('json', query)
+        return HttpResponse(query_list, content_type="text/json-comment-filtered")
+    except:
+        raise Http404
 
 @login_required
 def toggleBook(request, keyword):
