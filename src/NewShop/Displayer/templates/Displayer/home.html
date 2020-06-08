@@ -97,33 +97,58 @@
 				<div class="row row-gutter">
 					<div class="col-gutter">
 						{%for new in news%}
+
 						<!--최신 3개-->
-							<div class="featured-item">
+							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;">
 								<div class="featured-icon"><i class="fa fa-television"></i></div>
 								<div class="featured-text" onclick="news_click();">
 									<h4>{{new.title}}</h4>
-									<h6>{{new.piece}}</h6>
+									<h6>{{new.piece}} </h6>
+
 								</div>
 							</div>
-						{%endfor%}						
+						{%endfor%}					
 					</div>
-					
+					<button name="more-news" id="more-news" class="more-news" >↓</button>
 				</div>
 			</div>
 		</section>
 		<script type="text/javascript">
+
+		var showNews=3;
+		$(document).ready(function(){
+			for(var i=0; i<showNews; i++){
+				$("#news-"+i).fadeIn(500);
+			}
+		});
+		
 		$(function(){
+			$("#more-news").click(function(e){
+				extend = showNews+3;
+				for(var i=showNews; i<extend; i++){
+					var ea = document.getElementById("news-"+i);
+					if(ea==null){
+						alert("마지막 뉴스입니다!");
+						return 0;
+					}
+					$("#news-"+i).fadeIn((i-showNews)*900);
+				}
+				showNews = extend;
+				document.location.href="#more-news";
+			});
 			$('html').click(function(e) {
 			 if(!$(e.target).hasClass("dropdown-class")) {
 				var el = document.getElementById("home-dropdown");
 				el.style.display = "none";
+				
 			} });
 
 			$("#index-search-box").click(function(e){
 				var el = document.getElementById("home-dropdown");
 				el.style.display = "inline";
 				document.getElementById("search-box-id").focus();
-			})
+			});
+
 		});
 
 		</script>

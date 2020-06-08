@@ -592,6 +592,15 @@ header {
 
 }
 
+.more-news{
+	width:5rem;
+	height:5rem;
+	font-weight:800;
+	font-size:3rem;
+	border-width:0;
+	background-color:#00000044;
+	float:right;
+}
 /*--------------------
 4.2. Featured
 --------------------*/
