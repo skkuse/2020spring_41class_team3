@@ -234,14 +234,13 @@ def test_model(query, date_range, length, m_path):
                     # Shold be updated
                     date_ = datetime.now()
                     title_ = 'ex'
-                    url_ = 'https://www.naver.com'
 
                     product_ = NspProduct.objects.filter(name=q)[0]
                     key_sentences_string = ''
                     for i in key_sentences_:
                         key_sentences_string += i
                         key_sentences_string += " "
-                    News.objects.create(date=date_, title=title_, subj=predicted.item(), url=url_, product=product_, piece=key_sentences_string)
+                    News.objects.create(date=date_, title=title_, subj=predicted.item(), url=n_url, product=product_, piece=key_sentences_string)
 
 
 """ Usage
