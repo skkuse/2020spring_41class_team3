@@ -1,0 +1,62 @@
+{% extends 'Displayer/index.html' %}
+{% load static %}
+{% block content %}
+<header>
+			<div class="container-fluid" >
+				<div class="slider-container" >
+					<div class="owl-slider owl-carousel">
+						<div class="item">
+							<div class="owl-slider-item">
+								<img src="{%static 'images/slider-1.jpg'%}" class="img-responsive" alt="portfolio">
+								<div class="intro-text">
+									<div class="intro-heading">newShop</div>
+									<div class="intro-lead-in">모든 품목 최저가 검색 사이트</div>
+									<div class="col-md-6">
+									<div class="form-group">
+										<p class="help-block text-danger"></p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="item">
+							<div class="owl-slider-item">
+								<img src="{%static 'images/slider-2.jpg'%}" class="img-responsive" alt="portfolio">
+								<div class="intro-text">
+									<div class="intro-lead-in">We are the number one</div>
+									<div class="intro-heading">Design & Development Agency</div>
+								</div>
+							</div>
+						</div>
+						<div class="item">
+							<div class="owl-slider-item">
+								<img src="{%static 'images/slider-1.jpg'%}" class="img-responsive" alt="portfolio">
+								<div class="intro-text">
+									<div class="intro-lead-in">We are the number one</div>
+									<div class="intro-heading">Design & Development Agency</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+	<hr>
+	<section class="section-product-news">
+		<div class="container">
+				<div class="row row-gutter">
+					<div class="col-gutter">
+                        {%if not related%}
+                            연관 검색어가 없습니다. 다시 시도해주세요.
+                        {%endif%}
+						{%for p in related%}
+							<div class="featured-item">
+								<div class="featured-icon"><i class="fa fa-television"></i></div>
+								<div class="featured-text" onclick="location.href='{%url 'search' keyword=p%}'">
+									<h4>{{p}} </h4>
+								</div>
+							</div>
+						{%endfor%}
+					</div>
+					
+				</div>
+	</section>
+{% endblock %}

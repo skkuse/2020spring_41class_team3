@@ -4,19 +4,27 @@
  	<header>
  		<div class="container">
 			<div class="product-image-box">
-				<img class="product-image" src="{%static 'images/apple.png'%}" >
+				<img class="product-image" src="{{product.imgUrl}}" >
 			</div>
 			<div class="product-info-box">
-				<h1> 사과</h1>
+				<h1> {{ product }}</h1>
 				<br>
 				<div class="product-price-box">
-				<h4> 현재 최저: 380g/원 </h4>
-				<h4> 평균 : 405g/원 </h4>
+				<h4> 현재 최저: {{low}} 원 </h4>
+				<h4> 평균 : {{average}} 원</h4>
 				</div>
-				<div class="product-subscription-box">
-					<button class="subscription_button" onclick="product_subscription();"><img src="{%static 'images/subscription_on.png'%}" style="width:100%"></button>
 
-					<button class="subscription_button" onclick="product_subscription();"><img src="{%static 'images/alarm.png'%}" style="width:150%"></button>
+				<div class="product-subscription-box">
+					<button class="subscription_button" onclick="location.href='{%url 'togglebook' keyword=product%}'">
+						{%if booked%}
+							<img src="{%static 'images/subscription_on.png'%}" style="width:100%">
+						{%else%}
+							<img src="{%static 'images/subscription_off.png'%}" style="width:100%">
+						{%endif%}
+					</button>
+
+					<button class="subscription_button" onclick="location.href='{%url 'alarmset' keyword=product%}'"><img src="{%static 'images/alarm.png'%}" style="width:150%"></button>
+
 				</div>
 			</div>
 		</div>
@@ -31,28 +39,15 @@
 		<div class="container">
 				<div class="row row-gutter">
 					<div class="col-gutter">
-						<div class="featured-item">
-							<div class="featured-icon"><i class="fa fa-television"></i></div>
-							<div class="featured-text" onclick="news_click();">
-								<h4>건조한 날씨 계속 </h4>
-								<h6>건조한 날씨가 계속되어 농가가 울상을 짓고있습니다. 사과는 적정량의 일조량과 수분을 필요로 하는데...</h6>
-
+						{%for new in news%}
+							<div class="featured-item">
+								<div class="featured-icon"><i class="fa fa-television"></i></div>
+								<div class="featured-text" onclick="news_click();">
+									<h4>{{new.title}} </h4>
+									<h6>{{new.piece}}</h6>
+								</div>
 							</div>
-						</div>
-						<div class="featured-item">
-							<div class="featured-icon"><i class="fa fa-cogs"></i></div>
-							<div class="featured-text" onclick="news_click();">
-								<h4>Apple is redundant</h4>
-								<h6>아침사과, 저녁사과 모두 독사과라는 최근 언론 보도에 따라 사과 수요가 매우 급감하여 가격이 폭락했습니다.</h6>
-							</div>
-						</div>
-						<div class="featured-item">
-							<div class="featured-icon"><i class="fa fa-newspaper-o"></i></div>
-							<div class="featured-text" onclick="news_click();">
-								<h4>Ipad 8th의 출시!</h4>
-								<h6>Ipad 8세대의 출시에 따라 6세대는 더이상 프리미엄이 아닙니다. 따라서 가격이 급감합니다!!</h6>
-							</div>
-						</div>
+						{%endfor%}
 					</div>
 					
 				</div>
@@ -66,8 +61,7 @@
 		<div class="container">
 			<h2>가격</h2>
 			{% for market in market_list %}
-				<h3> {{market.market}}</h3>
-			<h3><a href="{{market.link}}"> {{market.price}}원 </a></h3>
+				<h5> {{market.market}} <a href="{{market.link}}"> {{market.price}}원 </a></h5>
 			{% endfor %}
 	</section>
 

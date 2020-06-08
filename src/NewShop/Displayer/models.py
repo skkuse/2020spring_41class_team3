@@ -30,6 +30,8 @@ class HUser(models.Model):
         email.send()
 
     def sendSMS(self, content):
+        if not self.permit:
+            return
         url='https://sens.apigw.ntruss.com'
         uri='/sms/v2/services/'+local_settings.svc_id+'/messages'
         data = {
@@ -55,9 +57,18 @@ class HUser(models.Model):
         res=requests.post(url+uri, json=data, headers=headers)
         res.raise_for_status()
 
+    def phoneAuth(self, input):        
+        if self.phonekey.all()[0].value==int(input):
+            self.phone=self.phonekey.all()[0].new_p
+            self.permit=True
+            self.save()
+            self.phonekey.all()[0].delete()
+            return True
+        else:
+            return False
 
     def __str__(self):
-        return self.name
+        return self.user.username
 
 
 class History(models.Model):
@@ -65,9 +76,17 @@ class History(models.Model):
     user = models.ForeignKey("HUser", related_name='history', on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.user)+' - '+str(self.product)
+    
+
 class Favor(models.Model):
     user = models.ForeignKey("HUser", related_name='favor', on_delete=models.CASCADE)
     product = models.ForeignKey("Product",on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user)+' - '+str(self.product)
+    
 
 class Alarm(models.Model):
     user = models.ForeignKey("HUser", related_name='alarm', on_delete=models.CASCADE)
@@ -77,21 +96,60 @@ class Alarm(models.Model):
     news_alarm = models.BooleanField()
     upper = models.IntegerField()
 
+    def __str__(self):
+        return str(self.user)+' - '+str(self.product)
+
 class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규약을 위한 추상 클래스
     name = models.CharField(max_length=100)
     imgUrl = models.CharField(max_length=200, null=True)
+    def __str__(self):
+        return self.name
+    
     @abc.abstractmethod
     def getNews(self):
-        pass
+        n = NspProduct.objects.all().filter(name=self.name)
+        s = SpProduct.objects.all().filter(name=self.name)
+        if n.count()>0:
+            return n.get(name=self.name).getNews() 
+        elif s.count()>0:
+            return s.get(name=self.name).getNews()
+        else:
+            return []
+
     @abc.abstractmethod
     def getPrice(self):
-        pass
+        n = NspProduct.objects.all().filter(name=self.name)
+        s = SpProduct.objects.all().filter(name=self.name)
+        if n.count()>0:
+            return n.get(name=self.name).getPrice() 
+        elif s.count()>0:
+            return s.get(name=self.name).getPrice()
+        else:
+            return []
+
     @abc.abstractmethod
     def getInfluence(self):
-        pass
-    @abc.abstractmethod
+        n = NspProduct.objects.all().filter(name=self.name)
+        s = SpProduct.objects.all().filter(name=self.name)
+        if n.count()>0:
+            return n.get(name=self.name).getInfluence()
+        elif s.count()>0:
+            return s.get(name=self.name).getInfluence()
+        else:
+            return []
+
     def getPriceByTable(self):
-        pass
+        if not os.path.isdir('./xlsx'):
+            os.mkdir('./xlsx')
+        filepath = "./xlsx/"+str(self.name)+'.xlsx'
+        data = self.getPrice()
+        data_list = []        
+        for row in data:
+            data_list.append([row.date, row.value])
+        data_frame = pd.DataFrame(data=data_list, columns=['일자', '가격'])
+        data_frame.to_excel(filepath)
+        return filepath
+
     def sendPriceAlarm(self):  # 가격에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 가격이 저장된 상태여야 함
         alarms=self.alarm.all()
         pr=self.getPrice()[0].value
@@ -157,15 +215,6 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
             same=date            
         return price_list
 
-    # 이거 만들어야 함. 모든 상표의 가격을 포함할 것.
-    # 1행 1열 '날짜', 1행 2~N열 상표이름, 그 아래로 값들로 맞춰주세요.
-    def getPriceByTable(self):
-        spproduct = self.brand.all()
-        price_list = []
-        for sp in spproduct:
-            price_list.append({sp.name: sp.getPrice()})
-        pass
-
     def getInfluence(self):
         return self.influence
         
@@ -179,27 +228,28 @@ class SpProduct(Product):  #상표가 있는 specific product 키워드를 말�
     def getInfluence(self):
         return self.product.getInfluence()
     # return pandas dataframe
-    # 1행 1열 '날짜', 1행 2열 상표이름, 그 아래로 값들로 맞춰주세요.
-    def getPriceByTable(self):
-        data = self.getPrice()
-        data_list = []
-        keys = data[0].values().keys()
-        for row in data:
-            row_list = []
-            for key in keys:
-                row_list.append(row[key])
-            data_list.append(row_list)
-        data_frame = pd.DataFrame(data=data_list, columns=keys)
-        return data_frame
 
 class News(models.Model):
     product = models.ForeignKey("NspProduct", related_name='news', on_delete=models.CASCADE)
-    date=models.DateField()
+    date = models.DateField()
+    piece = models.CharField(default="", max_length=200)
     title = models.CharField(max_length=200)
     subj = models.IntegerField()
     url = models.URLField(max_length=200)
+
+    def __str__(self):
+        return self.title
+    
 
 class Price(models.Model):
     product = models.ForeignKey("SpProduct",related_name='price', on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()
+
+    def __str__(self):
+        return str(self.product)+' '+str(self.date)
+
+class PhoneKey(models.Model):
+    value = models.IntegerField()
+    user = models.ForeignKey("HUser", related_name='phonekey',on_delete=models.CASCADE)
+    new_p = models.CharField(max_length=13)

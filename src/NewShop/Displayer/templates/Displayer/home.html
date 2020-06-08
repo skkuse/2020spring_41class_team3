@@ -17,9 +17,6 @@
 										</div>
 									</div>
 								</div>
-
-									
-
 							</div>
 						</div>
 						<div class="item">
@@ -42,15 +39,18 @@
 						</div>
 					</div>
 				</div>
+
+				<!--/-----------------------------------------------------------------------Search-----------------------------------------------------------------------/-->
 				<div class="dropdown dropdown-class " onclick="search_box_focused();">
-					<input type="text" class="dropdown-class form-control search-box dropdown-toggle" placeholder="Search a product" id="search-box-id" required="" data-validation-required-message="Please enter what you want to search" >
+					<form action="{%url 'q2key'%}" method="post">
+						{% csrf_token %}
+						<input type="text" name="query" class="dropdown-class form-control search-box dropdown-toggle" placeholder="Search a product" id="search-box-id" required data-validation-required-message="Please enter what you want to search" autocomplete="off">
+						<button type="submit" class="search-icon-button"><img src="{%static 'images/search_icon.png'%}" class="search-icon"></button></form>
 					<!-- History -->
 					<div id="home-dropdown" class="dropdown-class  dropdown-menu home-dropdown" onclick="home_dropdown_clicked();">
-						<a class="dropdown-item drop-item-style" href="#">Apple</a> <a class="dropdown-delete" href="#">x</a><br>
-						<a class="dropdown-item drop-item-style" href="#">Dram</a> <a class="dropdown-delete" href="#">x</a><br>
-						<a class="dropdown-item drop-item-style" href="#">SSD</a> <a class="dropdown-delete" href="#">x</a><br>
-						<a class="dropdown-item drop-item-style" href="#">Mushroom</a> <a class="dropdown-delete" href="#">x</a><br>
-						<a class="dropdown-item drop-item-style" href="#">Banana</a> <a class="dropdown-delete" href="#">x</a><br>
+						{%for rec in history%}
+							<a class="dropdown-item drop-item-style" href="{%url 'search' keyword=rec.product%}">{{rec.product}}</a><a class="dropdown-delete" href="{%url 'delhist' keyword=rec.product%}">x</a><br>
+						{%endfor%}
 					</div>
 				</div>
 			</div>
@@ -68,44 +68,18 @@
 					</div>
 				</div>
 				<div class="row">
-					<!-- about module -->
-					<div class="col-md-3 text-center">
-						<div class="mz-module">
-							<div class="mz-module-about">
-								<button class="mypage-bookmarks-delete" name="DRAM" onclick="mypage_bookmarks_delete(this.name);">X</button>
-								<img class="mz-image" src="{%static 'images/dram.png'%}" width="100%">
-								<h3>DRAM</h3>
+					{%for pr in bookmarks%}
+						<div class="col-md-3 text-center">
+							<div class="mz-module">
+								<div class="mz-module-about">
+									<button class="mypage-bookmarks-delete" name="{{pr.product}}" onclick="location.href='{%url 'delbook' keyword=pr.product next='home'%}'">X</button>
+									<img class="mz-image" src="{{pr.product.imgUrl}}" width="100%">
+									<h3>{{pr.product}}</h3>
+								</div>
+								<a class="mz-module-button" name="{{pr.product}}" onclick="location.href='{%url 'search' keyword=pr.product%}'">search</a>
 							</div>
-							<a class="mz-module-button" name="DRAM" onclick="product_search(this.name);">search</a>
 						</div>
-					</div>
-					<!-- end about module -->
-					<!-- about module -->
-					<div class="col-md-3 text-center">
-						<div class="mz-module">
-							<div class="mz-module-about">
-								<button class="mypage-bookmarks-delete" name="apple" onclick="mypage_bookmarks_delete(this.name);">X</button>
-								<img class="mz-image" src="{%static 'images/apple.png'%}" width="100%" height="50%">
-								<h3>Apple</h3>
-							</div>
-							<a class="mz-module-button" name="Apple" onclick="product_search(this.name);">search</a>
-						</div>
-					</div>
-					<!-- end about module -->
-					<!-- about module -->
-					<div class="col-md-3 text-center">
-						<div class="mz-module">
-							<div class="mz-module-about">
-								<button class="mypage-bookmarks-delete" name="ipad6th" onclick="mypage_bookmarks_delete(this.name);">X</button>
-								<img class="mz-image" src="{%static 'images/ipad6th.png'%}" width="100%">
-								<h3>Ipad</h3>
-								<p>6th generation</p>
-							</div>
-							<a class="mz-module-button" name="Ipad" onclick="product_search(this.name);">search</a>
-						</div>
-					</div>
-
-					<!-- end about module -->
+					{%endfor%}
 				</div>
 			</div>
 			<!-- /.container -->
@@ -122,30 +96,35 @@
 				</div>
 				<div class="row row-gutter">
 					<div class="col-gutter">
-						<div class="featured-item">
-							<div class="featured-icon"><i class="fa fa-television"></i></div>
-							<div class="featured-text" onclick="news_click();">
-								<h4>DRAM very very expensive</h4>
-								<h6>근래 반도체 시장이 불황을 겪으면서 가격이 폭등하고 있습니다. 해외 증시와 맞물려....</h6>
+						{%for new in news%}
+						<!--최신 3개-->
+							<div class="featured-item">
+								<div class="featured-icon"><i class="fa fa-television"></i></div>
+								<div class="featured-text" onclick="news_click();">
+									<h4>{{new.title}}</h4>
+									<h6>{{new.piece}}</h6>
+								</div>
 							</div>
-						</div>
-						<div class="featured-item">
-							<div class="featured-icon"><i class="fa fa-cogs"></i></div>
-							<div class="featured-text" onclick="news_click();">
-								<h4>Apple is redundant</h4>
-								<h6>아침사과, 저녁사과 모두 독사과라는 최근 언론 보도에 따라 사과 수요가 매우 급감하여 가격이 폭락했습니다.</h6>
-							</div>
-						</div>
-						<div class="featured-item">
-							<div class="featured-icon"><i class="fa fa-newspaper-o"></i></div>
-							<div class="featured-text" onclick="news_click();">
-								<h4>Ipad 8th의 출시!</h4>
-								<h6>Ipad 8세대의 출시에 따라 6세대는 더이상 프리미엄이 아닙니다. 따라서 가격이 급감합니다!!</h6>
-							</div>
-						</div>
+						{%endfor%}						
 					</div>
 					
 				</div>
 			</div>
 		</section>
+		<script type="text/javascript">
+		$(function(){
+			$('html').click(function(e) {
+			 if(!$(e.target).hasClass("dropdown-class")) {
+				var el = document.getElementById("home-dropdown");
+				el.style.display = "none";
+			} });
+
+			$("#index-search-box").click(function(e){
+				var el = document.getElementById("home-dropdown");
+				el.style.display = "inline";
+				document.getElementById("search-box-id").focus();
+			})
+		});
+
+		</script>
 {% endblock %}

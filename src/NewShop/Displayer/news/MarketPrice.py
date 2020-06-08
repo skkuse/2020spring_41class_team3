@@ -16,6 +16,14 @@ class MarketPrice(object):
         return self.market + word
 
     def get_data(self, word):
+        """
+        get market price data from open market.
+        :param word: search word
+        :return: :return: list of dictionary.
+                name: name of product in market
+                price: price of product in market
+                link: market link
+        """
         pass
 
 class Coupang(MarketPrice):
@@ -36,7 +44,7 @@ class Coupang(MarketPrice):
         list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
         list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
         print(len(list_price), len(list_name), len(list_url))
-        for idx in range(3):
+        for idx in range(20):
             try:
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
@@ -46,6 +54,7 @@ class Coupang(MarketPrice):
             except:
                 pass
         return ret
+
 
 class Gmarket(MarketPrice):
     def __init__(self):
@@ -64,7 +73,129 @@ class Gmarket(MarketPrice):
         list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
         list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
         list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
-        for idx in range(3):
+        print(len(list_price), len(list_name), len(list_url))
+        for idx in range(20):
+            try:
+                market = self.market_name
+                price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
+                name = str(re.sub('<[^(<|>)]*>', '', str(list_name[idx])))
+                link = str(list_url[idx]['href'])
+                ret.append({'price': price, 'name': name, 'link': link, 'market': market})
+            except:
+                pass
+        return ret
+
+
+class Wemakeprice(MarketPrice):
+    def __init__(self):
+        super().__init__()
+        self.market = 'https://search.wemakeprice.com/search?_service=2&_type=3&search_cate=top&keyword='
+        self.market_name = 'Wemakeprice'
+        self.market_info={'name': ('img', {'class': "motion-fade"}), 'price': ('em', {'class': 'num'}),
+                          'link': ('div', {'class': 'search_box_imagedeal type4'})}
+
+    def get_data(self, word):
+        url = self.make_price_url(word)
+        req = requests.get(url, headers=self.headers)
+        html = req.text
+        ret = []
+        soup = BeautifulSoup(html, 'html.parser')
+        list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
+        list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
+        list_url_temp = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
+        list_url = []
+        for url_data in list_url_temp:
+            list_url.extend(url_data.find_all('a'))
+        for idx in range(20):
+            try:
+                market = self.market_name
+                price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
+                name = str(list_name[idx]['alt'])
+                link = 'https:' + str(list_url[idx]['href'])
+                ret.append({'price': price, 'name': name, 'link': link, 'market': market})
+            except:
+                pass
+        return ret
+
+class G9(MarketPrice):
+    def __init__(self):
+        super().__init__()
+        self.market = 'http://www.g9.co.kr/Display/Search?keyword='
+        self.market_name='G9'
+        self.market_info={'name': ('span', {'class': 'itemcard__title__name'}), 'price': ('strong', {'class': 'format-price__value'}),
+                          'link': ('a', {'class': 'itemcard__link'}), 'brand': ('span', {'class': 'itemcard__title__brand'})}
+
+    def get_data(self, word):
+        url = self.make_price_url(word)
+        req = requests.get(url, headers=self.headers)
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+        ret = []
+        list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
+        list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
+        list_brand = soup.find_all(self.market_info['brand'][0], self.market_info['brand'][1])
+        list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
+        for idx in range(20):
+            try:
+                market = self.market_name
+                price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
+                brand = str(re.sub('<[^(<|>)]*>', '', str(list_brand[idx])))
+                name = str(re.sub('<[^(<|>)]*>', '', str(list_name[idx])))
+                name = brand + ' ' + name
+                link = 'http://www.g9.co.kr/' + str(list_url[2 *idx]['href'])
+                ret.append({'price': price, 'name': name, 'link': link, 'market': market})
+            except:
+                pass
+        return ret
+
+class Auction(MarketPrice):
+    def __init__(self):
+        super().__init__()
+        self.market = 'http://browse.auction.co.kr/search?keyword='#키워드의 스페이스바는 +로 써짐 ex)삼성+이어폰
+        self.market_name = 'Auction'
+        self.market_info = {'name': ('span', {'class': 'text--title'}), 'price': ('strong', {'class':'text--price_seller'}),
+                            'link': ('a', {'class': 'link--itemcard'})}
+
+    def get_data(self, word):
+        url = self.make_price_url(word)
+        req = requests.get(url, headers=self.headers)
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+        ret = []
+        list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
+        list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
+        list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
+        for idx in range(20):
+            try:
+                market = self.market_name
+                price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
+                name = str(re.sub('<[^(<|>)]*>', '', str(list_name[idx])))
+                link = str(list_url[2 * idx]['href'])
+                ret.append({'price': price, 'name': name, 'link': link, 'market': market})
+            except:
+                pass
+        return ret
+
+
+class st11(MarketPrice):
+    def __init__(self):
+        super().__init__()
+        self.market = 'http://search.11st.co.kr/Search.tmall?kwd='#키워드가 복잡함
+        self.market_name='11st'
+        self.market_info={'name':('a',{'class':'itemcard_title'}), 'price':('span',{'class':'value'}),
+        'link':('div>a',{'class':'c_prd_name c_prd_name_row_2'})}#name이 link랑 같은 a안에 data-log-body라는 dictionary 같은 형태 안에
+        #"content_name":"상품이름.." 이런식으로 되어있음
+
+    def get_data(self, word):
+        url = self.make_price_url(word)
+        req = requests.get(url, headers=self.headers)
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+        ret = []
+        list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
+        list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
+        list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
+        for idx in range(20):
             try:
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
@@ -76,4 +207,4 @@ class Gmarket(MarketPrice):
         return ret
 
 
-markets = [Coupang(), Gmarket()]
+markets = [Gmarket(), Wemakeprice(), Auction(), G9()]
