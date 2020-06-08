@@ -44,8 +44,8 @@
 				<div class="dropdown dropdown-class " onclick="search_box_focused();">
 					<form action="{%url 'q2key'%}" method="post">
 						{% csrf_token %}
-						<input type="text" name="query" class="dropdown-class form-control search-box dropdown-toggle" placeholder="Search a product" id="search-box-id" required data-validation-required-message="Please enter what you want to search" autocomplete="off">
-						<button type="submit" class="search-icon-button"><img src="{%static 'images/search_icon.png'%}" class="search-icon"></button></form>
+						<input type="text" name="query" class="dropdown-class form-control search-box dropdown-toggle" placeholder="Search a product" id="search-box-id" required data-validation-required-message="Please enter what you want to search" >
+						<button type="submit" style="float:left;">검색</button>
 					<!-- History -->
 					<div id="home-dropdown" class="dropdown-class  dropdown-menu home-dropdown" onclick="home_dropdown_clicked();">
 						{%for rec in history%}
