@@ -37,10 +37,10 @@
 		<form method="POST">
 		<div class="chart-range-form">
 			{% csrf_token %}
-			<input id="chart-start" name="period_l" class="product-date-box" type="date">부터,&nbsp;&nbsp;&nbsp; 
+			<input id="chart-start" name="period_l" class="product-date-box" type="date" required>부터,&nbsp;&nbsp;&nbsp; 
 			{% csrf_token %}
-			<input name="period_u" id="chart-end" class="product-date-box" type="date">까지
-		<button type="submit" id="chart-range"> 기간 검색</button>
+			<input name="period_u" id="chart-end" class="product-date-box" type="date" required>까지
+		<input type="submit" id="chart-range" value="기간 설정">
 		</form>
 		</div>
 	</section>
@@ -48,9 +48,13 @@
 		<div class="container">
 				<div class="row row-gutter">
 					<div class="col-gutter">
+						{%if not news%}
+							표시할 뉴스가 없습니다.
+						{%endif%}
+
 						{%for new in news%}
 						<!--최신 3개-->
-							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;" onclick="news_click();">
+							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;" onclick="location.href='{{new.url}}'">
 								<div class="product-news-date">{{new.date}}</div>
 								<div class="product-news-contents">
 									<h4>{{new.title}}</h4>

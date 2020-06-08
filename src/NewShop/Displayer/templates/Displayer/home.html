@@ -10,7 +10,7 @@
 								<img src="{%static 'images/slider-1.jpg'%}" class="img-responsive" alt="portfolio">
 								<div class="intro-text">
 									<div class="intro-heading">newShop</div>
-									<div class="intro-lead-in">모든 품목 최저가 검색 사이트</div>
+									<div class="intro-lead-in">품목 최저가 검색 사이트</div>
 									<div class="col-md-6">
 									<div class="form-group">
 										<p class="help-block text-danger"></p>
@@ -101,7 +101,7 @@
 						<!--최신 3개-->
 							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;">
 								<div class="featured-icon"><i class="fa fa-television"></i></div>
-								<div class="featured-text" onclick="news_click();">
+								<div class="featured-text" onclick="location.href='{{new.url}}'">
 									<h4>{{new.title}}</h4>
 									<h6>{{new.piece}} </h6>
 
