@@ -60,6 +60,11 @@ def search(request, keyword):
     low=99999999999
     nnewz=prod.getNews()
     booked=False
+    if request.method=="POST":
+        p_low = request.POST.get('period_l')
+        p_up = request.POST.get('period_u')
+        nnewz=nnewz.exclude(date__gt=p_up).exclude(date__lt=p_low)
+        price=price.exclude(date__gt=p_up).exclude(date__lt=p_low)
     if logged:
         History.objects.filter(user=request.user.handle,product=prod).delete()
         History(user=request.user.handle, product=prod).save()
