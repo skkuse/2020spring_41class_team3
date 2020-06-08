@@ -1144,7 +1144,7 @@ and (max-width : 480px) {
 
 .mypage-profile-background{
 	position:relative;
-	background-color:#DDDDDD;
+	background-color:#EFEFEF;
 	height:220px;
 }
 
@@ -1181,8 +1181,9 @@ and (max-width : 480px) {
 	border-radius:4px;
 	border-width:0;
 	height:4rem;
-	min-width:12rem;
-	margin-left:5%;
+	min-width:20rem;
+	margin-left:10%;
+	margin-right:5%;
 }
 .mypage-button:hover {
 	background-color:#FFDA2A;
@@ -1190,6 +1191,10 @@ and (max-width : 480px) {
 }
 .mypage-checkbox, .mypage-checkbox-label:hover{
 	cursor:Pointer;
+}
+.mypage-checkbox-label{
+
+	margin-left:10%;
 }
 
 /*---------
