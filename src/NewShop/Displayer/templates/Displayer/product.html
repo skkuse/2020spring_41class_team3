@@ -34,22 +34,28 @@
     	<div class="container" >
     		<canvas id="myChart" height="60%" ></canvas> 
 		</div>
+		<div class="chart-range-form">
+		<input id="chart-start" class="product-date-box" type="date">부터,&nbsp;&nbsp;&nbsp; <input id="chart-end" class="product-date-box" type="date">까지
+		<button id="chart-range"> 기간 검색</button>
+		</div>
 	</section>
 	<section class="section-product-news">
 		<div class="container">
 				<div class="row row-gutter">
 					<div class="col-gutter">
 						{%for new in news%}
-							<div class="featured-item">
-								<div class="featured-icon"><i class="fa fa-television"></i></div>
-								<div class="featured-text" onclick="news_click();">
-									<h4>{{new.title}} </h4>
-									<h6>{{new.piece}}</h6>
+						<!--최신 3개-->
+							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;" onclick="news_click();">
+								<div class="product-news-date">{{new.date}}</div>
+								<div class="product-news-contents">
+									<h4>{{new.title}}</h4>
+									<h6>{{new.piece}} </h6>
+
 								</div>
 							</div>
-						{%endfor%}
+						{%endfor%}					
 					</div>
-					
+					<button name="more-news" id="more-news" class="more-news" >↓</button>
 				</div>
 	</section>
 	<section class="section-tip">
@@ -74,11 +80,11 @@
 type: 'line', 
 // 챠트를 그릴 데이타
  data: {
-  labels: ["2018-12-07 12:45:17", "2018-12-09 12:45:17", "2018-12-31 12:45:17", "2019-02-07 12:45:17", "2019-04-07 12:45:17", "2019-06-25 12:45:17", "2019-08-30 12:45:17"], 
+  labels: {{pr_dt|safe}}, 
   datasets: [
   { label: '사과', 
   backgroundColor: ['rgba(255,0,0,0.2)'], 
-  borderColor: 'red', data: [0, 10, 5, 2, 20, 30, 45] }] }, // 옵션 
+  borderColor: 'red', data: {{pr_vl}} }] }, // 옵션 
 options: {
 	scales: {
         xAxes: [{
@@ -86,7 +92,7 @@ options: {
             time: {
             	unit : 'day',
                 displayFormats: {
-                    day: 'YYHHMM'
+                    day: 'YY.M.D'
                 }
             },
             ticks: {
@@ -102,5 +108,59 @@ options: {
            }
        }
 	}
-} }); </script>
+} }); 
+
+  	var showNews=3;
+	$(document).ready(function(){
+		for(var i=0; i<showNews; i++){
+			$("#news-"+i).fadeIn(500);
+		}
+	});
+	
+	$(function(){
+		$("#more-news").click(function(e){
+			extend = showNews+3;
+			for(var i=showNews; i<extend; i++){
+				var ea = document.getElementById("news-"+i);
+				if(ea==null){
+					alert("마지막 뉴스입니다!");
+					return 0;
+				}
+				$("#news-"+i).fadeIn((i-showNews)*900);
+			}
+			showNews = extend;
+			document.location.href="#more-news";
+		});
+
+		$("#chart-range").click(function(e) {
+			pr_dt = {{pr_dt|safe}};
+			pr_vl = {{pr_vl}};
+			start_time = $("#chart-start").val();
+			end_time = $("#chart-end").val();
+			if(start_time=="" || end_time==""){
+				alert("시작 날짜와 끝 날짜를 모두 입력하셔야 합니다.");
+				return 0;
+			}
+			if(start_time>end_time){
+				alert("검색 범위의 시작 날짜는 끝 날짜보다 이전이어야 합니다.");
+				return 0;
+			}
+			pr_date_arr=[]
+			pr_value_arr=[]
+			for(var i=0;i<pr_dt.length; i++){
+				if(start_time<= pr_dt[i] && pr_dt[i] <= end_time){
+					pr_date_arr.push(pr_dt[i]);
+					pr_value_arr.push(pr_vl[i]);
+				}
+				
+			}
+
+			chart.data.labels = pr_date_arr;
+    		chart.data.datasets[0].data = pr_value_arr;
+    		chart.update();
+		});
+	});
+
+
+</script>
 {% endblock %}
