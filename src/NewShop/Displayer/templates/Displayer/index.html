@@ -36,8 +36,8 @@
 	<body id="page-top">
 		{%if messages%}
 			{%for m in messages%}
-			{{m.message}}
-			<br>
+				{{m.message}}
+				<br>
 			{%endfor%}			
 		{%endif%}		
 		<!-- Navigation -->
@@ -66,22 +66,24 @@
 						</li>
 						<li>
 							<a class="page-scroll" 
-							href=
+
 							{%if product%}
-								"{%url 'search' keyword=product%}"
+								href="{%url 'search' keyword=product%}"	
 							{%else%}
-								"{%url 'home2'%}"
+								href=""
+								onclick="not_searched_yet();"
 							{%endif%}
 							>
 							Product</a>
 						</li>
 						<li>
 							<a class="page-scroll" 
-							href=
+
 							{%if product%}
-								"{%url 'api_get' keyword=product%}"
+								href="{%url 'search' keyword=product%}"	
 							{%else%}
-								"{%url 'home2'%}"
+								href=""
+								onclick="not_searched_yet();"
 							{%endif%}
 							>API</a>
 						</li>
@@ -98,7 +100,13 @@
 						</li>
 						{%endif%}
 					</ul>
-					<input id="index-search-box" class="page-scroll index-search-box dropdown-class" placeholder="Search a product">
+					<div class="dropdown dropdown-class " onclick="search_box_focused();">
+						<form action="{%url 'q2key'%}" method="post">
+							{% csrf_token %}
+							<input type="text" name="query" class="dropdown-class form-control index-search-box dropdown-toggle" placeholder="Search a product" id="index-search-box" required data-validation-required-message="Please enter what you want to search" autocomplete="off">
+							<button type="submit" class="index-search-icon-button"><img src="{%static 'images/search_icon.png'%}" class="search-icon"></button></form>
+						<!-- History -->
+					</div>
 				</div>
 				<!-- /.navbar-collapse -->
 			</div>

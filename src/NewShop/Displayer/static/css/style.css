@@ -208,8 +208,40 @@ section ul li:before {
 	margin-top:30px;
 	border-radius:5px;
 	border-width:1px;
-	width:20%;
+	width:40%;
 	z-index: 1;
+}
+.index-search-icon-button{
+	position:relative;
+	float:right;
+	background-color:#FFFFFF00;
+	border-width:0px;
+	z-index: 1;
+	margin-top:30px;
+	left:40%;
+	top:5px;
+}
+@media(min-width:768px){
+	.index-search-box{
+		width:30%;
+	}
+	.index-search-icon-button{
+		left:30%;
+	}
+}
+.search-icon-button{
+	position:relative;
+	float:right;
+	background-color:#FFFFFF00;
+	border-width:0;
+	z-index: 1;
+	top:-30px;
+	margin-top:-30px;
+	margin-right:25%;
+	
+}
+.search-icon{
+	width:2rem;
 }
 @media (min-width:768px) {
 	.navbar-default
@@ -245,7 +277,6 @@ section ul li:before {
 		display:block;
 	}
 }
-
 /*--------------------
 3. Header
 --------------------*/
