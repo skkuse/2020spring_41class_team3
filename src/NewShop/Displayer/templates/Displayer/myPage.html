@@ -21,9 +21,8 @@
 	<section id="subscription">
 		<div class="container">
 		<div class="checkbox-group" style="float:center;">
-			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" value="check1" onclick="mypage_subscription_condition1();"> &nbsp; 이메일 수신받기</label>
-			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox"  value="check2" onclick="mypage_subscription_condition2();"> &nbsp; 핸드폰 SMS 수신받기 </label>
-			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox"  value="check3" onclick="mypage_subscription_condition2();"> &nbsp; 핸드폰 푸시알림 </label>
+			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" value="check1" onclick="mypage_subscription_condition1();"> &nbsp; 알림 이메일 수신받기</label>
+			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox"  value="check2" onclick="mypage_subscription_condition2();"> &nbsp; 알림 SMS 수신받기 </label>
 		</div>
     </div>
 	</section>
@@ -63,16 +62,17 @@
 				</div>
 			</div>
 			<div class="row">
-				<!-------------------------------- must modified ---------------------> 
-				{%for pr in bookmarks%}
+				{%if not alarms%}
+					알림을 원하는 제품이 없습니다.
+				{%endif%}
+				{%for alarm in alarms%}
 						<div class="col-md-3 text-center">
 							<div class="mz-module">
 								<div class="mz-module-about">
-									<button class="mypage-bookmarks-delete" name="{{pr.product}}" onclick="location.href='{%url 'delbook' keyword=pr.product next='mypage'%}'">X</button>
 									<img class="mz-image" src="{{pr.product.imgUrl}}" width="100%">
-									<h3>{{pr.product}}</h3>
+									<h3>{{alarm.product}}</h3>
 								</div>
-								<a class="mz-module-button" name="{{pr.product}}" onclick="location.href='{%url 'search' keyword=pr.product%}'">search</a>
+								<a class="mz-module-button" name="{{alarm.product}}" onclick="location.href='{%url 'alarmset' keyword=alarm.product%}'">search</a>
 							</div>
 						</div>
 					{%endfor%}

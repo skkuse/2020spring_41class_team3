@@ -126,6 +126,7 @@ def alarmSet(request, keyword):
 def myPage(request):
     usr=request.user
     logged=usr.is_authenticated
+    alarms=usr.handle.alarm.all()
     prod=None
     hs = usr.handle.history.order_by('-pk')
     if hs.count()>0:
@@ -133,7 +134,7 @@ def myPage(request):
     bookmarks=None
     if logged:
         bookmarks=usr.handle.favor.all()
-    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks, 'product':prod})
+    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks, 'product':prod, 'alarms':alarms})
 
 @login_required
 def change_pw(request):
