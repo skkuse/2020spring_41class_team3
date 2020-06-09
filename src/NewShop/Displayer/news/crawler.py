@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from datetime import datetime
 from Displayer.news.MarketPrice import markets
-# from Displayer.models import Price, SpProduct
+from Displayer.models import Price, SpProduct
 
 def make_news_url(search_word: str, start_date: str, end_date: str, length: int):
     """
@@ -49,6 +49,25 @@ class Crawler(object):
         for get_str in ret_str:
             news_list.append(get_str['href'])
         return news_list
+
+    def get_news_title_date(self, url):
+        req = requests.get(url)
+        if self.verbose:
+            print("Crawling url is ", url)
+
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        try:
+            title = str(soup.select('#articleTitle'))
+            date = str(soup.find_all('span', {'class': 't11'})[0])
+        except:
+            return '', ''
+
+        title = str(re.sub('<[^(<|>)]*>', '', title))
+        date = str(re.sub('<[^(<|>)]*>', '', date))
+
+        return title, date
 
     def get_news_contents(self, url):
         """
@@ -110,11 +129,11 @@ class Crawler(object):
                     ret.append(element)
         return ret
 
-    # def update_market_price(self, product_name):
-    #     data = self.get_market_price(product_name)
-    #     product = SpProduct.objects.filter(name='삼성 메모리')[0]
-    #     for data_row in data:
-    #         Price.objects.create(product=product, value=data_row['price'], date=datetime.now())
+    def update_market_price(self, product_name):
+        data = self.get_market_price(product_name)
+        product = SpProduct.objects.filter(name='삼성 메모리')[0]
+        for data_row in data:
+            Price.objects.create(product=product, value=data_row['price'], date=datetime.now())
 
     def get_market_real_time(self, product_name):
         data = self.get_market_price(product_name)
@@ -123,4 +142,4 @@ class Crawler(object):
 crawler = Crawler()
 
 if __name__ == '__main__':
-    print(crawler.get_market_price('삼성 8gb'))
+    print(crawler.get_news_title_date('https://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=011&aid=0003750781'))
