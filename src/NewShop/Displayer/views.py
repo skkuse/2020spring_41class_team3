@@ -22,6 +22,7 @@ def home(request):
     hist=None
     bookmarks=None
     prod = None
+    newz=None
     if logged:
         bookmarks=usr.handle.favor.all()
         hist = usr.handle.history.order_by('-pk')

@@ -87,7 +87,7 @@ class IDFindForm(forms.Form):
                 self.add_error('email','이름은 '+you.username[0]+'으로 시작합니다. 기억이 잘 나지 않으신다면 이메일을 보냈으니 확인해 주세요.')
                 you.handle.sendEmail("[newShop]이름 찾기","안녕하세요. 회원님이 newShop 로그인에 사용하시는 이름은 "+you.username+"입니다. 감사합니다.")
             else:
-                self.add_error('email','이메일 인증을 하지 않은 계정입니다. 원하는 경우 로그인 페이지에서 이 계정을 지우고 다시 만들 수 있습니다.')
+                self.add_error('email','이메일 인증을 하지 않은 계정입니다. 비밀번호 찾기 페이지에서 '+you.username+'을 입력하여 다시 인증을 진행해 주세요.')
         else:
             self.add_error('email','해당하는 정보가 없습니다.')            
 
@@ -119,7 +119,15 @@ class PWFindForm(forms.Form):
                 })
                 you.handle.sendEmail("[newShop]비밀번호 재설정 메일",message)
             else:
-                self.add_error('email','이메일 인증을 하지 않은 계정입니다. 원하는 경우 로그인 페이지에서 이 계정을 지우고 다시 만들 수 있습니다.')
+                self.add_error('email','이메일 인증을 하지 않은 계정입니다. 인증 메일을 새로 보냈으니 확인 바랍니다.')     
+                message = render_to_string('Auth/ver_email.html',{
+                    'user': you,
+                    'domain': clean_data.get('domain'),
+                    'uid': urlsafe_base64_encode(force_bytes(you.pk)).encode().decode(),
+                    'token': account_activation_token.make_token(you),
+                })
+                you.handle.sendEmail("[newShop]비밀번호 재설정 메일",message)
+
         else:
             self.add_error('username','해당하는 정보가 없습니다. 사용자 이름 찾기를 시도해 주세요.')
 
