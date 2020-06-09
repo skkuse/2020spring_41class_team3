@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 import random
+import datetime
 
 # Create your views here.
 def redir(request):
@@ -57,11 +58,6 @@ def search(request, keyword):
     low=99999999999
     nnewz=prod.getNews()
     booked=False
-    if request.method=="POST":
-        p_low = request.POST.get('period_l')
-        p_up = request.POST.get('period_u')
-        nnewz=nnewz.exclude(date__gt=p_up).exclude(date__lt=p_low)
-        price=price.exclude(date__gt=p_up).exclude(date__lt=p_low)
     if logged:
         History.objects.filter(user=request.user.handle,product=prod).delete()
         History(user=request.user.handle, product=prod).save()
@@ -79,7 +75,7 @@ def search(request, keyword):
     if avg!=0:
         avg/=count
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,})
     # 현재의 html을 사용할 것
 
 

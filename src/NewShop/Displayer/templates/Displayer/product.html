@@ -34,14 +34,10 @@
     	<div class="container" >
     		<canvas id="myChart" height="60%" ></canvas> 
 		</div>
-		<form method="POST">
-		<div class="chart-range-form">
-			{% csrf_token %}
-			<input id="chart-start" name="period_l" class="product-date-box" type="date" required>부터,&nbsp;&nbsp;&nbsp; 
-			{% csrf_token %}
-			<input name="period_u" id="chart-end" class="product-date-box" type="date" required>까지
-		<input type="submit" id="chart-range" value="기간 설정">
-		</form>
+			<div class="chart-range-form">
+				<input id="chart-start" class="product-date-box" type="date">부터,&emsp; <input id="chart-end" class="product-date-box" type="date">까지
+				<button id="chart-range"> 기간 설정</button>
+			</div>
 		</div>
 	</section>
 	<section class="section-product-news">
