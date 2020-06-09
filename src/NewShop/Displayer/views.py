@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .models import *
+from .forms import ReportForm
 from Displayer.news.nlp_main import get_recommend_query
 from django.contrib.auth.decorators import login_required
 from .news.crawler import crawler
@@ -176,3 +177,14 @@ def hpChange(request):
                 return render(request, 'Displayer/hpAuth.html', {'err':'인증 번호가 맞지 않습니다.'})
         else:
             return HttpResponse("알 수 없는 오류가 발생했습니다.")
+
+
+def report(request):
+    if request.method=='GET':
+        return render(request, 'Displayer/report.html',{'form':ReportForm()})
+    elif request.method=='POST':
+        rep = ReportForm(request.POST)
+        if rep.is_valid():
+            Report(subj=rep.cleaned_data['title'],content=rep.cleaned_data['content']).save()
+            messages.info(request,'제보가 완료되었습니다.')
+            return redirect('home')       

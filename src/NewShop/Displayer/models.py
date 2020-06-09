@@ -251,3 +251,10 @@ class PhoneKey(models.Model):
     value = models.IntegerField()
     user = models.ForeignKey("HUser", related_name='phonekey',on_delete=models.CASCADE)
     new_p = models.CharField(max_length=13)
+
+class Report(models.Model):
+    subj = models.CharField(max_length=40)
+    content = models.CharField(max_length=400)
+
+    def __str__(self):
+        return self.subj

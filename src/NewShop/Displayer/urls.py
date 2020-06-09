@@ -18,4 +18,5 @@ urlpatterns = [
     path('temp/<str:keyword>/next=<str:next>',views.delBook,name='delbook'),
     path('temp/<str:keyword>/',views.delHist,name='delhist'),
     path('please-search-a-keyword',views.toHome,name='home2'),
+    path('report',views.report,name='report'),
 ]
