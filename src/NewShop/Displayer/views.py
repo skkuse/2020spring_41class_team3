@@ -19,7 +19,6 @@ def toHome(request):
 def home(request):
     usr=request.user
     logged=usr.is_authenticated
-    nnewz=[]
     hist=None
     bookmarks=None
     prod = None
@@ -33,10 +32,7 @@ def home(request):
             newz |= mark.product.getNews()
         if newz.count()>0:
             newz.order_by('-date')
-            for i in range(0,3):
-                if newz.count()>i:
-                    nnewz.append(newz[i])
-    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':nnewz, 'user':usr, 'history':hist,'product':prod})
+    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':newz, 'user':usr, 'history':hist,'product':prod})
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
 def q2key(request):
