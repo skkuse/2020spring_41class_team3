@@ -9,6 +9,8 @@ branch - news.
 - pymysql
 - konlpy
 - numpy
+- pytorch
+- torchtext
 
 ## References
 [1]: Rada Mihalcea and Paul Tarau, TextRank: Bringing Order into Texts, 2004.
