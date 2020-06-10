@@ -231,10 +231,10 @@ def test_model(query, date_range, length, m_path):
                     _, predicted = outputs.max(1)
                     print(f"### Predict: {predicted.item()} \t(0: price, 1: new product, 2: promotion, 3: industry)")
 
-                    # Shold be updated
-                    date_ = datetime.now()
-                    title_ = 'ex'
-
+                    title_, date_ = crawler.get_news_title_date(n_url)
+                    date_arr = date_.split('.')
+                    date_ = datetime(int(date_arr[0]), int(date_arr[1]), int(date_arr[2]))
+                    title_ = title_[1:-1]
                     product_ = NspProduct.objects.filter(name=q)[0]
                     key_sentences_string = ''
                     for i in key_sentences_:
