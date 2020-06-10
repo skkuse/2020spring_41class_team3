@@ -1,0 +1,65 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="{%static 'css/style_auth.css'%}" rel="stylesheet">
+    <title>newShop</title>
+</head>
+<body>
+    <div class="logo"> <img src="{%static 'images/logo.png'%}" style="display:inline;width:30%"></div>
+    <div class="panel panel-default registration">
+            <div class="panel-heading" style="background-color:#FFB808">
+                제보하기
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    {% csrf_token %}
+                        <div class="form-group {% if form.title.errors|length > 0 %}has-error{%endif %}">
+                            <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                            <input 
+                            name="{{ form.title.html_name }}" 
+                            id="{{ form.title.id_for_label }}" 
+                            class="form-control id_pwd_inputbox" 
+                            type="{{ form.title.field.widget.input_type }}" 
+                            value="{{ form.title.value|default_if_none:'' }}"
+                            required
+                            >
+                            <p>{{form.title.help_text|linebreaksbr}}</p>
+                            {% for error in form.title.errors %}
+                                <label class="control-label" for="{{ form.title.id_for_label }}" style="color:red" align="center">{{ error }}</label>
+                            {% endfor %}
+                        </div>
+                        {% csrf_token %}
+                        <div class="form-group {% if form.content.errors|length > 0 %}has-error{%endif %}">
+                            <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
+                            <textarea
+                            name="{{ form.content.html_name }}" 
+                            id="{{ form.content.id_for_label }}" 
+                            class="form-control id_pwd_inputbox" 
+                            type="{{ form.content.field.widget.input_type }}" 
+                            value="{{ form.content.value|default_if_none:'' }}"
+                            placeholder="최대 400자까지 입력 가능합니다."
+                            wrap="hard"                            
+                            cols="40"
+                            rows="10"
+                            required
+                            ></textarea>
+                            <p>{{form.content.help_text|linebreaksbr}}</p>
+                            {% for error in form.content.errors %}
+                                <label class="control-label" for="{{ form.content.id_for_label }}" style="color:red" align="center">{{ error }}</label>
+                            {% endfor %}
+                        </div>
+                        </div>
+                    <div class="button_group">
+                        <button id='login'
+                        class="btn btn-dark" 
+                        type="submit">제출
+                        </button>
+                    </div>
+                </form>
+            </div>
+    </div>
+</body>
+</html>

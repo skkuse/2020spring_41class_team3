@@ -10,7 +10,7 @@
 								<img src="{%static 'images/slider-1.jpg'%}" class="img-responsive" alt="portfolio">
 								<div class="intro-text">
 									<div class="intro-heading">newShop</div>
-									<div class="intro-lead-in">모든 품목 최저가 검색 사이트</div>
+									<div class="intro-lead-in">품목 최저가 검색 사이트</div>
 									<div class="col-md-6">
 									<div class="form-group">
 										<p class="help-block text-danger"></p>
@@ -68,6 +68,9 @@
 					</div>
 				</div>
 				<div class="row">
+					{%if not bookmarks%}
+						즐겨찾기한 품목이 없습니다.
+					{%endif%}
 					{%for pr in bookmarks%}
 						<div class="col-md-3 text-center">
 							<div class="mz-module">
@@ -96,14 +99,18 @@
 				</div>
 				<div class="row row-gutter">
 					<div class="col-gutter">
-						{%for new in news%}
 
+						{%if not news%}
+							표시할 뉴스가 없습니다.
+						{%endif%}
+
+						{%for new in news%}
 						<!--최신 3개-->
 							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;">
-								<div class="featured-icon"><i class="fa fa-television"></i></div>
-								<div class="featured-text" onclick="news_click();">
+								<div class="product-news-date">{{new.date}}</div>
+								<div class="featured-text" onclick="location.href='{{new.url}}'">
 									<h4>{{new.title}}</h4>
-									<h6>{{new.piece}} </h6>
+									<h6>&emsp;&emsp;{{new.piece}} </h6>
 
 								</div>
 							</div>

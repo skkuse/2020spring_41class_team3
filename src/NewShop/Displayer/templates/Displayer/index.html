@@ -65,24 +65,22 @@
 							<a class="page-scroll" href="{%url 'home'%}">Home</a>
 						</li>
 						<li>
-							<a class="page-scroll" 
+							<a class="page-scroll" style="cursor:Pointer;"
 
 							{%if product%}
 								href="{%url 'search' keyword=product%}"	
 							{%else%}
-								href=""
 								onclick="not_searched_yet();"
 							{%endif%}
 							>
 							Product</a>
 						</li>
 						<li>
-							<a class="page-scroll" 
+							<a class="page-scroll" style="cursor:Pointer;"
 
 							{%if product%}
 								href="{%url 'search' keyword=product%}"	
 							{%else%}
-								href=""
 								onclick="not_searched_yet();"
 							{%endif%}
 							>API</a>
@@ -122,7 +120,7 @@
 						<h5>건의사항, 오류 제보하기</h5>
 					</div>
 					<div class="col-md-4">
-						<a href="#" class="button-cta">제보하기</a>
+						<a href="{%url 'report'%}" class="button-cta">제보하기</a>
 					</div>
 				</div>
 

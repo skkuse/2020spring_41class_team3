@@ -34,18 +34,23 @@
     	<div class="container" >
     		<canvas id="myChart" height="60%" ></canvas> 
 		</div>
-		<div class="chart-range-form">
-		<input id="chart-start" class="product-date-box" type="date">부터,&nbsp;&nbsp;&nbsp; <input id="chart-end" class="product-date-box" type="date">까지
-		<button id="chart-range"> 기간 검색</button>
+			<div class="chart-range-form">
+				<input id="chart-start" class="product-date-box" type="date">부터,&emsp; <input id="chart-end" class="product-date-box" type="date">까지
+				<button id="chart-range"> 기간 설정</button>
+			</div>
 		</div>
 	</section>
 	<section class="section-product-news">
 		<div class="container">
 				<div class="row row-gutter">
 					<div class="col-gutter">
+						{%if not news%}
+							표시할 뉴스가 없습니다.
+						{%endif%}
+
 						{%for new in news%}
 						<!--최신 3개-->
-							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;" onclick="news_click();">
+							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;" onclick="location.href='{{new.url}}'">
 								<div class="product-news-date">{{new.date}}</div>
 								<div class="product-news-contents">
 									<h4>{{new.title}}</h4>

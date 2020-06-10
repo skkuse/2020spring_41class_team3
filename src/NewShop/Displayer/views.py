@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .models import *
+from .forms import ReportForm
 from Displayer.news.nlp_main import get_recommend_query
 from django.contrib.auth.decorators import login_required
 from .news.crawler import crawler
 from django.contrib import messages
-from django.core import serializers
-from django.http import Http404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 import random
-import urllib.parse
+import datetime
 
 # Create your views here.
 def redir(request):
@@ -22,10 +21,10 @@ def toHome(request):
 def home(request):
     usr=request.user
     logged=usr.is_authenticated
-    nnewz=[]
     hist=None
     bookmarks=None
     prod = None
+    newz=None
     if logged:
         bookmarks=usr.handle.favor.all()
         hist = usr.handle.history.order_by('-pk')
@@ -36,16 +35,13 @@ def home(request):
             newz |= mark.product.getNews()
         if newz.count()>0:
             newz.order_by('-date')
-            for i in range(0,3):
-                if newz.count()>i:
-                    nnewz.append(newz[i])
-    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':nnewz, 'user':usr, 'history':hist,'product':prod})
+    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':newz, 'user':usr, 'history':hist,'product':prod})
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
 def q2key(request):
     # 검색 기록이 없는 상태에서 검색어 입력 시 반드시 이곳으로 옴.
     logged=request.user.is_authenticated
-    if request.method=='POST':
+    if request.method=='POST':        
         related = get_recommend_query(request.POST.get('query'))
         return render(request, 'Displayer/related.html',{'logged':logged, 'related': related})
     else:
@@ -80,7 +76,7 @@ def search(request, keyword):
     if avg!=0:
         avg/=count
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,})
     # 현재의 html을 사용할 것
 
 
@@ -94,28 +90,6 @@ def api_search(request, keyword):
     price=prod.getPrice()
     return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price})
     # 현재의 html을 사용할 것
-
-def api_xlsx(request):
-    filename = request.GET.get('name')
-    try:
-        filename = urllib.parse.unquote(filename)
-        file_url = SpProduct.objects.filter(name=filename)[0].getPriceByTable()
-        if os.path.exists(file_url):
-            with open(file_url, 'rb') as fh:
-                response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
-                return response
-    except:
-        raise Http404
-
-def api_json(request):
-    filename = request.GET.get('name')
-    try:
-        filename = urllib.parse.unquote(filename)
-        query = SpProduct.objects.filter(name=filename)[0].getPrice()
-        query_list = serializers.serialize('json', query)
-        return HttpResponse(query_list, content_type="text/json-comment-filtered")
-    except:
-        raise Http404
 
 @login_required
 def toggleBook(request, keyword):
@@ -146,6 +120,7 @@ def alarmSet(request, keyword):
 def myPage(request):
     usr=request.user
     logged=usr.is_authenticated
+    alarms=usr.handle.alarm.all()
     prod=None
     hs = usr.handle.history.order_by('-pk')
     if hs.count()>0:
@@ -153,7 +128,7 @@ def myPage(request):
     bookmarks=None
     if logged:
         bookmarks=usr.handle.favor.all()
-    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks, 'product':prod})
+    return render(request, 'Displayer/myPage.html',{'logged':logged, 'user':request.user,'bookmarks':bookmarks, 'product':prod, 'alarms':alarms})
 
 @login_required
 def change_pw(request):
@@ -202,3 +177,14 @@ def hpChange(request):
                 return render(request, 'Displayer/hpAuth.html', {'err':'인증 번호가 맞지 않습니다.'})
         else:
             return HttpResponse("알 수 없는 오류가 발생했습니다.")
+
+
+def report(request):
+    if request.method=='GET':
+        return render(request, 'Displayer/report.html',{'form':ReportForm()})
+    elif request.method=='POST':
+        rep = ReportForm(request.POST)
+        if rep.is_valid():
+            Report(subj=rep.cleaned_data['title'],content=rep.cleaned_data['content']).save()
+            messages.info(request,'제보가 완료되었습니다.')
+            return redirect('home')       
