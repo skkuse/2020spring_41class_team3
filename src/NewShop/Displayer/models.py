@@ -139,7 +139,9 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
             return []
 
     def getPriceByTable(self):
-        filepath = "./xlsx/"+self.name+'.xlsx'
+        if not os.path.isdir('./xlsx'):
+            os.mkdir('./xlsx')
+        filepath = "./xlsx/"+str(self.name)+'.xlsx'
         data = self.getPrice()
         data_list = []        
         for row in data:
