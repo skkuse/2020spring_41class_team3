@@ -240,6 +240,7 @@ def test_model(query, date_range, length, m_path):
                     for i in key_sentences_:
                         key_sentences_string += i
                         key_sentences_string += " "
+                    key_sentences_string=key_sentences_string[:20]+'...'
                     News.objects.create(date=date_, title=title_, subj=predicted.item(), url=n_url, product=product_, piece=key_sentences_string)
 
 

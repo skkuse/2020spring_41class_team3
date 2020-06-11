@@ -49,7 +49,8 @@ def q2key(request):
 
 def search(request, keyword):
     logged=request.user.is_authenticated
-    market_list = crawler.get_market_real_time(keyword)
+    market_list=[]
+    # market_list = crawler.get_market_real_time(keyword)
     prod=Product.objects.get(name=keyword)
     price=prod.getPrice()
     pr_dates=[]
@@ -65,13 +66,12 @@ def search(request, keyword):
         if Favor.objects.filter(user=request.user.handle, product=prod).count()>0:
             booked=True
     for dv in price.values('date','value'):
-        pr_dates.append(dv['date'])
+        pr_dates.append(str(dv['date']))
         pr_values.append(dv['value'])
-        
     for market in market_list:
         avg+=market['price']
         if low>market['price']:
-            low=market['price']
+            low=market['price']            
         count+=1
     if avg!=0:
         avg/=count
