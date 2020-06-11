@@ -15,7 +15,7 @@ class MarketPrice(object):
         word = '+'.join(word)
         return self.market + word
 
-    def get_data(self, word):
+    def get_data(self, word, num_of_item=5):
         """
         get market price data from open market.
         :param word: search word
@@ -34,7 +34,7 @@ class Coupang(MarketPrice):
         self.market_info = {'name': ('div', {'class': 'name'}), 'price': ('strong', {'class': 'price-value'}),
                             'link': ('a', {'class': 'search-product-link'})}
 
-    def get_data(self, word):
+    def get_data(self, word, num_of_item=5):
         url = self.make_price_url(word)
         req = requests.get(url, headers=self.headers)
         html = req.text
@@ -43,8 +43,7 @@ class Coupang(MarketPrice):
         list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
         list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
         list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
-        print(len(list_price), len(list_name), len(list_url))
-        for idx in range(20):
+        for idx in range(num_of_item):
             try:
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
@@ -64,7 +63,7 @@ class Gmarket(MarketPrice):
         self.market_info = {'name': ('span', {'class': 'text__item'}), 'price': ('strong', {'class': 'text text__value'}),
                             'link': ('a', {'class': 'link__item'})}
 
-    def get_data(self, word):
+    def get_data(self, word, num_of_item=5):
         url = self.make_price_url(word)
         req = requests.get(url, headers=self.headers)
         html = req.text
@@ -73,8 +72,7 @@ class Gmarket(MarketPrice):
         list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
         list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
         list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
-        print(len(list_price), len(list_name), len(list_url))
-        for idx in range(20):
+        for idx in range(num_of_item):
             try:
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
@@ -94,7 +92,7 @@ class Wemakeprice(MarketPrice):
         self.market_info={'name': ('img', {'class': "motion-fade"}), 'price': ('em', {'class': 'num'}),
                           'link': ('div', {'class': 'search_box_imagedeal type4'})}
 
-    def get_data(self, word):
+    def get_data(self, word, num_of_item=5):
         url = self.make_price_url(word)
         req = requests.get(url, headers=self.headers)
         html = req.text
@@ -106,7 +104,7 @@ class Wemakeprice(MarketPrice):
         list_url = []
         for url_data in list_url_temp:
             list_url.extend(url_data.find_all('a'))
-        for idx in range(20):
+        for idx in range(num_of_item):
             try:
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
@@ -125,7 +123,7 @@ class G9(MarketPrice):
         self.market_info={'name': ('span', {'class': 'itemcard__title__name'}), 'price': ('strong', {'class': 'format-price__value'}),
                           'link': ('a', {'class': 'itemcard__link'}), 'brand': ('span', {'class': 'itemcard__title__brand'})}
 
-    def get_data(self, word):
+    def get_data(self, word, num_of_item=5):
         url = self.make_price_url(word)
         req = requests.get(url, headers=self.headers)
         html = req.text
@@ -135,7 +133,7 @@ class G9(MarketPrice):
         list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
         list_brand = soup.find_all(self.market_info['brand'][0], self.market_info['brand'][1])
         list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
-        for idx in range(20):
+        for idx in range(num_of_item):
             try:
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
@@ -156,7 +154,7 @@ class Auction(MarketPrice):
         self.market_info = {'name': ('span', {'class': 'text--title'}), 'price': ('strong', {'class':'text--price_seller'}),
                             'link': ('a', {'class': 'link--itemcard'})}
 
-    def get_data(self, word):
+    def get_data(self, word, num_of_item=5):
         url = self.make_price_url(word)
         req = requests.get(url, headers=self.headers)
         html = req.text
@@ -165,41 +163,11 @@ class Auction(MarketPrice):
         list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
         list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
         list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
-        for idx in range(20):
+        for idx in range(num_of_item):
             try:
                 market = self.market_name
                 price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
                 name = str(re.sub('<[^(<|>)]*>', '', str(list_name[idx])))
-                link = str(list_url[2 * idx]['href'])
-                ret.append({'price': price, 'name': name, 'link': link, 'market': market})
-            except:
-                pass
-        return ret
-
-
-class st11(MarketPrice):
-    def __init__(self):
-        super().__init__()
-        self.market = 'http://search.11st.co.kr/Search.tmall?kwd='#키워드가 복잡함
-        self.market_name='11st'
-        self.market_info={'name':('a',{'class':'itemcard_title'}), 'price':('span',{'class':'value'}),
-        'link':('div>a',{'class':'c_prd_name c_prd_name_row_2'})}#name이 link랑 같은 a안에 data-log-body라는 dictionary 같은 형태 안에
-        #"content_name":"상품이름.." 이런식으로 되어있음
-
-    def get_data(self, word):
-        url = self.make_price_url(word)
-        req = requests.get(url, headers=self.headers)
-        html = req.text
-        soup = BeautifulSoup(html, 'html.parser')
-        ret = []
-        list_price = soup.find_all(self.market_info['price'][0], self.market_info['price'][1])
-        list_name = soup.find_all(self.market_info['name'][0], self.market_info['name'][1])
-        list_url = soup.find_all(self.market_info['link'][0], self.market_info['link'][1])
-        for idx in range(20):
-            try:
-                market = self.market_name
-                price = int(re.sub('<[^(<|>)]*>|,', '', str(list_price[idx])))
-                name = str(list_name[idx]['title'])
                 link = str(list_url[2 * idx]['href'])
                 ret.append({'price': price, 'name': name, 'link': link, 'market': market})
             except:
