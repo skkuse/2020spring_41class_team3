@@ -7,8 +7,11 @@ from .news.crawler import crawler
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
+from django.core import serializers
+from django.http import Http404
 import random
 import datetime
+import urllib.parse
 
 # Create your views here.
 def redir(request):
@@ -50,7 +53,7 @@ def q2key(request):
 def search(request, keyword):
     logged=request.user.is_authenticated
     market_list=[]
-    # market_list = crawler.get_market_real_time(keyword)
+    market_list = crawler.get_market_real_time(keyword)
     prod=Product.objects.get(name=keyword)
     price=prod.getPrice()
     pr_dates=[]
@@ -75,20 +78,20 @@ def search(request, keyword):
         count+=1
     if avg!=0:
         avg/=count
-    # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
     return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,})
     # 현재의 html을 사용할 것
-
-
-def api(request):
-    logged=request.user.is_authenticated
-    return render(request, 'Displayer/api.html',{'logged':logged})
 
 def api_search(request, keyword):
     logged=request.user.is_authenticated
     prod=Product.objects.get(name=keyword)
+    pr_dates=[]
+    pr_values=[]
     price=prod.getPrice()
-    return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price})
+    ap=request.build_absolute_uri('/').strip("/")
+    for dv in price.values('date','value'):
+        pr_dates.append(str(dv['date']))
+        pr_values.append(dv['value'])
+    return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price, 'pr_dt':pr_dates, 'pr_vl':pr_values, 'apiurl':ap})
     # 현재의 html을 사용할 것
 
 @login_required
@@ -99,6 +102,30 @@ def toggleBook(request, keyword):
     else:
         Favor(user=request.user.handle,product=prod).save()
     return redirect('search',keyword=keyword)
+
+def api_xlsx(request, keyword):
+    filename = keyword
+    Product.objects.get(name=keyword).getPriceByTable()
+    try:
+        filename = urllib.parse.unquote(filename)
+        file_url = SpProduct.objects.filter(name=filename)[0].getPriceByTable()
+        if os.path.exists(file_url):
+            with open(file_url, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
+                return response
+    except:
+        raise Http404
+
+def api_json(request, keyword):
+    filename = keyword
+    try:
+        filename = urllib.parse.unquote(filename)
+        query = SpProduct.objects.filter(name=filename)[0].getPrice()
+        query_list = serializers.serialize('json', query)
+        return HttpResponse(query_list, content_type="text/json-comment-filtered")
+    except:
+        raise Http404
+
 
 @login_required
 def delBook(request, keyword, next):
