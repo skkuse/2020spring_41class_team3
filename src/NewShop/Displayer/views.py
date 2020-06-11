@@ -59,14 +59,17 @@ def search(request, keyword):
     low=99999999999
     nnewz=prod.getNews()
     booked=False
+    alarmed = False
     if logged:
         History.objects.filter(user=request.user.handle,product=prod).delete()
         History(user=request.user.handle, product=prod).save()
         if Favor.objects.filter(user=request.user.handle, product=prod).count()>0:
             booked=True
-    for dv in price.values('date','value'):
-        pr_dates.append(dv['date'])
-        pr_values.append(dv['value'])
+        if Alarm.objects.filter(user=request.user.handle, product=prod).count()>0:
+            alarmed=True
+  #  for dv in price.values('date','value'):
+  #      pr_dates.append(dv['date'])
+   #     pr_values.append(dv['value'])
         
     for market in market_list:
         avg+=market['price']
@@ -76,7 +79,7 @@ def search(request, keyword):
     if avg!=0:
         avg/=count
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,'alarmed':alarmed})
     # 현재의 html을 사용할 것
 
 
@@ -113,8 +116,43 @@ def delHist(request, keyword):
     return redirect('home')
 
 @login_required
+def alarm_set(request):
+    logged=request.user.is_authenticated
+    context = ""
+    upper = 100000000
+    if request.method == "POST":
+        prod = request.POST.get("prod")
+        product = Product.objects.get(name=prod)
+        upper = request.POST.get("upper")
+        lower = request.POST.get("lower")
+        news_alarm = request.POST.get("news_alarm")
+        user = request.user
+
+        if (lower == ""):
+            context = "하한가를 입력해주세요."
+        elif (not lower.isdigit() or not upper.isdigit()):
+            context = "숫자로만 입력해주세요"
+        else :
+            if (news_alarm is None) :
+                news_alarm = False
+            else :
+                news_alarm = True
+            print(prod, upper,lower,news_alarm)
+            Alarm(user=request.user.handle,product=product,lower=int(lower),upper=int(upper),reuse=True,news_alarm=news_alarm).save()
+            return HttpResponse('<script type="text/javascript">window.close();window.opener.location.reload();</script>') 
+    else:
+        context = "입력을 확인해주세요."
+    return render(request, "Displayer/alarmSet.html",{'logged':logged, 'user':request.user, 'product':prod, 'context':context})
+@login_required
 def alarmSet(request, keyword):
-    return HttpResponse('?')
+    logged=request.user.is_authenticated
+    prod=Product.objects.get(name=keyword)
+    if Alarm.objects.filter(user=request.user.handle,product=prod).count()>0:
+        Alarm.objects.get(user=request.user.handle,product=prod).delete()
+    else:
+        return render(request, "Displayer/alarmSet.html",{'logged':logged, 'user':request.user, 'product':keyword})
+    return redirect('search',keyword=keyword)
+    
 
 @login_required
 def myPage(request):

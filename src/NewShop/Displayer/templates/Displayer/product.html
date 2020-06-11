@@ -22,9 +22,16 @@
 							<img src="{%static 'images/subscription_off.png'%}" style="width:100%">
 						{%endif%}
 					</button>
-
-					<button class="subscription_button" onclick="location.href='{%url 'alarmset' keyword=product%}'"><img src="{%static 'images/alarm.png'%}" style="width:150%"></button>
-
+					{%if alarmed%}
+					<button class="subscription_button" onclick="location.href='{%url 'alarmset' keyword=product%}'">
+						<img src="{%static 'images/alarm_on.png'%}" style="width:150%">
+					</button>
+					{%else%}
+						<button class="subscription_button" onclick="window.open('{%url 'alarmset' keyword=product%}','알림 설정','width=600,height=400')">
+							<img src="{%static 'images/alarm.png'%}" style="width:150%">
+						</button>
+						{%endif%}
+					
 				</div>
 			</div>
 		</div>
