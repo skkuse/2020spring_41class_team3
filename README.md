@@ -35,8 +35,13 @@
     pip install pandas
     pip install requests
     pip install bs4
+    pip install numpy
+    pip insatll torch torchvision # For Linux
+    pip install torchtext
+    python3 -m pip install konlpy # For Linux
     
     python manage.py runserver
+  For Pytorch see [here](https://pytorch.org/get-started/locally/). For KoNLPy see [here](https://konlpy-ko.readthedocs.io/ko/latest/install/).
 ***
 #### 테스트 사이트 : http://sr97.pythonanywhere.com/
 ##### 테스트 사이트는 즉시 반영이 아니라 수동 반영이므로, 여기에 푸시를 한 이후에는 조장에게 말하고 기다려 주세요.
