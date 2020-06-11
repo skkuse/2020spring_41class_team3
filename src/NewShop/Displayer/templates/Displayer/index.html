@@ -79,7 +79,7 @@
 							<a class="page-scroll" style="cursor:Pointer;"
 
 							{%if product%}
-								href="{%url 'search' keyword=product%}"	
+								href="{%url 'api_get' keyword=product%}"
 							{%else%}
 								onclick="not_searched_yet();"
 							{%endif%}

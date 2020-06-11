@@ -16,14 +16,13 @@ def make_news_url(search_word: str, start_date: str, end_date: str, length: int)
     """
     base_url = 'https://search.naver.com/search.naver?where=news'
     search_word = 'query={}'.format(search_word)
-    start_date = 'ds={}.{}.{}'.format(start_date[:4], start_date[4:6], start_date[6:])
-    end_date = 'de={}.{}.{}'.format(end_date[:4], end_date[4:6], end_date[6:])
+    date = 'nso=so%3Ar%2Cp%3Afrom{}to{}%2Ca%3Aall'.format(start_date, end_date)
     start = ['start=1']
     for i in range(length//10):
         start.append(f'start={i+1}1')
     url_all = []
     for i in range(len(start)):
-        query_list = [base_url, search_word, start_date, end_date, start[i]]
+        query_list = [base_url, search_word, date, start[i]]
         url = '&'.join(query_list)
         url_all.append(url)
     return url_all
@@ -106,7 +105,7 @@ class Crawler(object):
             ret.append(sentence)
         return ret
 
-    def get_market_price(self, key_word):
+    def get_market_real_time(self, product_name, num_of_item=5):
         """
         crawling the market price for given keyword.
         :param key_word: search word
@@ -116,9 +115,9 @@ class Crawler(object):
                 link: market link
         """
         ret = []
-        key = key_word.lower().split()
+        key = product_name.lower().split()
         for market in markets:
-            get_data = market.get_data(key_word)
+            get_data = market.get_data(product_name, num_of_item)
             for element in get_data:
                 check = 1
                 for keyword in key:
@@ -127,19 +126,19 @@ class Crawler(object):
                         break
                 if check == 1:
                     ret.append(element)
+        ret = sorted(ret, key=lambda dict: dict['price'])
         return ret
 
     def update_market_price(self, product_name):
         data = self.get_market_price(product_name)
-        product = SpProduct.objects.filter(name='삼성 메모리')[0]
+        product = SpProduct.objects.filter(name=product_name)[0]
         for data_row in data:
             Price.objects.create(product=product, value=data_row['price'], date=datetime.now())
 
-    def get_market_real_time(self, product_name):
-        data = self.get_market_price(product_name)
-        return data
 
 crawler = Crawler()
 
 if __name__ == '__main__':
-    print(crawler.get_news_title_date('https://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=100&oid=011&aid=0003750781'))
+    ret = crawler.get_market_real_time("삼성", 10)
+    for _ret in ret:
+        print(_ret['price'], _ret['name'])

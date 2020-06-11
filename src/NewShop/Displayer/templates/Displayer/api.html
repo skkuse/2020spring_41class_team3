@@ -18,9 +18,8 @@
 	<section class="section-api">
 		<div class="container">
 		<ul>
-			<li>XLS 파일 내려받기</li>
-			<li>Json data 요청하기</li>
-			최근 <input class="api-input-box" type="number">개월,&nbsp;&nbsp;&nbsp; <input class="api-input-box" type="number">시간 간격
+			<a href="{%url 'api_xlsx' keyword=product%}"><li>XLS 파일 내려받기</li></a>
+			<li>Json data 요청하기 : {{apiurl}}{%url 'api_json' keyword=product%}</li>
 		</ul>
 		</div>
 	</section>
@@ -37,7 +36,7 @@ type: 'line',
  data: {
   labels: {{pr_dt|safe}}, 
   datasets: [
-  { label: '사과', 
+  { label: '{{product}}', 
   backgroundColor: ['rgba(255,0,0,0.2)'], 
   borderColor: 'red', data: {{pr_vl}} }] }, // 옵션 
 options: {
@@ -47,7 +46,7 @@ options: {
             time: {
               unit : 'day',
                 displayFormats: {
-                    day: 'YY/HH/MM'
+                    day: 'YY.M.D'
                 }
             },
             ticks: {
