@@ -8,7 +8,6 @@ urlpatterns = [
     path('home', views.home, name='home'),     # 예를 들어 기본 주소/home은 views.home을 부르는 url이 됨. Displayer/views.py로 이동
     path('product',views.q2key,name='q2key'),
     path('product/<str:keyword>',views.search,name='search'),
-    path('API', views.api, name='API'),
     path('API/<str:keyword>',views.api_search,name='api_get'),
     path('API_xlsx', views.api_xlsx, name='api_xlsx'),
     path('API_json', views.api_json, name='api_json'),

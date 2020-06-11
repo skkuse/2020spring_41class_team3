@@ -27,11 +27,18 @@
 					<button class="subscription_button" onclick="location.href='{%url 'alarmset' keyword=product%}'">
 						<img src="{%static 'images/alarm_on.png'%}" style="width:150%">
 					</button>
+				
 					{%else%}
-						<button class="subscription_button" onclick="window.open('{%url 'alarmset' keyword=product%}','알림 설정','width=600,height=400')">
-							<img src="{%static 'images/alarm.png'%}" style="width:150%">
-						</button>
+						{%if logged %}
+							<button class="subscription_button" onclick="window.open('{%url 'alarmset' keyword=product%}','알림 설정','width=600,height=400')">
+								<img src="{%static 'images/alarm.png'%}" style="width:150%">
+							</button>
+						{% else %}
+							<button class="subscription_button" onclick="alert('로그인 후 이용해주세요')">
+								<img src="{%static 'images/alarm.png'%}" style="width:150%">
+							</button>
 						{%endif%}
+					{%endif%}
 					
 				</div>
 			</div>

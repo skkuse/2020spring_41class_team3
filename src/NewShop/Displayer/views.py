@@ -74,9 +74,9 @@ def search(request, keyword):
         if Alarm.objects.filter(user=request.user.handle, product=prod).count()>0:
             alarmed=True
  
-    for dv in price.values('date','value'):
-        pr_dates.append(str(dv['date']))
-        pr_values.append(dv['value'])
+    #for dv in price.values('date','value'):
+    #    pr_dates.append(str(dv['date']))
+    #    pr_values.append(dv['value'])
     for market in market_list:
         avg+=market['price']
         if low>market['price']:
@@ -85,7 +85,7 @@ def search(request, keyword):
     if avg!=0:
         avg/=count
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,'alarmed':alarmed,,'theme':news_category})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,'alarmed':alarmed,'theme':news_category})
     # 현재의 html을 사용할 것
 
 def api_search(request, keyword):
@@ -95,9 +95,9 @@ def api_search(request, keyword):
     pr_values=[]
     price=prod.getPrice()
     ap=request.build_absolute_uri('/').strip("/")
-    for dv in price.values('date','value'):
-        pr_dates.append(str(dv['date']))
-        pr_values.append(dv['value'])
+#    for dv in price.values('date','value'):
+#        pr_dates.append(str(dv['date']))
+#        pr_values.append(dv['value'])
     return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price, 'pr_dt':pr_dates, 'pr_vl':pr_values, 'apiurl':ap})
     # 현재의 html을 사용할 것
 
@@ -174,6 +174,7 @@ def alarm_set(request):
     else:
         context = "입력을 확인해주세요."
     return render(request, "Displayer/alarmSet.html",{'logged':logged, 'user':request.user, 'product':prod, 'context':context})
+    
 @login_required
 def alarmSet(request, keyword):
     logged=request.user.is_authenticated
