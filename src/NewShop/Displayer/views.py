@@ -13,6 +13,8 @@ import random
 import datetime
 import urllib.parse
 
+news_category=['가격', '신제품', '프로모션', '동향']
+
 # Create your views here.
 def redir(request):
     return redirect('home',)
@@ -38,7 +40,7 @@ def home(request):
             newz |= mark.product.getNews()
         if newz.count()>0:
             newz.order_by('-date')
-    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':newz, 'user':usr, 'history':hist,'product':prod})
+    return render(request, 'Displayer/home.html',{'logged':logged, 'bookmarks':bookmarks, 'news':newz, 'user':usr, 'history':hist,'product':prod,'theme':news_category})
     # request는 GET/POST 메소드의 모든 정보를 담고 있음. render를 통해 html파일과 연결.
 
 def q2key(request):
@@ -78,7 +80,7 @@ def search(request, keyword):
         count+=1
     if avg!=0:
         avg/=count
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,'theme':news_category})
     # 현재의 html을 사용할 것
 
 def api_search(request, keyword):

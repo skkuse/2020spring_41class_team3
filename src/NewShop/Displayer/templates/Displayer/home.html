@@ -1,5 +1,6 @@
 {% extends 'Displayer/index.html' %}
 {%load static%}
+{%load custom_tags%}
 {% block content %}
 		<header>
 			<div class="container-fluid" >
@@ -103,13 +104,12 @@
 						{%if not news%}
 							표시할 뉴스가 없습니다.
 						{%endif%}
-
 						{%for new in news%}
 						<!--최신 3개-->
 							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;">
 								<div class="product-news-date">{{new.date}}</div>
-								<div class="featured-text" onclick="location.href='{{new.url}}'">
-									<h4>{{new.title}}</h4>
+								<div class="featured-text" onclick="location.href='{{new.url}}'">								
+									<h4>[{{theme|index:new.subj}}]{{new.title}}</h4>
 									<h6>&emsp;&emsp;{{new.piece}} </h6>
 
 								</div>

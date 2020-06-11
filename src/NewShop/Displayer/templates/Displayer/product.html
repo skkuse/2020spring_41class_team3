@@ -1,5 +1,6 @@
 {% extends 'Displayer/index.html' %}
 {% load static %}
+{%load custom_tags%}
 {% block content %}
  	<header>
  		<div class="container">
@@ -53,7 +54,7 @@
 							<div class="featured-item" id="news-{{forloop.counter0}}" style="display:none;" onclick="location.href='{{new.url}}'">
 								<div class="product-news-date">{{new.date}}</div>
 								<div class="product-news-contents">
-									<h4>{{new.title}}</h4>
+									<h4>[{{theme|index:new.subj}}]{{new.title}}</h4>
 									<h6>{{new.piece}} </h6>
 
 								</div>
