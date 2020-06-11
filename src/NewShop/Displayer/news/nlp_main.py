@@ -235,13 +235,13 @@ def test_model(query, date_range, length, m_path):
                     date_arr = date_.split('.')
                     date_ = datetime(int(date_arr[0]), int(date_arr[1]), int(date_arr[2]))
                     title_ = title_[1:-1]
-                    product_ = NspProduct.objects.filter(name=q)[0]
-                    key_sentences_string = ''
-                    for i in key_sentences_:
-                        key_sentences_string += i
-                        key_sentences_string += " "
-                    key_sentences_string=key_sentences_string[:20]+'...'
-                    News.objects.create(date=date_, title=title_, subj=predicted.item(), url=n_url, product=product_, piece=key_sentences_string)
+                    if News.objects.filter(title=title_).count() == 0:
+                        product_ = NspProduct.objects.filter(name=q)[0]
+                        key_sentences_string = ''
+                        for i in key_sentences_:
+                            key_sentences_string += i
+                            key_sentences_string += " "
+                        News.objects.create(date=date_, title=title_, subj=predicted.item(), url=n_url, product=product_, piece=key_sentences_string)
 
 
 """ Usage
