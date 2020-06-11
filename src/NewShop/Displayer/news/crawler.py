@@ -131,7 +131,7 @@ class Crawler(object):
 
     def update_market_price(self, product_name):
         data = self.get_market_price(product_name)
-        product = SpProduct.objects.filter(name='삼성 메모리')[0]
+        product = SpProduct.objects.filter(name=product_name)[0]
         for data_row in data:
             Price.objects.create(product=product, value=data_row['price'], date=datetime.now())
 
