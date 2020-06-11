@@ -1,0 +1,55 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="{%static 'js/function.js'%}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="{%static 'css/style_auth.css'%}" rel="stylesheet">
+    <title>newShop</title>
+</head>
+
+<body>
+    <div class="panel panel-default registration">
+        <div class="error_message">
+            {{error}}
+        </div>
+        <div class="panel-heading" style="background-color:#FFB808">
+            알림 설정
+        </div>
+        <div class="panel-body" >
+        <form method="POST" action="{% url 'alarm_set' %}" onsubmit="return " style="margin-left: 10px;">
+            {% csrf_token %}
+            <input type="hidden" name="prod" value="{{ product }}">
+            <div >
+                <div style="margin-bottom: 4px;">하한가</div>
+                <div style="margin-bottom: 8px;">
+                    <input name="lower" style="font-size:1.2rem;" placeholder= "해당 가격 이하일때 알림" type="text">
+                </div>
+                <div style="margin-bottom: 4px;">상한가</div>
+                <div style="margin-bottom: 8px;">
+                    <input name="upper" style="font-size:1.2rem;" placeholder= "필수 입력X" type="text">
+                </div>
+            </div>
+            <section id="news_alarm">
+                <div class="container">
+                <div class="checkbox-group" style="float:center;">
+                    <label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" name="news_alarm" > &nbsp; 뉴스 알림 받기</label>
+                </div>
+                <h5>{{context}}</h5>
+            </div>
+            </section>
+            <div class="button_group" style="float:left;width:25%">
+                <input type="submit" class="btn btn-dark"  value="설정하기">
+            </div>
+            <div class="button_group" style="float:left;width:25%">
+                <input type = "button"  class="btn btn-dark"  name="cancle" value="취소하기" onclick="window.close()">
+            </div>
+
+        </form>
+    </div>
+    </div>
+</body>
+
+</html>
