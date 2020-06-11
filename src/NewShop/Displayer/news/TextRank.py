@@ -4,12 +4,16 @@ from konlpy.tag import Komoran
 import numpy as np
 import pandas as pd
 
+# 이 .py 파일은 "TextRank: Bringing Order into Texts"(Rada Mihalcea and Paul Tarau, 2004)의 논문을 재생산한 것이다.
+
+# 한국어 형태소 분석기 코모란(Komoran)을 사용한다.
 komoran = Komoran()
 
 # TextRank is a graph-based model
 class Graph(dict):
     def __init__(self):
         super(Graph, self).__init__()
+        # Weighted graph의 구현이다.
         self.edge_weight = {}
 
     def add_vertex(self, v):
@@ -144,7 +148,7 @@ def pagerank(graph, d_f=0.85, epochs=30, threshold=0.001):
 
     return scores
 
-
+# 문장들을 받아 키워드를 반환하는 함수이다.
 def keyword_extractor(sents, window=2, d_f=0.85, epochs=30, threshold=0.001, T=20):
     tokens = sum([komoran_tokenizer(sent) for sent in sents if not komoran_tokenizer(sent) is None], [])
     graph = cooccurence_relation(tokens, window)
@@ -156,7 +160,7 @@ def keyword_extractor(sents, window=2, d_f=0.85, epochs=30, threshold=0.001, T=2
     _key_words = _key_words.tolist()
     return _key_words
 
-
+# 문장들을 받아 중요 문장들을 반환하는 함수이다.
 def keysentence_summarizer(sents, d_f=0.85, epochs=30, threshold=0.001, T=3):
     graph = similarity_relation(sents)
     scores = pagerank(graph, d_f, epochs, threshold)
