@@ -277,6 +277,7 @@ def test_model(query, date_range, length, m_path):
                             key_sentences_string += " "
                         # 크롤링을 통해 얻어진 뉴스 날짜, 뉴스 제목, 뉴스 url과 모델을 통해 가공된 분류(subj), 요약문단(piece),
                         # 그리고 관련된 상품(쿼리, query)의 정보를 데이터베이스에 저장한다.
+                        key_sentences_string = key_sentences_string[:20]+'...'
                         News.objects.create(date=date_, title=title_, subj=predicted.item(), url=n_url, product=product_, piece=key_sentences_string)
 
 

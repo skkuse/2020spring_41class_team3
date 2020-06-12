@@ -131,7 +131,7 @@ class Crawler(object):
         return ret[:num_of_item]
 
     def update_market_price(self, product_name):
-        data = self.get_market_real_time(product_name)
+        data = self.get_market_real_time(product_name, 1)
         product = SpProduct.objects.filter(name=product_name)[0]
         # SpProduct 하나당 가장 낮은 가격 하나만 저장됨
         low = 999999999999
