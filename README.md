@@ -39,6 +39,8 @@
     pip insatll torch torchvision # For Linux
     pip install torchtext
     python3 -m pip install konlpy # For Linux
+    python -m pip install -U matplotlib
+    pip install WordCloud
     
     python manage.py runserver
   For Pytorch see [here](https://pytorch.org/get-started/locally/). For KoNLPy see [here](https://konlpy-ko.readthedocs.io/ko/latest/install/).
