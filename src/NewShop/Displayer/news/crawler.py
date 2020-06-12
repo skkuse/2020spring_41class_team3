@@ -106,7 +106,7 @@ class Crawler(object):
             ret.append(sentence)
         return ret
 
-    def get_market_real_time(self, product_name, num_of_item=5):
+    def get_market_real_time(self, product_name, num_of_item=15):
         """
         crawling the market price for given keyword.
         :param key_word: search word
@@ -118,7 +118,7 @@ class Crawler(object):
         ret = []
         key = product_name.lower().split()
         for market in markets:
-            get_data = market.get_data(product_name, num_of_item)
+            get_data = market.get_data(product_name, 20)
             for element in get_data:
                 check = 1
                 for keyword in key:
@@ -128,7 +128,7 @@ class Crawler(object):
                 if check == 1:
                     ret.append(element)
         ret = sorted(ret, key=lambda dict: dict['price'])
-        return ret
+        return ret[:num_of_item]
 
     def update_market_price(self, product_name):
         data = self.get_market_real_time(product_name)
