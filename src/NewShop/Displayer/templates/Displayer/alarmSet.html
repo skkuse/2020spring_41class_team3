@@ -19,17 +19,16 @@
             알림 설정
         </div>
         <div class="panel-body" >
-        <form method="POST" action="{% url 'alarm_set' %}" onsubmit="return " style="margin-left: 10px;">
+        <form method="POST" onsubmit="return " style="margin-left: 10px;">
             {% csrf_token %}
-            <input type="hidden" name="prod" value="{{ product }}">
             <div >
                 <div style="margin-bottom: 4px;">하한가</div>
                 <div style="margin-bottom: 8px;">
-                    <input name="lower" style="font-size:1.2rem;" placeholder= "해당 가격 이하일때 알림" type="text">
+                    <input name="lower" style="font-size:1.2rem;" placeholder= "해당 가격 이하일때 알림" type="number" width="200" value="{{Alarm.lower}}">
                 </div>
                 <div style="margin-bottom: 4px;">상한가</div>
                 <div style="margin-bottom: 8px;">
-                    <input name="upper" style="font-size:1.2rem;" placeholder= "필수 입력X" type="text">
+                    <input name="upper" style="font-size:1.2rem" placeholder= "하한가 아래로 내려갔다가 이 이상 올라가면 알림" type="number" width="200" value="{{Alarm.upper}}">
                 </div>
             </div>
             <section id="news_alarm">
@@ -44,7 +43,10 @@
                 <input type="submit" class="btn btn-dark"  value="설정하기">
             </div>
             <div class="button_group" style="float:left;width:25%">
-                <input type = "button"  class="btn btn-dark"  name="cancle" value="취소하기" onclick="window.close()">
+                <input type = "button"  class="btn btn-dark"  name="cancle" value="알림 삭제" onclick="location.href='{%url 'alarmdel' keyword=keyword%}'">
+            </div>
+            <div class="button_group" style="float:left;width:25%">
+                <input type = "button"  class="btn btn-dark"  name="cancle" value="취소" onclick="window.close()">
             </div>
 
         </form>

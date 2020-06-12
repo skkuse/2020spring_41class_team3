@@ -72,7 +72,7 @@
 									<img class="mz-image" src="{{pr.product.imgUrl}}" width="100%">
 									<h3>{{alarm.product}}</h3>
 								</div>
-								<a class="mz-module-button" name="{{alarm.product}}" onclick="location.href='{%url 'alarmset' keyword=alarm.product%}'">search</a>
+								<a class="mz-module-button" name="{{alarm.product}}"  onclick="window.open('{%url 'alarmset' keyword=product%}','알림 설정','width=600,height=400')">set</a>
 							</div>
 						</div>
 					{%endfor%}

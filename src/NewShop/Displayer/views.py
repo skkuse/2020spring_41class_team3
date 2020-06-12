@@ -74,9 +74,9 @@ def search(request, keyword):
         if Alarm.objects.filter(user=request.user.handle, product=prod).count()>0:
             alarmed=True
  
-    #for dv in price.values('date','value'):
-    #    pr_dates.append(str(dv['date']))
-    #    pr_values.append(dv['value'])
+    for dv in price.values('date','value'):
+        pr_dates.append(str(dv['date']))
+        pr_values.append(dv['value'])
     for market in market_list:
         avg+=market['price']
         if low>market['price']:
@@ -95,9 +95,9 @@ def api_search(request, keyword):
     pr_values=[]
     price=prod.getPrice()
     ap=request.build_absolute_uri('/').strip("/")
-#    for dv in price.values('date','value'):
-#        pr_dates.append(str(dv['date']))
-#        pr_values.append(dv['value'])
+    for dv in price.values('date','value'):
+        pr_dates.append(str(dv['date']))
+        pr_values.append(dv['value'])
     return render(request, 'Displayer/api.html',{'logged':logged,'product':prod, 'price':price, 'pr_dt':pr_dates, 'pr_vl':pr_values, 'apiurl':ap})
     # 현재의 html을 사용할 것
 
@@ -147,43 +147,37 @@ def delHist(request, keyword):
     return redirect('home')
 
 @login_required
-def alarm_set(request):
+def alarm_set(request, keyword):
     logged=request.user.is_authenticated
+    product = Product.objects.get(name=keyword)
+    yours=None
+    if Alarm.objects.filter(user=request.user.handle,product=product).count()>0:
+        yours=Alarm.objects.get(user=request.user.handle,product=product)
     context = ""
-    upper = 100000000
     if request.method == "POST":
-        prod = request.POST.get("prod")
-        product = Product.objects.get(name=prod)
         upper = request.POST.get("upper")
         lower = request.POST.get("lower")
-        news_alarm = request.POST.get("news_alarm")
-        user = request.user
-
-        if (lower == ""):
-            context = "하한가를 입력해주세요."
-        elif (not lower.isdigit() or not upper.isdigit()):
-            context = "숫자로만 입력해주세요"
-        else :
-            if (news_alarm is None) :
-                news_alarm = False
-            else :
-                news_alarm = True
-            print(prod, upper,lower,news_alarm)
+        news_alarm = request.POST.get("news_alarm",False)
+        if news_alarm == "on":
+            news_alarm=True
+        if upper == "":
+            upper=100000000
+        if lower == "":
+            lower=0
+        if lower > 0 or news_alarm:
+            if Alarm.objects.filter(user=request.user.handle,product=product).count()>0:
+                Alarm.objects.filter(user=request.user.handle,product=product).delete()
             Alarm(user=request.user.handle,product=product,lower=int(lower),upper=int(upper),reuse=True,news_alarm=news_alarm).save()
-            return HttpResponse('<script type="text/javascript">window.close();window.opener.location.reload();</script>') 
-    else:
-        context = "입력을 확인해주세요."
-    return render(request, "Displayer/alarmSet.html",{'logged':logged, 'user':request.user, 'product':prod, 'context':context})
+        return HttpResponse('<script type="text/javascript">window.close();window.opener.location.reload();</script>') 
+    return render(request, "Displayer/alarmSet.html",{'logged':logged, 'user':request.user, 'keyword':keyword,'context':context, 'Alarm':yours})
     
 @login_required
-def alarmSet(request, keyword):
+def alarmDelete(request, keyword):
     logged=request.user.is_authenticated
     prod=Product.objects.get(name=keyword)
     if Alarm.objects.filter(user=request.user.handle,product=prod).count()>0:
-        Alarm.objects.get(user=request.user.handle,product=prod).delete()
-    else:
-        return render(request, "Displayer/alarmSet.html",{'logged':logged, 'user':request.user, 'product':keyword})
-    return redirect('search',keyword=keyword)
+        Alarm.objects.filter(user=request.user.handle,product=prod).delete()
+    return HttpResponse('<script type="text/javascript">window.close();window.opener.location.reload();</script>')
     
 
 @login_required

@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from datetime import date as DATE
 from datetime import datetime
 from Displayer.news.MarketPrice import markets
 from Displayer.models import Price, SpProduct
@@ -130,10 +131,14 @@ class Crawler(object):
         return ret
 
     def update_market_price(self, product_name):
-        data = self.get_market_price(product_name)
+        data = self.get_market_real_time(product_name)
         product = SpProduct.objects.filter(name=product_name)[0]
-        for data_row in data:
-            Price.objects.create(product=product, value=data_row['price'], date=datetime.now())
+        # SpProduct 하나당 가장 낮은 가격 하나만 저장됨
+        low = 999999999999
+        for data_row in data:            
+            if data_row['price']<low:
+                low=data_row['price']
+        Price.objects.create(product=product, value=data_row['price'], date=DATE.today())
 
 
 crawler = Crawler()

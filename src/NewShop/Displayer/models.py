@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from NewShop import local_settings
 from django.core.mail import EmailMessage
+import datetime
 import requests
 import pandas as pd
 import abc
@@ -177,18 +178,19 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
                     msg = (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
                     a.user.sendEmail(title, msg)
 
-    def sendNewsAlarm(self):  # 뉴스에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 뉴스가 저장된 상태여야 함
+    def sendNewsAlarm(self):  # 뉴스에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 뉴스가 저장된 상태여야 함. 1일 1회 기준
         alarms=self.alarm.all()
-        for a in alarms:
-            if a.news_alarm:
-                if int(a.user.alarmMethod/2)==1:
-                    msg = '[NewShop]\n'
-                    msg += (a.user.user.username+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
-                    a.user.sendSMS(msg)
-                if a.user.alarmMethod%2==1:
-                    title='[NewShop]뉴스 알림 ('+self.name+')'
-                    msg = (a.user.user.username+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
-                    a.user.sendEmail(title, msg)
+        if self.getNews().first().date == datetime.date.today():
+            for a in alarms:
+                if a.news_alarm:
+                    if int(a.user.alarmMethod/2)==1:
+                        msg = '[NewShop]\n'
+                        msg += (a.user.user.username+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
+                        a.user.sendSMS(msg)
+                    if a.user.alarmMethod%2==1:
+                        title='[NewShop]뉴스 알림 ('+self.name+')'
+                        msg = (a.user.user.username+'님 안녕하세요. '+self.name+'과 관련한 새로운 소식이 있으니, 사이트에서 확인해 주시기 바랍니다.')
+                        a.user.sendEmail(title, msg)
 
 class NspProduct(Product): #상표 무관 product 키워드를 말함
     field = models.CharField(max_length=50,null=True)
