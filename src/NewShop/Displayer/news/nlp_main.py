@@ -5,7 +5,9 @@ import sys
 import collections
 import json
 import random
+import io
 import pandas as pd
+import matplotlib.pyplot as plt
 from datetime import datetime
 
 # Pytorch: 파이토치는 GPU 리소스를 사용할 수 있는 머신러닝 오픈소스 라이브러리이다.
@@ -19,10 +21,16 @@ from torchtext.data import TabularDataset, Iterator
 
 # KoNLPy: 코엔엘파이는 한국어 정보처리를 위한 파이썬 패키지이다. 여기서는 코모란 토크나이저를 사용한다.
 from konlpy.tag import Komoran
+# WordCloud: 워드클라우드를 만들기 위한 라이브러리이다.
+from wordcloud import WordCloud
 
-from Displayer.models import News, NspProduct, SpProduct
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from NewShop.settings import MEDIA_ROOT
+
+from Displayer.models import News, NspProduct, SpProduct, WordCloudImg
 from Displayer.news.crawler import make_news_url, Crawler
-from Displayer.news.TextRank import keysentence_summarizer
+from Displayer.news.TextRank import keysentence_summarizer, komoran_tokenizer
 
 
 komoran = Komoran()
@@ -232,6 +240,15 @@ def train_model():
 
 # 실제 데이터에서 학습된 모델을 통해 아웃풋(output)을 얻어내는 함수이다.
 def test_model(query, date_range, length, m_path):
+    """ Usage
+        # Arguments:
+        #     1) list (Query sentence) (*** Should be product name ***)
+        #     2) list (Range of searching news)
+        #     3) int (Maximum length of searching news)
+        #     4) string (Path to TextSentiment model) (*** Do not touch ***)
+    (Example)
+    test_model(['ssd'], ['20200601', '20200608'], 9, 'Displayer/news/best_model.pth'))
+    """
     # 저장된 모델을 불러온다.
     checkpoint = torch.load(m_path, map_location=device)
     model = TextSentiment(checkpoint['vocab_size'], checkpoint['embed_dim'], checkpoint['n_classes']).to(device)
@@ -248,7 +265,9 @@ def test_model(query, date_range, length, m_path):
             for n_url in news:
                 # 크롤링을 통해 뉴스 데이터를 가져온다.
                 news_contents_ = crawler.get_news_contents(n_url)
-                if not news_contents_ == '':
+                if not news_contents_:
+                    pass
+                elif not news_contents_ == '':
                     print("### News summary")
                     # 뉴스 데이터를 TexTrank의 keysentence summarizer 기법을 활용해 T줄 만큼 요약한다.
                     key_sentences_ = keysentence_summarizer(news_contents_, d_f=0.85, epochs=30, threshold=0.001, T=5)
@@ -277,18 +296,47 @@ def test_model(query, date_range, length, m_path):
                             key_sentences_string += " "
                         # 크롤링을 통해 얻어진 뉴스 날짜, 뉴스 제목, 뉴스 url과 모델을 통해 가공된 분류(subj), 요약문단(piece),
                         # 그리고 관련된 상품(쿼리, query)의 정보를 데이터베이스에 저장한다.
-                        key_sentences_string = key_sentences_string[:20]+'...'
+                        key_sentences_string = key_sentences_string[:40]+'...'
                         News.objects.create(date=date_, title=title_, subj=predicted.item(), url=n_url, product=product_, piece=key_sentences_string)
 
 
-""" Usage
-    # Arguments:
-    #     1) list (Query sentence) (*** Should be product name ***)
-    #     2) list (Range of searching news)
-    #     3) int (Maximum length of searching news)
-    #     4) string (Path to TextSentiment model) (*** Do not touch ***)
-(Example)
-test_model(['ssd'], ['20200601', '20200608'], 9, 'Displayer/news/best_model.pth'))
-"""
+# 각 상품별로 관련된 뉴스 제목를 통해 워드 클라우드를 만드는 함수이다.
+def make_word_cloud(query, num_words=30):
+    """ Usage
+        # Arguments:
+        #     1) list (Query sentence) (*** Should be product name ***)
+        #     2) int (# of words)
+        Image will be saved in 'MEDIA_ROOT/img' folder (MEDIA_ROOT in settings.py)
+    (Example)
+    make_word_cloud(['ssd'], 30)
+    """
+    for q in query:
+        product_id_ = NspProduct.objects.filter(name=q).values()[0]['id']
+        news_related = News.objects.filter(product=product_id_).values()
+        # 뉴스 제목들을 워드 클라우딩 한다.
+        titles = [news_related[i]['title'] for i in range(len(news_related))]
+        titles_tokens = sum([komoran_tokenizer(title_) for title_ in titles], [])
+        # Only nouns
+        titles_tokens = [i[0] for i in titles_tokens if 'NN' in i[1] and len(i[0]) > 1]
+        counter_ = collections.Counter(titles_tokens)
+        # num_words 만큼의 단어를 추출한다.
+        words_ = dict(counter_.most_common(num_words))
 
-    
+        WordCloud_ = WordCloud(background_color='white', width=800, height=600, font_path='Displayer/news/NanumBarunGothic.ttf', colormap='gist_gray')
+        word_cloud = WordCloud_.generate_from_frequencies(words_)
+        plt.figure(figsize=(10, 8))
+        plt.axis('off')
+        plt.imshow(word_cloud)
+
+        # Django에 저장하기 위해 bytes로 변환
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        img_ = buffer.getvalue()
+        buffer.close()
+        img_ = ContentFile(img_)
+        file_name = f'{q}.jpg'
+        if file_name in os.listdir(f'{MEDIA_ROOT}/img'):
+            os.remove(f'{MEDIA_ROOT}/img/{file_name}')
+        img_ = InMemoryUploadedFile(img_, None, file_name, 'image/jpeg', img_.tell, None)
+        product_ = NspProduct.objects.filter(name=q)[0]
+        WordCloudImg(img=img_, product=product_).save()

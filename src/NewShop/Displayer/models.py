@@ -262,3 +262,7 @@ class Report(models.Model):
 
     def __str__(self):
         return self.subj
+
+class WordCloudImg(models.Model):
+    img = models.ImageField(upload_to='img')
+    product = models.ForeignKey("NspProduct", related_name='wordcloudimage', on_delete=models.CASCADE)
