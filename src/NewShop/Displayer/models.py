@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from NewShop import local_settings
+from NewShop.settings import MEDIA_ROOT
 from django.core.mail import EmailMessage
 import datetime
 import requests
@@ -160,22 +161,22 @@ class Product(models.Model):    #상표 없는 것과 있는 것의 공통 규�
                 a.save()
                 if int(a.user.alarmMethod/2)==1:
                     msg = '[NewShop]\n'
-                    msg += (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg += (a.user.user.username+'님, '+self.name+'의 가격이 '+str(pr)+'이 되었으니 사이트에서 확인해 주세요.')
                     a.user.sendSMS(msg)
                 if a.user.alarmMethod%2==1:
                     title='[NewShop]가격 변동 알림 ('+self.name+')'
-                    msg = (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg = (a.user.user.username+'님, '+self.name+'의 가격이 '+str(pr)+'이 되었으니 사이트에서 확인해 주세요.')
                     a.user.sendEmail(title, msg)
             elif a.upper<pr and not a.reuse:
                 a.reuse=True
                 a.save()
                 if int(a.user.alarmMethod/2)==1:
                     msg = '[NewShop]\n'
-                    msg += (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg += (a.user.user.username+'님, '+self.name+'의 가격이 '+str(pr)+'이 되었으니 사이트에서 확인해 주세요.')
                     a.user.sendSMS(msg)
                 if a.user.alarmMethod%2==1:
                     title='[NewShop]가격 변동 알림 ('+self.name+')'
-                    msg = (a.user.user.username+'님 안녕하세요. '+self.name+'의 가격이 '+pr+'이 되었으니 사이트에서 확인해 주시기 바랍니다.')
+                    msg = (a.user.user.username+'님, '+self.name+'의 가격이 '+str(pr)+'이 되었으니 사이트에서 확인해 주세요.')
                     a.user.sendEmail(title, msg)
 
     def sendNewsAlarm(self):  # 뉴스에 관한 알림만. 반드시 호출하기 전에 데이터베이스에 새로운 뉴스가 저장된 상태여야 함. 1일 1회 기준
@@ -217,8 +218,8 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
             same=date            
         return price_list
 
-    def getInfluence(self):
-        return self.influence
+    def getInfluence(self):   
+        return self.cloud
         
 
 class SpProduct(Product):  #상표가 있는 specific product 키워드를 말함.
@@ -265,4 +266,7 @@ class Report(models.Model):
 
 class WordCloudImg(models.Model):
     img = models.ImageField(upload_to='img')
-    product = models.ForeignKey("NspProduct", related_name='wordcloudimage', on_delete=models.CASCADE)
+    product = models.OneToOneField("NspProduct", related_name='cloud', on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.product.name

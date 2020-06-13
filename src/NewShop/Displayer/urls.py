@@ -1,5 +1,7 @@
 from django.urls import include, path, re_path
 from django.contrib.auth import views as auth_views
+from django.conf.urls import static
+from NewShop import settings
 from . import views
 
 
@@ -22,3 +24,5 @@ urlpatterns = [
     path('please-search-a-keyword',views.toHome,name='home2'),
     path('report',views.report,name='report'),
 ]
+
+urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,5 +1,5 @@
 from Displayer.news.crawler import crawler
-from Displayer.news.nlp_main import test_model
+from Displayer.news.nlp_main import test_model, make_word_cloud
 from Displayer.models import Price, SpProduct, NspProduct, Product
 import datetime
 
@@ -16,6 +16,7 @@ def run():
         if lastdate is None:
             lastdate='20200601'
         test_model([nsp.name], [lastdate,today], 50, 'Displayer/news/best_model.pth')
+        make_word_cloud([nsp.name])
     for p in all_p:
         p.sendNewsAlarm()
         p.sendPriceAlarm()

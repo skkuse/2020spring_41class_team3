@@ -55,7 +55,7 @@ def q2key(request):
 def search(request, keyword):
     logged=request.user.is_authenticated
     market_list=[]
-    market_list = crawler.get_market_real_time(keyword)
+    market_list = crawler.get_market_real_time(keyword)    
     prod=Product.objects.get(name=keyword)
     price=prod.getPrice()
     pr_dates=[]
@@ -66,6 +66,8 @@ def search(request, keyword):
     nnewz=prod.getNews()
     booked=False
     alarmed = False
+    ap=request.build_absolute_uri('/').strip("/")
+    cloud_path = ap+prod.getInfluence().img.url
     if logged:
         History.objects.filter(user=request.user.handle,product=prod).delete()
         History(user=request.user.handle, product=prod).save()
@@ -85,7 +87,7 @@ def search(request, keyword):
     if avg!=0:
         avg/=count
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,'alarmed':alarmed,'theme':news_category})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,'alarmed':alarmed,'theme':news_category, 'cloud':cloud_path})
     # 현재의 html을 사용할 것
 
 def api_search(request, keyword):

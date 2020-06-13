@@ -328,15 +328,18 @@ def make_word_cloud(query, num_words=30):
         plt.axis('off')
         plt.imshow(word_cloud)
 
-        # Django에 저장하기 위해 bytes로 변환
+        # Django에 저장하기 위해 bytes로 변환        
         buffer = io.BytesIO()
         plt.savefig(buffer, format='png')
         img_ = buffer.getvalue()
         buffer.close()
         img_ = ContentFile(img_)
         file_name = f'{q}.jpg'
-        if file_name in os.listdir(f'{MEDIA_ROOT}/img'):
-            os.remove(f'{MEDIA_ROOT}/img/{file_name}')
+        try:    # os.listdir throws an exception at first
+            if file_name in os.listdir(f'{MEDIA_ROOT}/img'):
+                os.remove(f'{MEDIA_ROOT}/img/{file_name}')
+        except:
+            pass
         img_ = InMemoryUploadedFile(img_, None, file_name, 'image/jpeg', img_.tell, None)
         product_ = NspProduct.objects.filter(name=q)[0]
         WordCloudImg(img=img_, product=product_).save()
