@@ -21,8 +21,16 @@
 	<section id="subscription">
 		<div class="container">
 		<div class="checkbox-group" style="float:center;">
-			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" value="check1" onclick="mypage_subscription_condition1();"> &nbsp; 알림 이메일 수신받기</label>
-			<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox"  value="check2" onclick="mypage_subscription_condition2();"> &nbsp; 알림 SMS 수신받기 </label>
+			{%if user.handle.alarmMethod == 1 or user.handle.alarmMethod == 3 %}
+				<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" checked onclick="location.href='{%url 'intg' delta=1%}';"> &nbsp; 이메일 알림</label>
+			{%else%}
+				<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" onclick="location.href='{%url 'intg' delta=1%}';"> &nbsp; 이메일 알림</label>
+			{%endif%}
+			{%if user.handle.alarmMethod >= 2 %}
+				<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" checked onclick="location.href='{%url 'intg' delta=2%}';"> &nbsp; SMS 알림</label>
+			{%else%}
+				<label class="mypage-checkbox-label"><input class="mypage-checkbox" type="checkbox" onclick="location.href='{%url 'intg' delta=2%}';"> &nbsp; SMS 알림</label>
+			{%endif%}
 		</div>
     </div>
 	</section>

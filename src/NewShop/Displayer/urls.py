@@ -23,6 +23,7 @@ urlpatterns = [
     path('temp/<str:keyword>/',views.delHist,name='delhist'),
     path('please-search-a-keyword',views.toHome,name='home2'),
     path('report',views.report,name='report'),
+    path('integrated/<int:delta>',views.setMethod,name='intg'),
 ]
 
 urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

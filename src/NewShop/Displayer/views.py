@@ -253,4 +253,22 @@ def report(request):
         if rep.is_valid():
             Report(subj=rep.cleaned_data['title'],content=rep.cleaned_data['content']).save()
             messages.info(request,'제보가 완료되었습니다.')
-            return redirect('home')       
+            return redirect('home')
+
+@login_required
+def setMethod(request, delta):
+    user=request.user.handle
+    if delta == 1:
+        if user.alarmMethod % 2 == 1:
+            user.alarmMethod-=1
+        else:
+            user.alarmMethod+=1
+    elif delta == 2:
+        if user.alarmMethod >= 2:
+            user.alarmMethod-=2
+        else:
+            user.alarmMethod+=2
+    else:
+        return Http404
+    user.save()
+    return redirect('mypage')
