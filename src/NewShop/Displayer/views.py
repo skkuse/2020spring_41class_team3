@@ -92,8 +92,25 @@ def search(request, keyword):
         count+=1
     if avg!=0:
         avg/=count
+
+    scan_start=0
+    news_hover = []
+    for pr_date in pr_dates:
+        pr_date = datetime.datetime.strptime(pr_date, '%Y-%m-%d')
+        newslen = len(nnewz)
+        i=scan_start
+        while i < newslen:
+            news_date = datetime.datetime.strptime(nnewz[i].date, '%Y-%m-%d')
+            if(pr_date < news_date):
+                break
+            i+=1
+        if i>=1 and i <= newslen:
+            news_hover.append(nnewz[i-1].title)
+        else:
+            news_hover.append("Not found")
+        scan_start = i
     # 검색어 입력/즐겨찾기 등.. 알림 설정은 팝업을 생각 중
-    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz, 'product':prod,'average':avg, 'low':low,'alarmed':alarmed,'theme':news_category, 'cloud':cloud_path})
+    return render(request, 'Displayer/product.html',{'logged':logged, 'market_list':market_list, 'pr_dt':pr_dates,'pr_vl':pr_values, 'booked':booked, 'news':nnewz,'news_hover':news_hover, 'product':prod,'average':avg, 'low':low,'alarmed':alarmed,'theme':news_category, 'cloud':cloud_path})
     # 현재의 html을 사용할 것
 
 def api_search(request, keyword):
