@@ -54,14 +54,37 @@ def get_recommend_query(query):
     for i in range(len(all_products_tokens)):
         if query_tokens[0] in all_products_tokens[i]:
             results.append(all_products[i]['name'])
+    # NspProduct에도 똑같이 적용한다.
+    all_nsp_products = NspProduct.objects.values('name')
+    for i in range(len(all_nsp_products)):
+        if query in all_nsp_products[i]['name']:
+            results.append(all_nsp_products[i]['name'])
+    all_products_nsp_tokens = []
+    for i in range(len(all_nsp_products)):
+        all_products_nsp_tokens.append(komoran.pos(all_nsp_products[i]['name']))
+    for i in range(len(all_products_nsp_tokens)):
+        if query_tokens[0] in all_products_nsp_tokens[i]:
+            results.append(all_nsp_products[i]['name'])
     # Relative Query and target (same NspProduct class): 같은 NspProduct 클래스에 있는 값을 찾는다.
-    all_products_big = NspProduct.objects.values('name')
-    all_products_big_tokens = []
-    for i in range(len(all_products_big)):
-        all_products_big_tokens.append(komoran.pos(all_products_big[i]['name']))
-    for i in range(len(all_products_big_tokens)):
-        if query_tokens[0] in all_products_big_tokens[i]:
-            results.append(all_products_big[i]['name'])
+    results_copy = results.copy()
+    for r in results_copy:
+        sp_product_ = SpProduct.objects.filter(name=r)
+        nsp_product_ = NspProduct.objects.filter(name=r)
+        if len(sp_product_) > 0:
+            sp_product_nsp_id = sp_product_.values()[0]['product_id']
+            related_nsp = NspProduct.objects.filter(id=sp_product_nsp_id)
+            # 관련 NspProduct 넣기
+            results.append(related_nsp.values()[0]['name'])
+            # 관련 NspProduct에 관련된 Sp 넣기
+            related_sp = SpProduct.objects.filter(product_id=sp_product_nsp_id).values()
+            for sp in related_sp:
+                results.append(sp['name'])
+        if len(nsp_product_) > 0:
+            nsp_product_id = nsp_product_.values()[0]['id']
+            related_sp = SpProduct.objects.filter(product_id=nsp_product_id).values()
+            # 관련 SpProduct 넣기
+            for sp in related_sp:
+                results.append(sp['name'])
     # 위의 세 가지 경우를 모두 찾아 결과값을 반환한다.
     results = list(set(results))
     return results
@@ -335,11 +358,22 @@ def make_word_cloud(query, num_words=30):
         buffer.close()
         img_ = ContentFile(img_)
         file_name = f'{q}.jpg'
-        try:    # os.listdir throws an exception at first
-            if file_name in os.listdir(f'{MEDIA_ROOT}/img'):
-                os.remove(f'{MEDIA_ROOT}/img/{file_name}')
+        media_root = os.path.join(MEDIA_ROOT, 'img')
+        # Exception handling
+        try:
+            if not os.path.exists(media_root):
+                os.makedirs(media_root)
+            if file_name in os.listdir(media_root):
+                os.remove(os.path.join(media_root, file_name))
         except:
             pass
         img_ = InMemoryUploadedFile(img_, None, file_name, 'image/jpeg', img_.tell, None)
         product_ = NspProduct.objects.filter(name=q)[0]
-        WordCloudImg(img=img_, product=product_).save()
+        # Check redundancy
+        object_ = WordCloudImg.objects.filter(product=product_)
+        if len(object_) > 0:
+            wci = WordCloudImg.objects.get(product=product_)
+            wci.img = img_
+            wci.save()
+        else:
+            WordCloudImg(img=img_, product=product_).save()

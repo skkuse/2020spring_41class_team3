@@ -12,11 +12,15 @@ def run():
     for sp in all_sp:
         crawler.update_market_price(sp.name)
     for nsp in all_nsp:
-        lastdate = (nsp.getNews().first().date+datetime.timedelta(days=1)).isoformat()
-        if lastdate is None:
-            lastdate='20200601'
-        test_model([nsp.name], [lastdate,today], 50, 'Displayer/news/best_model.pth')
-        make_word_cloud([nsp.name])
+        if nsp.getNews().first() is None:
+            test_model([nsp.name], [20200101,today], 500, 'Displayer/news/best_model.pth')
+            make_word_cloud([nsp.name])
+        else:
+            lastdate = (nsp.getNews().first().date+datetime.timedelta(days=1)).isoformat()
+            if lastdate is None:
+                lastdate='20200601'
+            test_model([nsp.name], [lastdate,today], 50, 'Displayer/news/best_model.pth')
+            make_word_cloud([nsp.name])
     for p in all_p:
         p.sendNewsAlarm()
         p.sendPriceAlarm()

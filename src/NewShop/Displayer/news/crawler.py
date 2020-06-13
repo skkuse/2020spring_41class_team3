@@ -138,7 +138,7 @@ class Crawler(object):
         for data_row in data:            
             if data_row['price']<low:
                 low=data_row['price']
-        Price.objects.create(product=product, value=data_row['price'], date=DATE.today())
+        Price.objects.create(product=product, value=low, date=DATE.today())
 
 
 crawler = Crawler()

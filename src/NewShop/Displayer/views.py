@@ -67,7 +67,7 @@ def search(request, keyword):
     booked=False
     alarmed = False
     ap=request.build_absolute_uri('/').strip("/")
-    cl = ap+prod.getInfluence()    
+    cl = prod.getInfluence()    
 
     if cl is not None:
         cloud_path = ap+prod.getInfluence().img.url
