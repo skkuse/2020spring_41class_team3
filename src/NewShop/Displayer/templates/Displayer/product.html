@@ -82,7 +82,11 @@
 		<div class="container">
 			<h2>Related Keywords</h2>
 			<br>
-			<img src="{{cloud}}">
+			{%if cloud%}
+				<img src="{{cloud}}">
+			{%else%}
+				데이터가 없습니다.
+			{%endif%}
 	</section>
 	<section class="section-market">
 		<div class="container">

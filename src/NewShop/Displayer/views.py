@@ -67,7 +67,13 @@ def search(request, keyword):
     booked=False
     alarmed = False
     ap=request.build_absolute_uri('/').strip("/")
-    cloud_path = ap+prod.getInfluence().img.url
+    cl = ap+prod.getInfluence()    
+
+    if cl is not None:
+        cloud_path = ap+prod.getInfluence().img.url
+    else:
+        cloud_path = None
+        
     if logged:
         History.objects.filter(user=request.user.handle,product=prod).delete()
         History(user=request.user.handle, product=prod).save()

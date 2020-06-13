@@ -218,8 +218,11 @@ class NspProduct(Product): #상표 무관 product 키워드를 말함
             same=date            
         return price_list
 
-    def getInfluence(self):   
-        return self.cloud
+    def getInfluence(self):
+        try:
+            return self.cloud
+        except:
+            return None
         
 
 class SpProduct(Product):  #상표가 있는 specific product 키워드를 말함.
