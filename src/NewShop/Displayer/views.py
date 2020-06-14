@@ -105,7 +105,7 @@ def search(request, keyword):
                 break
             i+=1
         if i>=1 and i <= newslen:
-            news_hover.append(nnewz[i-1].title)
+            news_hover.append(nnewz[i-1].title+", ("+nnewz[i-1].date+")")
         else:
             news_hover.append("Not found")
         scan_start = i
