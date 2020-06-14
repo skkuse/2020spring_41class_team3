@@ -50,4 +50,10 @@
 ##### 테스트 사이트는 개발 중 테스트에만 사용되며, 시연에는 사용되지 않습니다. 시연은 로컬로 진행됩니다.
 
 
+***
+## Example Screen
+
+
+
+![image](https://user-images.githubusercontent.com/43103079/84587370-94cce600-ae59-11ea-9e19-2d06421d1d4c.png)
 
